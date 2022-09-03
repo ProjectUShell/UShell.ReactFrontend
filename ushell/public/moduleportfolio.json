@@ -1,0 +1,11 @@
+{
+  "workspaces": [
+    {
+      "name": "Fondsakzessorik",
+      "useCases": [
+        { "name": "Depots", "component": "xxx" },
+        { "name": "Fonds", "component": "yyy" }
+      ]
+    }
+  ]
+}
