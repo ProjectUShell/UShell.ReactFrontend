@@ -12,7 +12,7 @@ function loadComponent(scope, module) {
     const Module = factory();
     console.log("loadComponent module", module);
     console.log("loadComponent Module", Module);
-    console.log("loadComponente Module()", await Module.DefineElement());
+    // console.log("loadComponente Module()", await Module.DefineElement());
     return Module;
   };
 }
@@ -32,8 +32,8 @@ export function loadComponent2(scope, module, url) {
     await container.init(__webpack_share_scopes__.default);
     const factory = await window[scope].get(module);
     const Module = factory();
-    console.log("loadComponent module", module);
-    console.log("loadComponent Module", Module);
+    // console.log("loadComponent module", module);
+    // console.log("loadComponent Module", Module);
     console.log("loadComponente Module()", await Module.DefineElement());
     // return Module;
   };

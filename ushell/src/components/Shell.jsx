@@ -4,7 +4,7 @@ import React, { Suspense, useState } from "react";
 
 import "./Shell.css";
 import ModuleLoader, { loadComponent2 } from "../federation/ModuleLoader";
-import readModulePortfolio from "../../moduleportfolio";
+import readModulePortfolio from "../moduleportfolio";
 
 const Shell = () => {
   const Test1 = "demo-component";

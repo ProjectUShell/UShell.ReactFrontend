@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import {
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+  BrowserRouter,
+} from "react-router-dom";
 import {
   AppstoreOutlined,
   BarChartOutlined,
@@ -15,30 +22,11 @@ import Shell from "./components/Shell";
 
 import "antd/dist/antd.css";
 import "./index.css";
+import { getModulePortfolio } from "./moduleportfolio";
+import SideMenuShell from "./components/Shells/SideMenuShell";
+import ModuleLoader from "./federation/ModuleLoader";
 
 const { Header, Content, Footer, Sider } = Layout;
-const items = [
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  AppstoreOutlined,
-  TeamOutlined,
-  ShopOutlined,
-].map((icon, index) => ({
-  key: String(index + 1),
-  icon: React.createElement(icon),
-  label: `nav ${index + 1}`,
-}));
-
-const items2 = [UserOutlined, VideoCameraOutlined, UploadOutlined].map(
-  (icon, index) => ({
-    key: String(index + 1),
-    icon: React.createElement(icon),
-    label: `nav ${index + 1}`,
-  })
-);
 
 function getItem(label, key, icon, children) {
   return {
@@ -50,113 +38,81 @@ function getItem(label, key, icon, children) {
 }
 
 const App = () => {
-  const [modulePortfolio, setModulePortfolio] = useState(null);
-  const [items1, setItems1] = useState(items);
+  const [workspaces, setWorkspaces] = useState([]);
+  const [routes, setRoutes] = useState([]);
 
-  const getData = () => {
-    fetch("moduleportfolio.json", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
-      .then(function (response) {
-        console.log(response);
-        return response.json();
-      })
-      .then(function (myJson) {
-        console.log("myJson", myJson.workspaces);
-        setModulePortfolio(myJson);
-        let items3 = [];
-        let i = 0;
-        myJson.workspaces.forEach((x) => {
-          // let items2 = [];
-          i += 1;
-          let children = [];
-          // console.log("workspace", x);
-          x.useCases.forEach((uc) => {
-            i += 1;
-            children.push(getItem(uc.name, i));
+  const updateModulePortfolio = () => {
+    getModulePortfolio().then(function (myJson) {
+      let newItems = [];
+      let newRoutes = [];
+      let i = 0;
+      myJson.workspaces.forEach((x) => {
+        i += 1;
+        let j = i + 1;
+        let children = [];
+        x.useCases.forEach((uc) => {
+          j += 1;
+          routes.push({
+            path: "/" + x.name + "/" + uc.name,
+            key: j,
+            component: uc.component,
+            module: uc.module,
+            url: uc.url
           });
-          items3.push(getItem(x.name, i, <UserOutlined />, children));
+          children.push(getItem(uc.name, j));
         });
-        setItems1(items3);
+        routes.push({ path: "/" + x.name, key: i });
+        newItems.push(getItem(x.name, i, <UserOutlined />, children));
       });
+      setWorkspaces(newItems);
+    });
   };
 
   // getData();
   useEffect(() => {
-    let items2 = [];
-    let i = 0;
-    getData();
-    console.log("modulePortfolio", modulePortfolio);
-    // modulePortfolio.workspaces.forEach((x) => {
-    //   i += 1;
-    //   let children = [];
-    //   console.log("workspace", x);
-    //   x.useCases.forEach((uc) => {
-    //     i += 1;
-    //     children.push(getItem(uc.name, i));
-    //   });
-    //   items2.push(getItem(x.name, i, <UserOutlined />, children));
-    // });
+    updateModulePortfolio();
   }, []);
 
+  console.log("items in app", workspaces);
+  console.log("routes in app", routes);
   return (
-    <Layout hasSider>
-      <Sider
-        style={{
-          overflow: "auto",
-          height: "100vh",
-          position: "fixed",
-          left: 0,
-          top: 0,
-          bottom: 0,
-        }}
-      >
-        <div className="logo" />
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["4"]}
-          items={items1}
-        />
-      </Sider>
-      <Layout
-        className="site-layout"
-        style={{
-          marginLeft: 200,
-        }}
-      >
-        <Header
-          theme="dark"
-          className="site-layout-background"
-          style={{
-            padding: 0,
-            zIndex: 1,
-            width: "100%",
-            position: "fixed",
-          }}
-        />
-        <Content
-          style={{
-            margin: "24px 16px 0",
-            overflow: "initial",
-            marginTop: 74,
-          }}
-        >
-          <div
-            className="site-layout-background"
-            style={{
-              padding: 24,
-              textAlign: "center",
-            }}
-          >
-            <Shell></Shell>
-          </div>
-        </Content>
-      </Layout>
-    </Layout>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="*"
+          element={
+            <SideMenuShell
+              workspaces={workspaces}
+              content={<div>Welcome to USHell</div>}
+            ></SideMenuShell>
+          }
+        ></Route>
+        {routes.map((r, i) => {
+          return (
+            <Route
+              key={i}
+              path={r.path}
+              element={
+                <SideMenuShell
+                  workspaces={workspaces}
+                  content={
+                    <Suspense fallback={"Loading . . . "}>
+                      <ModuleLoader
+                        url={r.url}
+                        scope={r.module}
+                        module={r.component}
+                        inputData={{ someInput: "WTF" }}
+                      />
+                    </Suspense>
+                  }
+                ></SideMenuShell>
+              }
+            ></Route>
+          );
+        })}
+        ;
+      </Routes>
+    </BrowserRouter>
   );
 };
 ReactDOM.render(<App />, document.getElementById("app"));

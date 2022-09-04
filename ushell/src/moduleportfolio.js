@@ -1,7 +1,7 @@
 const { useEffect } = require("react");
 
-export const getData = () => {
-  fetch("moduleportfolio.json", {
+export const getModulePortfolio = () => {
+  return fetch("../moduleportfolio.json", {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -11,13 +11,10 @@ export const getData = () => {
       console.log(response);
       return response.json();
     })
-    .then(function (myJson) {
-      console.log(myJson);
-    });
 };
 
 const readModulePortfolio = () => {
-  getData();
+  // getData();
   // console.log(modulePortfolio);
   // const reader = new FileReader();
   // reader.onload = (e) => {

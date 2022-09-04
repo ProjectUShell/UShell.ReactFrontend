@@ -1,10 +1,20 @@
 {
   "workspaces": [
     {
-      "name": "Fondsakzessorik",
+      "name": "Fitness",
       "useCases": [
-        { "name": "Depots", "component": "xxx" },
-        { "name": "Fonds", "component": "yyy" }
+        {
+          "name": "Exercises",
+          "module": "ushell_demo_app",
+          "component": "./Exercises",
+          "url": "http://localhost:3001/remoteEntry.js"
+        },
+        {
+          "name": "Workout",
+          "module": "ushell_demo_app",
+          "component": "./Workout",
+          "url": "http://localhost:3001/remoteEntry.js"
+        }
       ]
     }
   ]
