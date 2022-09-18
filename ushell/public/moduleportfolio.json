@@ -1,7 +1,7 @@
 {
   "workspaces": [
     {
-      "name": "Fitness",
+      "name": "Fitness1",
       "useCases": [
         {
           "name": "Exercises",

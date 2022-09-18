@@ -44,7 +44,6 @@ module.exports = {
       name: "ushell",
       filename: "remoteEntry.js",
       remotes: {
-        demoApp: "ushell_demo_app@http://localhost:3001/remoteEntry.js"
       },
       exposes: {},
       shared: {

@@ -23,9 +23,9 @@ const SideMenuShell = ({ workspaces, content }) => {
   const navigate = useNavigate();
 
   console.log("itmes in sb", workspaces);
-  if (workspaces.length == 0) {
-    return <div>So</div>;
-  }
+  // if (workspaces.length == 0) {
+  //   return <div>So</div>;
+  // }
 
   const onMenuItemClick = (i) => {
     const workspace = workspaces.find(ws => ws.key == [i.keyPath[1]]);
