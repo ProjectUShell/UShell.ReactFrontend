@@ -18,16 +18,19 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+// import { Layout, Menu } from "antd";
 import Shell from "./components/Shell";
 
 import "antd/dist/antd.css";
 import "./index.css";
 import "./App.css";
+import "./styles/main.less";
+
 import UShell from "./components/UShell";
 import TestDrawer from "./components/TestDrawer";
+import Settings from "./components/Settings/Settings";
 
-const { Header, Content, Footer, Sider } = Layout;
+// const { Header, Content, Footer, Sider } = Layout;
 
 function getItem(label, key, icon, children) {
   return {
@@ -40,7 +43,7 @@ function getItem(label, key, icon, children) {
 
 const App = () => {
   return (
-    <BrowserRouter>      
+    <BrowserRouter>
       <UShell></UShell>
     </BrowserRouter>
   );

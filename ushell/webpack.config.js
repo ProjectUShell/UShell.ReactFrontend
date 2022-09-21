@@ -36,6 +36,30 @@ module.exports = {
           loader: "babel-loader",
         },
       },
+      {
+        test: /\.json$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "json-loader",
+        },
+      },
+      {
+        test: /\.less$/i,
+        use: [
+          {
+            loader: "style-loader",
+          },
+          {
+            loader: "css-loader",
+          },
+          {
+            loader: "less-loader",
+            options: {
+              lessOptions: { javascriptEnabled: true },
+            },
+          },
+        ],
+      },
     ],
   },
 
@@ -43,8 +67,7 @@ module.exports = {
     new ModuleFederationPlugin({
       name: "ushell",
       filename: "remoteEntry.js",
-      remotes: {
-      },
+      remotes: {},
       exposes: {},
       shared: {
         ...deps,
