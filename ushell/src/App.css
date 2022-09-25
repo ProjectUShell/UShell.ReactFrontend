@@ -34,6 +34,10 @@ body {
   /* background: #000 !important; */
 }
 
+.ant-drawer-body {
+  padding: 0px;
+}
+
 .mainLayout .ant-layout-header {
   /* background: #f8f8f8; */
   padding: 0;
@@ -86,16 +90,9 @@ header
   left: 0;
   right: 0;
   z-index: 999;
-  /* background-color: rgba(var(--menu-dark-bg).rgb, 1) !important; */
-  /* background-color: var(--skeleton-color) !important; */
-  /* background-color: rgba(255, 255, 255, 255); */
 }
 
 .header {
-  /* background-color: rgba(1, 1, 1, 1) !important; */
-  /* background-color: rgba(255, 255, 255, 255); */
-  /* background-color: @primary-color !important; */
-  /* background-color: red; */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -176,7 +173,7 @@ header
 .header .ant-menu {
   border: 0;
   background: none !important;
-  min-width: 400px;
+  min-width: 100px;
 }
 
 .header .ant-menu li.ant-menu-item {
@@ -186,7 +183,7 @@ header
 
 .header .ant-menu li.ant-menu-item:before,
 .header .ant-menu li.ant-menu-item:after {
-  content: "";
+  /* content: "";
   background: #1890ff;
   width: 1px;
   position: absolute;
@@ -194,7 +191,7 @@ header
   bottom: 2px;
   left: 30%;
   opacity: 0;
-  transition: all 0.3s linear;
+  transition: all 0.3s linear; */
 }
 
 .header .ant-menu li.ant-menu-item:after {
@@ -232,18 +229,12 @@ header 2
 
 .header2 {
   display: flex;
-  /* justify-content: space-between; */
   align-items: center;
-  /* padding: 5px 0; */
-  /* background-color: var(--green5) !important; */
-  /* background-color: var(--test) !important; */
   z-index: 2;
   padding-top: 11px;
   padding-bottom: 11px;
   box-shadow: 0 24px 64px -2px rgb(0 0 0 / 2%), 0 6px 16px -2px rgb(0 0 0 / 6%),
     0 2px 6px -2px rgb(0 0 0 / 8%);
-
-  /* background: var(--primary-color) !important; */
 }
 
 .header2 .logo {
@@ -314,7 +305,7 @@ header 2
 .header2 .ant-menu {
   border: 0;
   background: none !important;
-  /* background-color: var(--primary-color) !important; */
+  min-width: 100%;
 }
 
 .header2 .ant-menu li.ant-menu-item {
@@ -679,7 +670,7 @@ responsive
   }
 
   .mobileVisible {
-    display: block;
+    display: flex;
   }
 
   .mobileHidden {

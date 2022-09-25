@@ -7,7 +7,9 @@ import {
   AppstoreOutlined,
   MailOutlined,
   SettingOutlined,
-  DownOutlined
+  DownOutlined,
+  PlayCircleOutlined,
+  GoogleOutlined,
 } from "@ant-design/icons";
 
 import "./HorizontalMenuLayout.css";
@@ -40,8 +42,10 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
 
   const items = [
     {
-      label: (        
-        <span>Navigation 1 <DownOutlined className="subMenuExpandIcon"/></span>
+      label: (
+        <span>
+          Navigation 1 <DownOutlined className="subMenuExpandIcon" />
+        </span>
       ),
       key: "mail",
       icon: <MailOutlined />,
@@ -77,13 +81,49 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
       ],
     },
     {
-      label: "Navigation Two",
+      label: (
+        <span>
+          Navigation 1 <DownOutlined className="subMenuExpandIcon" />
+        </span>
+      ),
       key: "app",
-      icon: <AppstoreOutlined />
+      icon: <AppstoreOutlined />,
+      children: [
+        {
+          type: "group",
+          label: "Item 1",
+          children: [
+            {
+              label: "Option 1",
+              key: "setting:1",
+            },
+            {
+              label: "Option 2",
+              key: "setting:2",
+            },
+          ],
+        },
+        {
+          type: "group",
+          label: "Item 2",
+          children: [
+            {
+              label: "Option 3",
+              key: "setting:3",
+            },
+            {
+              label: "Option 4",
+              key: "setting:4",
+            },
+          ],
+        },
+      ],
     },
     {
-      label: (        
-        <span>Navigation 3 <DownOutlined className="subMenuExpandIcon"/></span>
+      label: (
+        <span>
+          Navigation 3 <DownOutlined className="subMenuExpandIcon" />
+        </span>
       ),
       key: "SubMenu",
       icon: <SettingOutlined />,
@@ -134,38 +174,32 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
                 <Menu
                   mode="horizontal"
                   defaultSelectedKeys={["2"]}
-                  items={new Array(5).fill(null).map((_, index) => {
+                  items={new Array(2).fill(null).map((_, index) => {
                     const key = index + 1;
                     return {
                       key,
-                      label: `nav ${key}`,
+                      label: "",
+                      icon: <GoogleOutlined />,
                     };
                   })}
                 />
               </div>
               <div className="mobileVisible">
+                <Menu
+                  mode="horizontal"
+                  defaultSelectedKeys={["2"]}
+                  items={new Array(2).fill(null).map((_, index) => {
+                    const key = index + 1;
+                    return {
+                      key,
+                      label: "",
+                      icon: <GoogleOutlined />,
+                    };
+                  })}
+                />
                 <Button type="primary" onClick={showDrawer}>
                   <i className="fas fa-bars"></i>
                 </Button>
-                <Drawer
-                  title="Basic Drawer"
-                  placement="left"
-                  closable={true}
-                  onClose={onClose}
-                  open={open}
-                >
-                  <Menu
-                    mode="horizontal"
-                    defaultSelectedKeys={["2"]}
-                    items={new Array(5).fill(null).map((_, index) => {
-                      const key = index + 1;
-                      return {
-                        key,
-                        label: `nav ${key}`,
-                      };
-                    })}
-                  />
-                </Drawer>
               </div>
             </div>
           </div>
@@ -184,8 +218,8 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
               }}
             >
               <div className="container-fluid2">
-                <div className="header2">
-                  <div className="mobileHidden2">
+                <div className="mobileHidden2">
+                  <div className="header2">
                     <Menu
                       mode="horizontal"
                       defaultSelectedKeys={["2"]}
@@ -197,22 +231,16 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
                   <div className="mobileVisible">
                     <Drawer
                       title="Basic Drawer"
-                      placement="left"
+                      placement="right"
                       closable={true}
                       onClose={onClose}
                       open={open}
                     >
                       <Menu
-                        mode="horizontal"
+                        mode="inline"
                         defaultSelectedKeys={["2"]}
                         expandIcon={<i className="fas fas-wheel"></i>}
-                        items={new Array(5).fill(null).map((_, index) => {
-                          const key = index + 1;
-                          return {
-                            key,
-                            label: `nav ${key}`,
-                          };
-                        })}
+                        items={items}
                       />
                     </Drawer>
                   </div>
