@@ -1,33 +1,28 @@
 import React, { Suspense, useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import {
   Routes,
   Route,
-  useLocation,
-  useNavigate,
-  BrowserRouter,
   useSearchParams,
 } from "react-router-dom";
-import {
-  AppstoreOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  ShopOutlined,
-  TeamOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
-import { Layout, Menu } from "antd";
 
-// import "antd/dist/antd.css";
-// import "./index.css";
+import { Layout } from "antd";
+
 import { getModulePortfolio } from "../moduleportfolio";
-import SideMenuShell from "./Shells/SideMenuShell";
 import ModuleLoader from "../federation/ModuleLoader";
 import HorizontalMenuLayout from "./HorizontalMenuLayout/HorizontalMenuLayout";
 
-const { Header, Content, Footer, Sider } = Layout;
+import {
+  AppstoreOutlined,
+  MailOutlined,
+  SettingOutlined,
+  DownOutlined,
+  PlayCircleOutlined,
+  GoogleOutlined,
+  PieChartOutlined,
+  DesktopOutlined,
+  ContainerOutlined,
+  UserOutlined 
+} from "@ant-design/icons";
 
 function getItem(label, key, icon, children) {
   return {
@@ -69,7 +64,6 @@ const UShell = () => {
     });
   };
 
-  // getData();
   useEffect(() => {
     updateModulePortfolio();
   }, []);

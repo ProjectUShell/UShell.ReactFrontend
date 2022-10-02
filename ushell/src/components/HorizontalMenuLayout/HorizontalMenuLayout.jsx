@@ -10,15 +10,22 @@ import {
   DownOutlined,
   PlayCircleOutlined,
   GoogleOutlined,
+  PieChartOutlined,
+  DesktopOutlined,
+  ContainerOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 
 import "./HorizontalMenuLayout.css";
 
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 
 const HorizontalMenuLayout = ({ workspaces, content }) => {
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
+  const [horizontalMode, setHorizontalMode] = useState(false);
+  const [siderCollapsed, setSiderCollapsed] = useState(false);
+  const [siderCollapsed2, setSiderCollapsed2] = useState(false);
 
   const showDrawer = () => {
     console.log("showing drawer");
@@ -40,6 +47,39 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
     setOpen2(false);
   };
 
+  function getItem2(label, key, icon, children, type) {
+    return {
+      key,
+      icon,
+      children,
+      label,
+      type,
+    };
+  }
+
+  const items2 = [
+    getItem2("Option 1", "1", <PieChartOutlined />),
+    getItem2("Option 2", "2", <DesktopOutlined />),
+    getItem2("Option 3", "3", <ContainerOutlined />),
+
+    getItem2("Navigation One", "sub1", <MailOutlined />, [
+      getItem2("Option 5", "5"),
+      getItem2("Option 6", "6"),
+      getItem2("Option 7", "7"),
+      getItem2("Option 8", "8"),
+    ]),
+
+    getItem2("Navigation Two", "sub2", <AppstoreOutlined />, [
+      getItem2("Option 9", "9"),
+      getItem2("Option 10", "10"),
+
+      getItem2("Submenu", "sub3", null, [
+        getItem2("Option 11", "11"),
+        getItem2("Option 12", "12"),
+      ]),
+    ]),
+  ];
+
   const items = [
     {
       label: (
@@ -53,6 +93,7 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
         {
           type: "group",
           label: "Item 1",
+          key: "sub1",
           children: [
             {
               label: "Option 1",
@@ -206,64 +247,115 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
         </Header>
         <Content
           style={{
-            margin: "24px 16px 0",
+            margin: "24px 0px 0",
             overflow: "initial",
             marginTop: 55,
           }}
         >
           <Layout>
-            <Header
-              style={{
-                zIndex: "998",
-              }}
-            >
-              <div className="container-fluid2">
-                <div className="mobileHidden2">
-                  <div className="header2">
-                    <Menu
-                      mode="horizontal"
-                      defaultSelectedKeys={["2"]}
-                      items={items}
-                      triggerSubMenuAction="click"
-                      expandIcon={<MailOutlined />}
-                    />
-                  </div>
-                  <div className="mobileVisible">
-                    <Drawer
-                      title="Basic Drawer"
-                      placement="right"
-                      closable={true}
-                      onClose={onClose}
-                      open={open}
-                    >
-                      <Menu
-                        mode="inline"
-                        defaultSelectedKeys={["2"]}
-                        expandIcon={<i className="fas fas-wheel"></i>}
-                        items={items}
-                      />
-                    </Drawer>
-                  </div>
-                </div>
-              </div>
-            </Header>
-            <Content
-              style={{
-                margin: "24px 16px 0",
-                overflow: "initial",
-                marginTop: 74,
-              }}
-            >
-              <div
-                className="site-layout-background"
+            {horizontalMode && (
+              <Header
                 style={{
-                  padding: 24,
-                  textAlign: "center",
+                  zIndex: "998",
                 }}
               >
-                {content}
-              </div>
-            </Content>
+                <div className="container-fluid2">
+                  <div className="mobileHidden2">
+                    <div className="header2">
+                      <Menu
+                        mode="horizontal"
+                        defaultSelectedKeys={["2"]}
+                        items={items}
+                        triggerSubMenuAction="click"
+                        expandIcon={<MailOutlined />}
+                      />
+                    </div>
+                    <div className="mobileVisible">
+                      <Drawer
+                        title="Basic Drawer"
+                        placement="right"
+                        closable={true}
+                        onClose={onClose}
+                        open={open}
+                      >
+                        <Menu
+                          mode="inline"
+                          defaultSelectedKeys={["2"]}
+                          expandIcon={<i className="fas fas-wheel"></i>}
+                          items={items}
+                        />
+                      </Drawer>
+                    </div>
+                  </div>
+                </div>
+              </Header>
+            )}
+            {!horizontalMode && (
+              <>
+                <div className="mobileHidden">
+                  <Sider
+                    collapsible
+                    collapsed={siderCollapsed2}
+                    onCollapse={(value) => setSiderCollapsed2(value)}
+                    width={200}
+                    className="site-layout-background"
+                  >
+                    <Menu
+                      mode="inline"
+                      defaultSelectedKeys={["1"]}
+                      defaultOpenKeys={["sub1"]}
+                      style={{ height: "100%", borderRight: 0 }}
+                      items={items2}
+                    />
+                  </Sider>
+                </div>
+                <div className="mobileVisible">
+                  <Drawer
+                    title="Basic Drawer"
+                    placement="right"
+                    closable={true}
+                    onClose={onClose}
+                    open={open}
+                  >
+                    <Menu
+                      mode="inline"
+                      defaultSelectedKeys={["2"]}
+                      expandIcon={<i className="fas fas-wheel"></i>}
+                      items={items}
+                    />
+                  </Drawer>
+                </div>
+              </>
+            )}
+            <Layout
+              style={{
+                padding: "0 24px 24px",
+                marginTop: horizontalMode ? "40px" : "0px",
+              }}
+            >
+              <Breadcrumb style={{ margin: "16px 0" }}>
+                <Breadcrumb.Item>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>List</Breadcrumb.Item>
+                <Breadcrumb.Item>App</Breadcrumb.Item>
+              </Breadcrumb>
+              <Content
+                style={{
+                  margin: "24px 16px 0",
+                  overflow: "initial",
+                  marginTop: "0px",
+                }}
+              >
+                <div
+                  className="site-layout-background"
+                  style={{
+                    padding: 24,
+                    textAlign: "center",
+                  }}
+                >
+                  {content}
+                </div>
+              </Content>
+            </Layout>
           </Layout>
         </Content>
         <Footer>
