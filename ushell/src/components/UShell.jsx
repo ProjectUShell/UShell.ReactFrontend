@@ -5,22 +5,12 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
-import { Layout } from "antd";
 
 import { getModulePortfolio } from "../moduleportfolio";
 import ModuleLoader from "../federation/ModuleLoader";
 import HorizontalMenuLayout from "./HorizontalMenuLayout/HorizontalMenuLayout";
 
 import {
-  AppstoreOutlined,
-  MailOutlined,
-  SettingOutlined,
-  DownOutlined,
-  PlayCircleOutlined,
-  GoogleOutlined,
-  PieChartOutlined,
-  DesktopOutlined,
-  ContainerOutlined,
   UserOutlined 
 } from "@ant-design/icons";
 

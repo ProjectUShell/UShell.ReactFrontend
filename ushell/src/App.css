@@ -654,6 +654,16 @@ footer
   width: 100%;
 }
 
+.testXXX2 {
+  margin-left: 187px;
+  transition: 200ms;
+}
+
+.testXXX {
+  margin-left: 67px;
+  transition: 200ms;
+}
+
 /* 
 responsive
 ----------

@@ -294,6 +294,15 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
               <>
                 <div className="mobileHidden">
                   <Sider
+                    style={{
+                      overflow: 'auto',
+                      height: 'calc(100vh - 85px)',
+                      position: 'fixed',
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      marginTop: '58px'
+                    }}
                     collapsible
                     collapsed={siderCollapsed2}
                     onCollapse={(value) => setSiderCollapsed2(value)}
@@ -328,9 +337,10 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
               </>
             )}
             <Layout
+              className={siderCollapsed2 ? "testXXX" : "testXXX2"}
               style={{
                 padding: "0 24px 24px",
-                marginTop: horizontalMode ? "40px" : "0px",
+                marginTop: horizontalMode ? "40px" : "0px"
               }}
             >
               <Breadcrumb style={{ margin: "16px 0" }}>
