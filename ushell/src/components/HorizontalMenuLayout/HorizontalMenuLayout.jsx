@@ -1,6 +1,6 @@
 import { Breadcrumb, Layout, Menu, Button, Drawer } from "antd";
 import { Footer } from "antd/lib/layout/layout";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AppFooter from "../Footer/AppFooter";
 import Settings from "../Settings/Settings";
 import {
@@ -17,14 +17,13 @@ import {
 } from "@ant-design/icons";
 
 import "./HorizontalMenuLayout.css";
+import SettingsContext from "../Settings/settingsContext";
 
 const { Header, Content, Sider } = Layout;
 
 const HorizontalMenuLayout = ({ workspaces, content }) => {
   const [open, setOpen] = useState(false);
-  const [open2, setOpen2] = useState(false);
-  const [horizontalMode, setHorizontalMode] = useState(false);
-  const [siderCollapsed, setSiderCollapsed] = useState(false);
+  const [horizontalMode, setHorizontalMode] = useState(true);
   const [siderCollapsed2, setSiderCollapsed2] = useState(false);
 
   const showDrawer = () => {
@@ -37,15 +36,7 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
     setOpen(false);
   };
 
-  const showDrawer2 = () => {
-    console.log("showing drawer");
-    setOpen2(true);
-  };
 
-  const onClose2 = () => {
-    console.log("closing drawer");
-    setOpen2(false);
-  };
 
   function getItem2(label, key, icon, children, type) {
     return {
@@ -201,66 +192,52 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
     },
   ];
 
+  const topBar = (
+    <Menu
+      mode="horizontal"
+      defaultSelectedKeys={["2"]}
+      items={new Array(2).fill(null).map((_, index) => {
+        const key = index + 1;
+        return {
+          key,
+          label: "",
+          icon: <GoogleOutlined />,
+        };
+      })}
+    />
+  );
+
+  const settings = useContext(SettingsContext);
+  console.log("settings", settings);  
+
   return (
     <>
       <Layout className="mainLayout">
         <Header>
-          <div className="container-fluid2">
-            <div className="header">
-              <div className="logo">
-                <i className="fa-brands fa-uniregistry"></i>
-                Shell
-              </div>
-              <div className="mobileHidden">
-                <Menu
-                  mode="horizontal"
-                  defaultSelectedKeys={["2"]}
-                  items={new Array(2).fill(null).map((_, index) => {
-                    const key = index + 1;
-                    return {
-                      key,
-                      label: "",
-                      icon: <GoogleOutlined />,
-                    };
-                  })}
-                />
-              </div>
-              <div className="mobileVisible">
-                <Menu
-                  mode="horizontal"
-                  defaultSelectedKeys={["2"]}
-                  items={new Array(2).fill(null).map((_, index) => {
-                    const key = index + 1;
-                    return {
-                      key,
-                      label: "",
-                      icon: <GoogleOutlined />,
-                    };
-                  })}
-                />
-                <Button type="primary" onClick={showDrawer}>
-                  <i className="fas fa-bars"></i>
-                </Button>
-              </div>
+          <div className="header">
+            <div className="logo">
+              <i className="fa-brands fa-uniregistry"></i>
+              Shell
+            </div>
+            <div className="mobileHidden">{topBar}</div>
+            <div className="mobileVisible">
+              {topBar}
+              <Button type="primary" onClick={showDrawer}>
+                <i className="fas fa-bars"></i>
+              </Button>
             </div>
           </div>
         </Header>
-        <Content
-          style={{
-            margin: "24px 0px 0",
-            overflow: "initial",
-            marginTop: 55,
-          }}
-        >
+        <Content className="shell__inner-shell">
           <Layout>
-            {horizontalMode && (
+            {(settings == 'horizontal') && (
               <Header
                 style={{
                   zIndex: "998",
                 }}
               >
                 <div className="container-fluid2">
-                  <div className="mobileHidden2">
+                  <div className="mobileHidden">
                     <div className="header2">
                       <Menu
                         mode="horizontal"
@@ -290,18 +267,18 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
                 </div>
               </Header>
             )}
-            {!horizontalMode && (
+            {!(settings == 'horizontal') && (
               <>
                 <div className="mobileHidden">
                   <Sider
                     style={{
-                      overflow: 'auto',
-                      height: 'calc(100vh - 85px)',
-                      position: 'fixed',
+                      overflow: "auto",
+                      height: "calc(100vh - 85px)",
+                      position: "fixed",
                       left: 0,
                       top: 0,
                       bottom: 0,
-                      marginTop: '58px'
+                      marginTop: "58px",
                     }}
                     collapsible
                     collapsed={siderCollapsed2}
@@ -337,10 +314,14 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
               </>
             )}
             <Layout
-              className={siderCollapsed2 ? "testXXX" : "testXXX2"}
+              className={
+                siderCollapsed2
+                  ? "shell__content_sider-small"
+                  : "shell__content_sider-large"
+              }
               style={{
                 padding: "0 24px 24px",
-                marginTop: horizontalMode ? "40px" : "0px"
+                marginTop: horizontalMode ? "40px" : "0px",
               }}
             >
               <Breadcrumb style={{ margin: "16px 0" }}>
@@ -373,17 +354,7 @@ const HorizontalMenuLayout = ({ workspaces, content }) => {
         </Footer>
       </Layout>
 
-      <Button className="settingsButton" type="primary" onClick={showDrawer2}>
-        <i className="fas fa-cog" />
-      </Button>
-      <Drawer
-        title="Customize Theme"
-        placement="right"
-        onClose={onClose2}
-        open={open2}
-      >
-        <Settings></Settings>
-      </Drawer>
+      
     </>
   );
 };
