@@ -25,10 +25,17 @@ body {
   padding: 0px;
 }
 
-.mainLayout .ant-layout-header {
+.shell__outer-layout .ant-layout-header {
   padding: 0;
   height: auto;
   line-height: 1.6;
+}
+
+.app__settings-button {
+  position: fixed;
+  right: 0px;
+  top: 50vh;
+  z-index: 9;
 }
 
 p {
@@ -188,7 +195,7 @@ topBar
 }
 
 /* inner shell */
-.shell__inner-shell {
+.shell__inner-layout {
   margin: 24px 0px 0;
   overflow: initial;
   margin-top: 55px;
@@ -416,16 +423,29 @@ footer
 
 /* resposnive classes */
 
-.shell__content_sider-small {
-  margin-left: 67px;
-  transition: 200ms;
+.shell__content-layout {
+  padding: 0 24px 24px;
 }
 
-.shell__content_sider-large {
+.shell__content-layout_horizontal {
+  margin-left: 0px;
+  transition: 200ms;
+  margin-top: 80px;
+}
+
+.shell__content-layout_vertical {
   margin-left: 187px;
   transition: 200ms;
+  margin-top: 40px;
 }
 
+.shell__content {
+  margin: 24px 16px 0;
+  overflow: initial;
+  margin-top: 0px;
+  padding: 24px;
+  text-align: center;
+}
 /* 
 responsive
 ----------
@@ -440,5 +460,16 @@ responsive
 
   .mobileHidden {
     display: none;
+  }
+
+  .shell__content-layout_horizontal {
+    margin-left: 0px;
+    margin-top: 40px;
+    transition: 200ms;
+  }
+
+  .shell__content-layout_vertical {
+    margin-left: 0px;
+    transition: 200ms;
   }
 }

@@ -3,7 +3,7 @@ import { Routes, Route, useSearchParams } from "react-router-dom";
 
 import { getModulePortfolio } from "../moduleportfolio";
 import ModuleLoader from "../federation/ModuleLoader";
-import HorizontalMenuLayout from "./HorizontalMenuLayout/HorizontalMenuLayout";
+import ShellLayout from "./ShellLayout/ShellLayout";
 
 import { UserOutlined } from "@ant-design/icons";
 import { SettingsProvider } from "./Settings/settingsContext";
@@ -85,7 +85,7 @@ const UShell = () => {
             //   workspaces={workspaces}
             //   content={<div>Welcome to USHell</div>}
             // ></SideMenuShell>
-            <HorizontalMenuLayout
+            <ShellLayout
               content={
                 <>
                   <div>Welcome to USHell</div>
@@ -155,7 +155,7 @@ const UShell = () => {
                   <div>Welcome to USHell</div>
                 </>
               }
-            ></HorizontalMenuLayout>
+            ></ShellLayout>
           }
         ></Route>
         {routes.map((r, i) => {
@@ -187,7 +187,7 @@ const UShell = () => {
                   //     </Suspense>
                   //   }
                   // ></SideMenuShell>
-                  <HorizontalMenuLayout></HorizontalMenuLayout>
+                  <ShellLayout></ShellLayout>
                 )
               }
             ></Route>
@@ -195,7 +195,7 @@ const UShell = () => {
         })}
         ;
       </Routes>
-      <Button className="settingsButton" type="primary" onClick={showDrawer2}>
+      <Button className="app__settings-button" type="primary" onClick={showDrawer2}>
         <i className="fas fa-cog" />
       </Button>
       <Drawer
