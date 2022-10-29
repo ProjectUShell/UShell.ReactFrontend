@@ -1,7 +1,7 @@
 const { useEffect } = require("react");
 
 export const getModulePortfolio = () => {
-  return fetch("../moduleportfolio.json", {
+  return fetch("moduleportfolio.json", {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
