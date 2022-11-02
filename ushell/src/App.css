@@ -31,6 +31,10 @@ body {
   line-height: 1.6;
 }
 
+#app {
+  height: 100%;
+}
+
 .app__settings-button {
   position: fixed;
   right: 0px;
@@ -425,18 +429,19 @@ footer
 
 .shell__content-layout {
   padding: 0 24px 24px;
+  height: 100vh;
 }
 
 .shell__content-layout_horizontal {
   margin-left: 0px;
   transition: 200ms;
-  margin-top: 80px;
+  margin-top: 40px;
 }
 
 .shell__content-layout_vertical {
   margin-left: 187px;
   transition: 200ms;
-  margin-top: 40px;
+  margin-top: 0px;
 }
 
 .shell__content {
@@ -445,6 +450,7 @@ footer
   margin-top: 0px;
   padding: 24px;
   text-align: center;
+  min-height: 40vh;
 }
 /* 
 responsive
@@ -464,7 +470,7 @@ responsive
 
   .shell__content-layout_horizontal {
     margin-left: 0px;
-    margin-top: 40px;
+    margin-top: 0px;
     transition: 200ms;
   }
 

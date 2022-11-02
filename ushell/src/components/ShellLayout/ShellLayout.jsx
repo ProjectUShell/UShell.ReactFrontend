@@ -11,12 +11,13 @@ import VerticalMenu from "../VerticalMenu/VerticalMenu";
 import HorizontalMenu from "../HorizontalMenu/HorizontalMenu";
 import MobileMenu from "../MobileMenu/MobileMenu";
 import AppBar from "../AppBar/AppBar";
+import Workspace from "../Workspace/Workspace";
 
 import SettingsContext from "../Settings/settingsContext";
 
 const { Content } = Layout;
 
-const ShellLayout = ({ workspaces, content }) => {
+const ShellLayout = ({ portfolio, menuItems }) => {
   const [mobileMenuOpen, setmobileMenuOpen] = useState(false);
 
   const showMobileMenu = () => {
@@ -25,6 +26,7 @@ const ShellLayout = ({ workspaces, content }) => {
 
   const settings = useContext(SettingsContext);
   console.log("settings", settings);
+  console.log("portfolio", portfolio);
 
   return (
     <>
@@ -33,8 +35,12 @@ const ShellLayout = ({ workspaces, content }) => {
         <MobileMenu open={mobileMenuOpen} setOpen={setmobileMenuOpen} />
         <Content className="shell__inner-layout">
           <Layout>
-            {settings == "horizontal" && <HorizontalMenu />}
-            {!(settings == "horizontal") && <VerticalMenu />}
+            {settings == "horizontal" && (
+              <HorizontalMenu menuItems={menuItems} />
+            )}
+            {!(settings == "horizontal") && (
+              <VerticalMenu menuItems={menuItems} />
+            )}
             <Layout
               className={
                 settings == "horizontal"
@@ -47,7 +53,9 @@ const ShellLayout = ({ workspaces, content }) => {
                 <Breadcrumb.Item>List</Breadcrumb.Item>
                 <Breadcrumb.Item>App</Breadcrumb.Item>
               </Breadcrumb>
-              <Content className="shell__content">{content}</Content>
+              <Content className="shell__content">
+                <Workspace portfolio={portfolio}></Workspace>
+              </Content>
             </Layout>
           </Layout>
         </Content>

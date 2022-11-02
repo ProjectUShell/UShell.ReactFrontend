@@ -1,8 +1,7 @@
-import { Menu, Layout } from "antd";
-const { Header } = Layout;
-
+// react
 import React, { useContext, useState } from "react";
 
+// antd
 import {
   AppstoreOutlined,
   MailOutlined,
@@ -15,128 +14,31 @@ import {
   ContainerOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+const { Header } = Layout;
 
-const HorizontalMenu = () => {
-  const items = [
-    {
-      label: (
-        <span>
-          Navigation 1 <DownOutlined className="subMenuExpandIcon" />
-        </span>
-      ),
-      key: "mail",
-      icon: <MailOutlined />,
-      children: [
-        {
-          type: "group",
-          label: "Item 1",
-          key: "sub1",
-          children: [
-            {
-              label: "Option 1",
-              key: "setting:1",
-            },
-            {
-              label: "Option 2",
-              key: "setting:2",
-            },
-          ],
-        },
-        {
-          type: "group",
-          label: "Item 2",
-          children: [
-            {
-              label: "Option 3",
-              key: "setting:3",
-            },
-            {
-              label: "Option 4",
-              key: "setting:4",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      label: (
-        <span>
-          Navigation 1 <DownOutlined className="subMenuExpandIcon" />
-        </span>
-      ),
-      key: "app",
-      icon: <AppstoreOutlined />,
-      children: [
-        {
-          type: "group",
-          label: "Item 1",
-          children: [
-            {
-              label: "Option 1",
-              key: "setting:1",
-            },
-            {
-              label: "Option 2",
-              key: "setting:2",
-            },
-          ],
-        },
-        {
-          type: "group",
-          label: "Item 2",
-          children: [
-            {
-              label: "Option 3",
-              key: "setting:3",
-            },
-            {
-              label: "Option 4",
-              key: "setting:4",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      label: (
-        <span>
-          Navigation 3 <DownOutlined className="subMenuExpandIcon" />
-        </span>
-      ),
-      key: "SubMenu",
-      icon: <SettingOutlined />,
-      children: [
-        {
-          type: "group",
-          label: "Item 1",
-          children: [
-            {
-              label: "Option 1",
-              key: "setting:1",
-            },
-            {
-              label: "Option 2",
-              key: "setting:2",
-            },
-          ],
-        },
-        {
-          type: "group",
-          label: "Item 2",
-          children: [
-            {
-              label: "Option 3",
-              key: "setting:3",
-            },
-            {
-              label: "Option 4",
-              key: "setting:4",
-            },
-          ],
-        },
-      ],
-    },
-  ];
+// app
+import { Menu, Layout } from "antd";
+import {
+  convertToAntdItems,
+  getMenuItem,
+} from "../../portfolio-handling/MenuService";
+import { useNavigate } from "react-router-dom";
+
+const HorizontalMenu = ({ menuItems }) => {
+
+  const navigate = useNavigate();
+
+  console.log("menuItems in horizontal menu", menuItems);
+
+  const items2 = convertToAntdItems(menuItems, true);
+
+  const onSelectMenuItem = ({ item, key, keyPath, selectedKeys, domEvent }) => {
+    const menuItem = getMenuItem(menuItems, key);
+    if (!menuItem.command) {
+     console.error(`no command set in menuItem ${menuItem.label}`, menuItem)
+    }    
+    menuItem.command(navigate);
+  };
 
   return (
     <Header
@@ -150,9 +52,9 @@ const HorizontalMenu = () => {
             <Menu
               mode="horizontal"
               defaultSelectedKeys={["2"]}
-              items={items}
+              items={items2}
               triggerSubMenuAction="click"
-              expandIcon={<MailOutlined />}
+              onSelect={onSelectMenuItem}
             />
           </div>
         </div>

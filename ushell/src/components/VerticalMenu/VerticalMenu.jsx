@@ -1,22 +1,14 @@
+// react
+import React, { useState } from "react";
+
+// antd
 import { Menu, Layout } from "antd";
 const { Sider } = Layout;
 
-import React, { useContext, useState } from "react";
+// app
+import { convertToAntdItems } from "../../portfolio-handling/MenuService";
 
-import {
-  AppstoreOutlined,
-  MailOutlined,
-  SettingOutlined,
-  DownOutlined,
-  PlayCircleOutlined,
-  GoogleOutlined,
-  PieChartOutlined,
-  DesktopOutlined,
-  ContainerOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-
-const VerticalMenu = () => {
+const VerticalMenu = ({ menuItems }) => {
   const [siderCollapsed2, setSiderCollapsed2] = useState(false);
 
   function getItem2(label, key, icon, children, type) {
@@ -28,29 +20,7 @@ const VerticalMenu = () => {
       type,
     };
   }
-
-  const items2 = [
-    getItem2("Option 1", "1", <PieChartOutlined />),
-    getItem2("Option 2", "2", <DesktopOutlined />),
-    getItem2("Option 3", "3", <ContainerOutlined />),
-
-    getItem2("Navigation One", "sub1", <MailOutlined />, [
-      getItem2("Option 5", "5"),
-      getItem2("Option 6", "6"),
-      getItem2("Option 7", "7"),
-      getItem2("Option 8", "8"),
-    ]),
-
-    getItem2("Navigation Two", "sub2", <AppstoreOutlined />, [
-      getItem2("Option 9", "9"),
-      getItem2("Option 10", "10"),
-
-      getItem2("Submenu", "sub3", null, [
-        getItem2("Option 11", "11"),
-        getItem2("Option 12", "12"),
-      ]),
-    ]),
-  ];
+  const items = convertToAntdItems(menuItems, false);
 
   return (
     <div className="mobileHidden">
@@ -75,7 +45,7 @@ const VerticalMenu = () => {
           defaultSelectedKeys={["1"]}
           defaultOpenKeys={["sub1"]}
           style={{ height: "100%", borderRight: 0 }}
-          items={items2}
+          items={items}
         />
       </Sider>
     </div>
