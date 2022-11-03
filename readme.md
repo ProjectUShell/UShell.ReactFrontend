@@ -1,6 +1,6 @@
 # About the 'Project UShell'
 
-This is the idea of building a 'universal' shell in the form of an SPA that can host any web application. The current paradigm of configurable application modules (keyword 'composite application') in combination with the "WebComponents" standard enables us to create a product which is put together from several decentrally hosted components. In addition, an interaction between these modules should be made possible. In addition, it should also be possible to define various standard use cases, such as processing a list of data records in the form of simple CRUD operations, purely configuratively. In the latter case, no frontend development is necessary at all - only a web service in the Backend...
+This is the idea of building a 'universal' shell in the form of an SPA that can host any web application. The current paradigm of configurable application modules (keyword 'composite application') in combination with the "WebComponents" standard enables us to create a product which is put together from several decentrally hosted components. In addition, an interaction between these modules should be made possible. In addition, it should also be possible to define various standard use cases, such as processing a list of data records in the form of simple CRUD operations, purely configuratively (see the [CORE-CONCEPT](https://github.com/ProjectUShell/UShell.Docs/blob/master/core-idea-kornsw.md)). In the latter case, no frontend development is necessary at all - only a web service in the backend...
 
 
 
@@ -26,4 +26,8 @@ The Shell can be lauched in two different Modes:
 2) the 'seamless' Mode -> if the Url-Param '...?seamless_usecase=...' is set, then the shell will not render the Menu. Instead of that, the only the addressed UseCase will be rendered! This allows external Shell-Applications (for example a WinForms-Shell) to manage the Tabs and Menupoints externally und just embed a Module from here 
 
 
+
+## Build State:
+
+![](https://tobiaskorn.visualstudio.com/KornSW%20(OpenSource)/_apis/build/status/UShell.g2%20ReactFrontend?branchName=master)
 
