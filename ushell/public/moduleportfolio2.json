@@ -1,0 +1,89 @@
+{
+  "moduleDescriptions": [
+    {
+      "moduleUid": "Fitness",
+      "moduleTitle": "Fitness",
+      "workspaces": [
+        {
+          "workspaceKey": "Exercices",
+          "workspaceTitle": "Exercices 1",
+          "defaultStaticUseCaseKeys": ["ExercicesOverview"]
+        },
+        {
+          "workspaceKey": "Workout",
+          "workspaceTitle": "Workout 1",
+          "defaultStaticUseCaseKeys": ["WorkoutOverview"]
+        },
+        {
+          "workspaceKey": "Employees",
+          "workspaceTitle": "Employees",
+          "defaultStaticUseCaseKeys": ["EmployeeList"]
+        }
+      ],
+      "useCases": [
+        {
+          "useCaseKey": "ExercicesOverview",
+          "title": "Exercices",
+          "module": "ushell_demo_app",
+          "component": "./Exercises",
+          "url": "http://localhost:3001/remoteEntry.js"
+        },
+        {
+          "useCaseKey": "WorkoutOverview",
+          "title": "Workouts",
+          "module": "ushell_demo_app",
+          "component": "./Workout",
+          "url": "http://localhost:3001/remoteEntry.js"
+        },
+        {
+          "useCaseKey": "EmployeeList",
+          "title": "Employee List",
+          "module": "ushell_demo_app",
+          "component": "./EmployeeList",
+          "url": "http://localhost:3001/remoteEntry.js"
+        },
+        {
+          "useCaseKey": "EmployeeDetails",
+          "title": "Edit Employee",
+          "module": "ushell_demo_app",
+          "component": "./EmployeeDetails",
+          "url": "http://localhost:3001/remoteEntry.js"
+        }
+      ],
+      "commands": [
+        {
+          "uniqueCommandKey": "Exercices",
+          "label": "Exercices",
+          "commandType": "activate-workspace",
+          "targetWorkspacePath": "Fitness\\Exercices",
+          "targetWorkspaceKey": "Exercices",
+          "menuFolder": "Fitness"
+        },
+        {
+          "uniqueCommandKey": "Workout",
+          "label": "Workout",
+          "commandType": "activate-workspace",
+          "targetWorkspacePath": "Fitness\\Workout",
+          "targetWorkspaceKey": "Workout",
+          "menuFolder": "Fitness"
+        },
+        {
+          "uniqueCommandKey": "Employees",
+          "label": "Employees",
+          "commandType": "activate-workspace",
+          "targetWorkspacePath": "Employees\\EmployeeList",
+          "targetWorkspaceKey": "Employees",
+          "menuFolder": "Employees"
+        },
+        {
+          "uniqueCommandKey": "ShowEmployeeDetails",
+          "label": "Employee Details",
+          "commandType": "start-useCase",
+          "targetUseCaseKey": "EmployeeDetails",
+          "targetWorkspaceKey": "Employees",
+          "menuFolder": "Employees"
+        }
+      ]
+    }
+  ]
+}

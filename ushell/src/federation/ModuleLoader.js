@@ -40,9 +40,12 @@ export function loadComponent2(scope, module, url) {
 }
 
 function ModuleLoader(props) {
+  console.log("useDynamicScript start");
   const { ready, failed } = useDynamicScript({
     url: props.module && props.url,
   });
+  console.log("useDynamicScript failed", failed);
+
 
   if (!props.module) {
     return <h2>Not system specified</h2>;

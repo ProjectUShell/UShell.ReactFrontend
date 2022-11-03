@@ -1,14 +1,29 @@
+// react
 import React, { Suspense, useEffect, useState } from "react";
 import { Routes, Route, useSearchParams } from "react-router-dom";
 
+// antd
+import { UserOutlined } from "@ant-design/icons";
+import { Button, Drawer } from "antd";
+
+// app
 import { getModulePortfolio } from "../moduleportfolio";
+import { getModulePortfolio2 } from "../moduleportfolio";
 import ModuleLoader from "../federation/ModuleLoader";
 import ShellLayout from "./ShellLayout/ShellLayout";
 
-import { UserOutlined } from "@ant-design/icons";
 import { SettingsProvider } from "./Settings/settingsContext";
 import Settings from "./Settings/Settings";
-import { Button, Drawer } from "antd";
+import Welcome from "./Welcome/Welcome";
+import { PortfolioLoader } from "../portfolio-handling/PortfolioLoader";
+import { getRoutes } from "../portfolio-handling/PortfolioService";
+
+import { RouteModel } from "../portfolio-handling/MenuModel";
+import Workspace from "./Workspace/Workspace";
+import { getMenuItems } from "../portfolio-handling/MenuService";
+import UseCaseStateContext, {
+  UseCaseStateContextProvider,
+} from "../portfolio-handling/UseCaseStateContext";
 
 function getItem(label, key, icon, children) {
   return {
@@ -21,37 +36,54 @@ function getItem(label, key, icon, children) {
 
 const UShell = () => {
   const [workspaces, setWorkspaces] = useState([]);
-  const [routes, setRoutes] = useState([]);
+  const [menuItems, setMenuItems] = useState([]);
+  const emptyRoutes = [];
+  const [routes, setRoutes] = useState(emptyRoutes);
 
-  const updateModulePortfolio = () => {
-    getModulePortfolio().then(function (myJson) {
-      let newItems = [];
-      let newRoutes = [];
-      let i = 0;
-      myJson.workspaces.forEach((x) => {
-        i += 1;
-        let j = i + 1;
-        let children = [];
-        x.useCases.forEach((uc) => {
-          j += 1;
-          routes.push({
-            path: "/" + x.name + "/" + uc.name,
-            key: j,
-            component: uc.component,
-            module: uc.module,
-            url: uc.url,
-          });
-          children.push(getItem(uc.name, j));
-        });
-        routes.push({ path: "/" + x.name, key: i });
-        newItems.push(getItem(x.name, i, <UserOutlined />, children));
-      });
-      setWorkspaces(newItems);
+  const [portfolio, setPortfolio] = useState({});
+
+  const portfolioLoader = new PortfolioLoader();
+
+  const updateModulePortfolio2 = () => {
+    getModulePortfolio2().then((p) => {
+      console.warn("portfolio after load", p);
+      setPortfolio(p);
+      const mi = getMenuItems(p);
+      setMenuItems(mi);
+      // setRoutes(getRoutes(p));
     });
   };
 
+  // const updateModulePortfolio = () => {
+  //   getModulePortfolio().then(function (myJson) {
+  //     let newItems = [];
+  //     let newRoutes = [];
+  //     let i = 0;
+  //     myJson.workspaces.forEach((x) => {
+  //       i += 1;
+  //       let j = i + 1;
+  //       let children = [];
+  //       x.useCases.forEach((uc) => {
+  //         j += 1;
+  //         routes.push({
+  //           path: "/" + x.name + "/" + uc.name,
+  //           key: j,
+  //           component: uc.component,
+  //           module: uc.module,
+  //           url: uc.url,
+  //         });
+  //         children.push(getItem(uc.name, j));
+  //       });
+  //       routes.push({ path: "/" + x.name, key: i });
+  //       newItems.push(getItem(x.name, i, <UserOutlined />, children));
+  //     });
+  //     setWorkspaces(newItems);
+  //   });
+  // };
+
   useEffect(() => {
-    updateModulePortfolio();
+    // updateModulePortfolio();
+    updateModulePortfolio2();
   }, []);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -73,139 +105,85 @@ const UShell = () => {
     setOpen2(false);
   };
 
-  const [settingsValue, setSettingsValue] = useState('horizontal');
+  const [settingsValue, setSettingsValue] = useState("horizontal");
+
+  console.log("routes", routes);
 
   return (
     <SettingsProvider value={settingsValue}>
-      <Routes>
-        <Route
-          path="*"
-          element={
-            // <SideMenuShell
-            //   workspaces={workspaces}
-            //   content={<div>Welcome to USHell</div>}
-            // ></SideMenuShell>
-            <ShellLayout
-              content={
-                <>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                  <div>Welcome to USHell</div>
-                </>
-              }
-            ></ShellLayout>
-          }
-        ></Route>
-        {routes.map((r, i) => {
-          return (
-            <Route
-              key={i}
-              path={r.path}
-              element={
-                headless ? (
-                  <Suspense fallback={"Loading . . . "}>
-                    <ModuleLoader
-                      url={r.url}
-                      scope={r.module}
-                      module={r.component}
-                      inputData={{ someInput: "WTF" }}
-                    />
-                  </Suspense>
-                ) : (
-                  // <SideMenuShell
-                  //   workspaces={workspaces}
-                  //   content={
-                  //     <Suspense fallback={"Loading . . . "}>
-                  //       <ModuleLoader
-                  //         url={r.url}
-                  //         scope={r.module}
-                  //         module={r.component}
-                  //         inputData={{ someInput: "WTF" }}
-                  //       />
-                  //     </Suspense>
-                  //   }
-                  // ></SideMenuShell>
-                  <ShellLayout></ShellLayout>
-                )
-              }
-            ></Route>
-          );
-        })}
-        ;
-      </Routes>
-      <Button className="app__settings-button" type="primary" onClick={showDrawer2}>
-        <i className="fas fa-cog" />
-      </Button>
-      <Drawer
-        title="Customize Theme"
-        placement="right"
-        onClose={onClose2}
-        open={open2}
+      <UseCaseStateContextProvider
+        value={{ statesPerWorkspace: {}, stateSubjectsPerWorkspace: {} }}
       >
-        <Settings setSettingsValue={setSettingsValue}></Settings>
-      </Drawer>
+        <Routes>
+          <Route
+            path="*"
+            element={
+              <ShellLayout
+                menuItems={menuItems["_Main"]}
+                portfolio={portfolio}
+              ></ShellLayout>
+            }
+          ></Route>
+          <Route
+            path=":workspaceKey"
+            element={
+              headless ? (
+                <Suspense fallback={"Loading . . . "}>
+                  <ModuleLoader
+                    url={r.url}
+                    scope={r.module}
+                    module={r.component}
+                    inputData={{ someInput: "WTF" }}
+                  />
+                </Suspense>
+              ) : (
+                <ShellLayout
+                  workspaces={workspaces}
+                  menuItems={menuItems["_Main"]}
+                  content={<Workspace />}
+                  portfolio={portfolio}
+                ></ShellLayout>
+              )
+            }
+          />
+          <Route
+            path=":workspaceKey/:useCaseKey"
+            element={
+              headless ? (
+                <Suspense fallback={"Loading . . . "}>
+                  <ModuleLoader
+                    url={r.url}
+                    scope={r.module}
+                    module={r.component}
+                    inputData={{ someInput: "WTF" }}
+                  />
+                </Suspense>
+              ) : (
+                <ShellLayout
+                  workspaces={workspaces}
+                  menuItems={menuItems["_Main"]}
+                  content={<Workspace />}
+                ></ShellLayout>
+              )
+            }
+          />
+        </Routes>
+        <Button
+          className="app__settings-button"
+          type="primary"
+          onClick={showDrawer2}
+        >
+          <i className="fas fa-cog" />
+        </Button>
+        <Drawer
+          title="Customize Theme"
+          placement="right"
+          onClose={onClose2}
+          open={open2}
+        >
+          <Settings setSettingsValue={setSettingsValue}></Settings>
+        </Drawer>
+      </UseCaseStateContextProvider>
     </SettingsProvider>
   );
 };
