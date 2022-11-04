@@ -1,4 +1,4 @@
-import {v4 as newGuid} from 'uuid';
+import { v4 as newGuid } from "uuid";
 
 import { getUseCase, getUseCases, getWorkspace } from "./PortfolioService";
 import {
@@ -39,12 +39,14 @@ export function EnterNewUsecase(
 
   let sub = useCaseContext.stateSubjectsPerWorkspace[parentWorkspaceKey];
   if (sub) {
-    sub.next(state);
+    // sub.next(state);
+    sub = state;
   }
 
   console.log(`navigating to ${newUsecase.usecaseInstanceUid}`);
   navigate(`../${parentWorkspaceKey}/${newUsecase.usecaseInstanceUid}`);
 
+  console.error("useCaseContext", useCaseContext);
   //TODO: dann auch direkt hin-navigieren
 }
 
@@ -104,4 +106,20 @@ function initializeUsecase(
     input: input,
   };
   return newState;
+}
+
+export function currentUsecasesOfWorkspace(
+  portfolio,
+  workspaceKey,
+  useCaseContext
+) {
+  let sub = useCaseContext.stateSubjectsPerWorkspace[workspaceKey];
+  if (!sub) {
+    let state = getStateOfWorkspace(portfolio, workspaceKey, useCaseContext);
+    sub = state;
+    useCaseContext.stateSubjectsPerWorkspace[workspaceKey] = sub;
+  }
+  console.error("useCaseContext", useCaseContext);
+  console.error("currentUsecasesOfWorkspace", sub);
+  return sub;
 }

@@ -17,23 +17,17 @@ const Workspace = ({ portfolio }) => {
   const useCaseKey = params.useCaseKey;
   const workspace = getWorkspace(portfolio, workspaceKey);
 
-  const useCaseContext = useContext(UseCaseStateContext);
+  const { useCaseState, setUseCaseState } = useContext(UseCaseStateContext);
   const navigate = useNavigate();
-
-  console.log("workspace", workspace);
-  console.log("useCaseKey", useCaseKey);
-  console.log("portfolio", portfolio);
-  console.log(
-    "workspace?.defaultStaticUseCaseKeys",
-    workspace?.defaultStaticUseCaseKeys
-  );
   const tabItems = getAntdTabItems(
     portfolio,
-    workspace?.defaultStaticUseCaseKeys,
-    useCaseContext,
+    workspace,
+    useCaseState,
     navigate
   );
-  console.log("tabItems", tabItems);
+
+  // useCaseContext.test = (useCaseContext.test ? useCaseContext.test : 0) + 1;
+  // useCaseContext.setStatesPerWorkspace("NENENENE");
   return <Tabs defaultActiveKey="1" onChange={onChange} items={tabItems} />;
 };
 

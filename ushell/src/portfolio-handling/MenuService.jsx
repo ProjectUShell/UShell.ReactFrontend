@@ -3,6 +3,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import {
   getCommand,
   getCommands,
+  getUseCase,
   getUseCases,
   getUseCasesByKeys,
   getWorkspaces,
@@ -21,7 +22,8 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import ModuleLoader from "../federation/ModuleLoader";
-import { EnterNewUsecase } from "./UseCaseService";
+import { currentUsecasesOfWorkspace, EnterNewUsecase } from "./UseCaseService";
+import { GetUseCaseStatesByWorkspaceKey } from "./StateSerivce";
 
 function getAntdMenuItem(label, key, icon, children, type) {
   return {
@@ -96,7 +98,7 @@ function pushIntoMenuStructure(command, structure) {
       navigate(`../${command.targetWorkspaceKey}`);
     };
   } else if (command.commandType == "start-useCase") {
-    item.command = (useCaseContext, input) => {   
+    item.command = (useCaseContext, input) => {
       EnterNewUsecase(
         useCaseContext,
         command.targetUsecaseKey,
@@ -257,8 +259,13 @@ export function getMenuItem(menuItems, id) {
   return null;
 }
 
-export function getAntdTabItems(portfolio, useCaseKeys, useCaseContext, navigate) {
-  if (!portfolio || !useCaseKeys) {
+export function getAntdTabItems(
+  portfolio,
+  workspace,
+  useCaseContext,
+  navigate
+) {
+  if (!portfolio || !workspace) {
     return [];
   }
 
@@ -285,10 +292,37 @@ export function getAntdTabItems(portfolio, useCaseKeys, useCaseContext, navigate
     }
   };
 
-  const useCases = getUseCasesByKeys(portfolio, useCaseKeys);
-  console.log("getUseCasesByKeys", useCases);
+  console.log("workspace", workspace);
+  const staticUseCases = getUseCasesByKeys(portfolio, workspace.defaultStaticUseCaseKeys);
+  console.log("staticUseCases", staticUseCases);
+
+  const dynamicUseCases = currentUsecasesOfWorkspace(portfolio, workspace.workspaceKey, useCaseContext);
+  console.log("dynamicUseCases", dynamicUseCases);
+
   let result = [];
-  useCases.forEach((uc) => {
+  // staticUseCases.forEach((uc) => {
+  //   result.push({
+  //     label: `${uc.title}`,
+  //     key: `${uc.useCaseKey}`,
+  //     children: (
+  //       <Suspense fallback={"Loading . . . "}>
+  //         <ModuleLoader
+  //           url={uc.url}
+  //           scope={uc.module}
+  //           module={uc.component}
+  //           inputData={{
+  //             someInput: "WTF",
+  //             executeCommand: (commandKey, input) =>
+  //               startExecuteCommand(commandKey, input),
+  //           }}
+  //         />
+  //       </Suspense>
+  //     ),
+  //   });
+  // });
+
+  dynamicUseCases.forEach((useCaseState) => {
+    const uc = getUseCase(portfolio, useCaseState.usecaseKey);
     result.push({
       label: `${uc.title}`,
       key: `${uc.useCaseKey}`,

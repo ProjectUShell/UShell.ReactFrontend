@@ -42,7 +42,11 @@ const UShell = () => {
 
   const [portfolio, setPortfolio] = useState({});
 
-  const portfolioLoader = new PortfolioLoader();
+  const [useCaseState, setUseCaseState] = useState({
+    statesPerWorkspace: {},
+    stateSubjectsPerWorkspace: {},
+  });
+  const useCaseStateValue = { useCaseState, setUseCaseState };
 
   const updateModulePortfolio2 = () => {
     getModulePortfolio2().then((p) => {
@@ -53,33 +57,6 @@ const UShell = () => {
       // setRoutes(getRoutes(p));
     });
   };
-
-  // const updateModulePortfolio = () => {
-  //   getModulePortfolio().then(function (myJson) {
-  //     let newItems = [];
-  //     let newRoutes = [];
-  //     let i = 0;
-  //     myJson.workspaces.forEach((x) => {
-  //       i += 1;
-  //       let j = i + 1;
-  //       let children = [];
-  //       x.useCases.forEach((uc) => {
-  //         j += 1;
-  //         routes.push({
-  //           path: "/" + x.name + "/" + uc.name,
-  //           key: j,
-  //           component: uc.component,
-  //           module: uc.module,
-  //           url: uc.url,
-  //         });
-  //         children.push(getItem(uc.name, j));
-  //       });
-  //       routes.push({ path: "/" + x.name, key: i });
-  //       newItems.push(getItem(x.name, i, <UserOutlined />, children));
-  //     });
-  //     setWorkspaces(newItems);
-  //   });
-  // };
 
   useEffect(() => {
     // updateModulePortfolio();
@@ -111,9 +88,7 @@ const UShell = () => {
 
   return (
     <SettingsProvider value={settingsValue}>
-      <UseCaseStateContextProvider
-        value={{ statesPerWorkspace: {}, stateSubjectsPerWorkspace: {} }}
-      >
+      <UseCaseStateContextProvider value={useCaseStateValue}>
         <Routes>
           <Route
             path="*"
@@ -163,6 +138,7 @@ const UShell = () => {
                   workspaces={workspaces}
                   menuItems={menuItems["_Main"]}
                   content={<Workspace />}
+                  portfolio={portfolio}
                 ></ShellLayout>
               )
             }
