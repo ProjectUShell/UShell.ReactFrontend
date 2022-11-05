@@ -43,14 +43,12 @@ const UShell = () => {
   const [portfolio, setPortfolio] = useState({});
 
   const [useCaseState, setUseCaseState] = useState({
-    statesPerWorkspace: {},
-    stateSubjectsPerWorkspace: {},
+    statesPerWorkspace: {}
   });
   const useCaseStateValue = { useCaseState, setUseCaseState };
 
   const updateModulePortfolio2 = () => {
     getModulePortfolio2().then((p) => {
-      console.warn("portfolio after load", p);
       setPortfolio(p);
       const mi = getMenuItems(p);
       setMenuItems(mi);
@@ -69,22 +67,15 @@ const UShell = () => {
 
   const [open2, setOpen2] = useState(false);
 
-  console.log("items in app", workspaces);
-  console.log("routes in app", routes);
-
   const showDrawer2 = () => {
-    console.log("showing drawer");
     setOpen2(true);
   };
 
   const onClose2 = () => {
-    console.log("closing drawer");
     setOpen2(false);
   };
 
   const [settingsValue, setSettingsValue] = useState("horizontal");
-
-  console.log("routes", routes);
 
   return (
     <SettingsProvider value={settingsValue}>

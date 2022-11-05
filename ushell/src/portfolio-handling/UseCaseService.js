@@ -14,14 +14,6 @@ export function EnterNewUsecase(
   input,
   navigate
 ) {
-  console.info(
-    "enter new usecase '" +
-      useCaseKey +
-      "' in workspace '" +
-      parentWorkspaceKey +
-      "'"
-  );
-
   let state = getStateOfWorkspace(
     portfolio,
     parentWorkspaceKey,
@@ -37,16 +29,14 @@ export function EnterNewUsecase(
   state.push(newUsecase);
   useCaseContext.statesPerWorkspace[parentWorkspaceKey] = state;
 
-  let sub = useCaseContext.stateSubjectsPerWorkspace[parentWorkspaceKey];
-  if (sub) {
-    // sub.next(state);
-    sub = state;
-  }
+  // let sub = useCaseContext.stateSubjectsPerWorkspace[parentWorkspaceKey];
+  // if (sub) {
+  //   // sub.next(state);
+  //   sub = state;
+  // }
 
-  console.log(`navigating to ${newUsecase.usecaseInstanceUid}`);
   navigate(`../${parentWorkspaceKey}/${newUsecase.usecaseInstanceUid}`);
 
-  console.error("useCaseContext", useCaseContext);
   //TODO: dann auch direkt hin-navigieren
 }
 
@@ -56,7 +46,7 @@ function getStateOfWorkspace(portfolio, workspaceKey, useCaseContext) {
     states = GetUseCaseStatesByWorkspaceKey(workspaceKey);
 
     const workspaceDescription = getWorkspace(portfolio, workspaceKey);
-    console.log("workspaceDescription", workspaceDescription);
+
     let idx = 0;
     let newFixesUsecasesToStart = [];
     for (var defaultStaticUseCaseKey of workspaceDescription.defaultStaticUseCaseKeys) {
@@ -94,7 +84,6 @@ function initializeUsecase(
   fixed,
   input
 ) {
-  console.error("portfolio", portfolio);
   let desc = getUseCase(portfolio, useCaseKey);
 
   let newState = {
@@ -113,13 +102,27 @@ export function currentUsecasesOfWorkspace(
   workspaceKey,
   useCaseContext
 ) {
-  let sub = useCaseContext.stateSubjectsPerWorkspace[workspaceKey];
-  if (!sub) {
-    let state = getStateOfWorkspace(portfolio, workspaceKey, useCaseContext);
-    sub = state;
-    useCaseContext.stateSubjectsPerWorkspace[workspaceKey] = sub;
+  let state = getStateOfWorkspace(portfolio, workspaceKey, useCaseContext);
+  return state;
+}
+
+export function terminateUseCase(
+  portfolio,
+  useCaseState,
+  useCaseContext,
+  navigate
+) {
+  console.log("terminate UseCase", useCaseState);
+
+  const workspaceKey = useCaseState.parentWorkspaceKey;
+  let states = useCaseContext.statesPerWorkspace[workspaceKey];
+  console.log("old states", states);
+  const i = states.indexOf(useCaseState);
+  if (i < 0) {
+    console.error(`Invalid States`);
   }
-  console.error("useCaseContext", useCaseContext);
-  console.error("currentUsecasesOfWorkspace", sub);
-  return sub;
+  states = states.splice(i, 1);
+
+  navigate(`../${workspaceKey}`);
+  console.log("new states", states);
 }

@@ -26,9 +26,7 @@ import { useNavigate } from "react-router-dom";
 
 const HorizontalMenu = ({ menuItems }) => {
 
-  const navigate = useNavigate();
-
-  console.log("menuItems in horizontal menu", menuItems);
+  const navigate = useNavigate();  
 
   const items2 = convertToAntdItems(menuItems, true);
 

@@ -68,7 +68,7 @@
           "menuFolder": "Fitness"
         },
         {
-          "uniqueCommandKey": "Employees",
+          "uniqueCommandKey": "EmployeeList",
           "label": "Employees",
           "commandType": "activate-workspace",
           "targetWorkspacePath": "Employees\\EmployeeList",

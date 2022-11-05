@@ -25,9 +25,7 @@ const ShellLayout = ({ portfolio, menuItems }) => {
   };
 
   const settings = useContext(SettingsContext);
-  console.log("settings", settings);
-  console.log("portfolio", portfolio);
-
+ 
   return (
     <>
       <Layout className="shell__outer-layout">

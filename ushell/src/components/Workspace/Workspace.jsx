@@ -8,17 +8,19 @@ import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 
 const Workspace = ({ portfolio }) => {
   const params = useParams();
-
-  const onChange = (key) => {
-    console.log(key);
-  };
+  const navigate = useNavigate();
 
   const workspaceKey = params.workspaceKey;
   const useCaseKey = params.useCaseKey;
   const workspace = getWorkspace(portfolio, workspaceKey);
 
+  const onChange = (key) => {
+    navigate(`../${workspaceKey}/${key}`);
+
+    console.log("tab changed", key);
+  };
+
   const { useCaseState, setUseCaseState } = useContext(UseCaseStateContext);
-  const navigate = useNavigate();
   const tabItems = getAntdTabItems(
     portfolio,
     workspace,
@@ -28,7 +30,23 @@ const Workspace = ({ portfolio }) => {
 
   // useCaseContext.test = (useCaseContext.test ? useCaseContext.test : 0) + 1;
   // useCaseContext.setStatesPerWorkspace("NENENENE");
-  return <Tabs defaultActiveKey="1" onChange={onChange} items={tabItems} />;
+  const selectedTabKey = `'${useCaseKey}'`;
+  console.log("tabs", tabItems);
+  console.log("selected tab", selectedTabKey);
+  return useCaseKey ? (
+    <Tabs
+      activeKey={useCaseKey}
+      defaultActiveKey={selectedTabKey}
+      onChange={onChange}
+      items={tabItems}
+    />
+  ) : (
+    <Tabs
+      defaultActiveKey={selectedTabKey}
+      onChange={onChange}
+      items={tabItems}
+    />
+  );
 };
 
 export default Workspace;

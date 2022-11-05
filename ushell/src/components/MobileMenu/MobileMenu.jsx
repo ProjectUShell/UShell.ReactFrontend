@@ -18,8 +18,7 @@ import {
 
 const MobileMenu = ({ open, setOpen }) => {
 
-  const onClose = () => {
-    console.log("closing drawer");
+  const onClose = () => {    
     setOpen(false);
   };
 

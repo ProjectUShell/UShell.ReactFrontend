@@ -1,6 +1,6 @@
 import React from "react";
 const UseCaseStateContext = React.createContext({
-  useCaseState: { statesPerWorkspace: {}, stateSubjectsPerWorkspace: {} },
+  useCaseState: { statesPerWorkspace: {} },
   setUseCaseState: () => {},
 });
 export const UseCaseStateContextProvider = UseCaseStateContext.Provider;

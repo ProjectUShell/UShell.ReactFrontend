@@ -6,14 +6,12 @@ export const getModulePortfolio = () => {
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-  }).then(function (response) {
-    console.log(response);
+  }).then(function (response) {    
     return response.json();
   });
 };
 
-export const getModulePortfolio2 = () => {
-  console.log("fetching module portfolio");
+export const getModulePortfolio2 = () => {  
   return fetch("moduleportfolio2.json", {
     headers: {
       "Content-Type": "application/json",

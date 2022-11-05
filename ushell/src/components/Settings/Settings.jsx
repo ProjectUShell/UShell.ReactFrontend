@@ -8,22 +8,18 @@ const Settings = ({ setSettingsValue }) => {
   const [value, setValue] = useState(1);
   const [value2, setValue2] = useState("horizontal");
 
-  const onChange = (e) => {
-    console.log("radio checked", e.target.value);
+  const onChange = (e) => {    
     setValue(e.target.value);
     if (e.target.value == 2) {
       window.less.modifyVars(darkVars).catch((error) => {
-        console.log(`Failed to reset theme`);
+        console.error(`Failed to reset theme`);
       });
     } else {
       window.less.modifyVars(lightVars).catch((error) => {
-        console.log(`Failed to reset theme`);
+        console.error(`Failed to reset theme`);
       });
-    }
-    // for(var b in window) {
-    //   if(window.hasOwnProperty(b)) console.log(b);
-    // }
-    console.log(window.less);
+    }    
+    
   };
 
   return (

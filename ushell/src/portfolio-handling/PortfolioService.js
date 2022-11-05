@@ -81,8 +81,6 @@ export function getRoutes(portfolio) {
     );
     if (useCase == undefined) {
       const workspaces = getWorkspaces(portfolio);
-      console.log("workspaces", workspaces);
-      console.log("command", command);
       const workspace = workspaces.find(
         (ws) => ws.workspaceKey == command.targetWorkspaceKey
       );

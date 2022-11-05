@@ -22,8 +22,9 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import ModuleLoader from "../federation/ModuleLoader";
-import { currentUsecasesOfWorkspace, EnterNewUsecase } from "./UseCaseService";
+import { currentUsecasesOfWorkspace, EnterNewUsecase, terminateUseCase } from "./UseCaseService";
 import { GetUseCaseStatesByWorkspaceKey } from "./StateSerivce";
+import { Button } from "antd";
 
 function getAntdMenuItem(label, key, icon, children, type) {
   return {
@@ -92,9 +93,7 @@ function pushIntoMenuStructure(command, structure) {
   //item.styleClass
 
   if (command.commandType == "activate-workspace") {
-    console.warn("activate-workspace");
     item.command = (navigate) => {
-      console.log(`navigate ${command.targetWorkspaceKey}`);
       navigate(`../${command.targetWorkspaceKey}`);
     };
   } else if (command.commandType == "start-useCase") {
@@ -117,14 +116,14 @@ function pushIntoMenuStructure(command, structure) {
   } else if (command.commandType == "set-runtime-tag") {
     if (command.tagsToSet) {
       item.command = (event) => {
-        console.log(`set tags ${command.tagsToSet}`);
+        console.warn(`set tags ${command.tagsToSet}`);
         // this._StateService.modifyTags(command.tagsToSet);
       };
     }
   } else if (command.commandType == "navigate") {
     //item.routerLink = command.routerLink;
     item.command = (event) => {
-      console.log(`navigate ${command.routerLink}`);
+      console.warn(`navigate ${command.routerLink}`);
       // this._Router.navigate(command.routerLink);
     };
   } else {
@@ -242,6 +241,7 @@ export function convertToAntdItems(menuItems, addExpandIcon) {
       onSelect: () => console.log("selected"),
     });
   });
+
   return result;
 }
 
@@ -271,16 +271,12 @@ export function getAntdTabItems(
 
   const startExecuteCommand = (commandKey, input) => {
     const commandDescription = getCommand(portfolio, commandKey);
-    console.log("commandDescription", commandDescription);
+
     if (!commandDescription) {
       console.error(`No Command with key ${commandKey}`);
     }
     if (commandDescription.commandType == "activate-workspace") {
     } else if (commandDescription.commandType == "start-useCase") {
-      console.log(
-        `starting use case ${commandDescription.targetUseCaseKey} in ${commandDescription.targetWorkspaceKey} with ${input}`
-      );
-
       EnterNewUsecase(
         portfolio,
         useCaseContext,
@@ -292,40 +288,35 @@ export function getAntdTabItems(
     }
   };
 
-  console.log("workspace", workspace);
-  const staticUseCases = getUseCasesByKeys(portfolio, workspace.defaultStaticUseCaseKeys);
-  console.log("staticUseCases", staticUseCases);
+  const closeTab = (useCaseState) => {
+    terminateUseCase(portfolio, useCaseState, useCaseContext, navigate);    
+  }
 
-  const dynamicUseCases = currentUsecasesOfWorkspace(portfolio, workspace.workspaceKey, useCaseContext);
-  console.log("dynamicUseCases", dynamicUseCases);
+  const dynamicUseCases = currentUsecasesOfWorkspace(
+    portfolio,
+    workspace.workspaceKey,
+    useCaseContext
+  );
 
   let result = [];
-  // staticUseCases.forEach((uc) => {
-  //   result.push({
-  //     label: `${uc.title}`,
-  //     key: `${uc.useCaseKey}`,
-  //     children: (
-  //       <Suspense fallback={"Loading . . . "}>
-  //         <ModuleLoader
-  //           url={uc.url}
-  //           scope={uc.module}
-  //           module={uc.component}
-  //           inputData={{
-  //             someInput: "WTF",
-  //             executeCommand: (commandKey, input) =>
-  //               startExecuteCommand(commandKey, input),
-  //           }}
-  //         />
-  //       </Suspense>
-  //     ),
-  //   });
-  // });
 
   dynamicUseCases.forEach((useCaseState) => {
+    const useCaseInput = useCaseState.input ? useCaseState.input : "";
     const uc = getUseCase(portfolio, useCaseState.usecaseKey);
     result.push({
-      label: `${uc.title}`,
-      key: `${uc.useCaseKey}`,
+      // label: `${uc.title} ${useCaseInput} ${<div>Hi</div>}`,
+      label: useCaseState.fixed ? (
+        <div>
+          {uc.title} {useCaseInput}
+        </div>
+      ) : (
+        <div>
+          {uc.title} {useCaseInput}
+          <Button type="link" onClick={() => closeTab(useCaseState)}>x</Button>
+        </div>
+      ),
+      key: `${useCaseState.usecaseInstanceUid}`,
+      closeable: true,
       children: (
         <Suspense fallback={"Loading . . . "}>
           <ModuleLoader
@@ -333,7 +324,7 @@ export function getAntdTabItems(
             scope={uc.module}
             module={uc.component}
             inputData={{
-              someInput: "WTF",
+              input: useCaseState.input,
               executeCommand: (commandKey, input) =>
                 startExecuteCommand(commandKey, input),
             }}

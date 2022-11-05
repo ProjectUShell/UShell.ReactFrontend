@@ -8,7 +8,6 @@ export class PortfolioLoader {
         Accept: "application/json",
       },
     }).then(function (response) {
-      console.warn("portfolio loader", response);
       return response.json();
     });
   }

@@ -6,21 +6,23 @@ import { Menu, Layout } from "antd";
 const { Sider } = Layout;
 
 // app
-import { convertToAntdItems } from "../../portfolio-handling/MenuService";
+import { convertToAntdItems, getMenuItem } from "../../portfolio-handling/MenuService";
+import { useNavigate } from "react-router-dom";
 
 const VerticalMenu = ({ menuItems }) => {
   const [siderCollapsed2, setSiderCollapsed2] = useState(false);
 
-  function getItem2(label, key, icon, children, type) {
-    return {
-      key,
-      icon,
-      children,
-      label,
-      type,
-    };
-  }
+  const navigate = useNavigate();
+
   const items = convertToAntdItems(menuItems, false);
+
+  const onSelectMenuItem = ({ item, key, keyPath, selectedKeys, domEvent }) => {
+    const menuItem = getMenuItem(menuItems, key);
+    if (!menuItem.command) {
+      console.error(`no command set in menuItem ${menuItem.label}`, menuItem);
+    }
+    menuItem.command(navigate);
+  };
 
   return (
     <div className="mobileHidden">
@@ -46,6 +48,7 @@ const VerticalMenu = ({ menuItems }) => {
           defaultOpenKeys={["sub1"]}
           style={{ height: "100%", borderRight: 0 }}
           items={items}
+          onSelect={onSelectMenuItem}
         />
       </Sider>
     </div>
