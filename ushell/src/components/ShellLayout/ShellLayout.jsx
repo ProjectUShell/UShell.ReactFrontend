@@ -25,11 +25,11 @@ const ShellLayout = ({ portfolio, menuItems }) => {
   };
 
   const settings = useContext(SettingsContext);
- 
+
   return (
     <>
       <Layout className="shell__outer-layout">
-        <AppBar showDrawer={showMobileMenu} />
+        <AppBar showDrawer={showMobileMenu} portfolio={portfolio} />
         <MobileMenu open={mobileMenuOpen} setOpen={setmobileMenuOpen} />
         <Content className="shell__inner-layout">
           <Layout>

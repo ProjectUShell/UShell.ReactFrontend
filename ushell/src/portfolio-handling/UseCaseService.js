@@ -49,6 +49,9 @@ export function EnterNewUsecase(
 }
 
 function getStateOfWorkspace(portfolio, workspaceKey, useCaseContext) {
+  console.log("getStateOfWorkspace workspaceKey", workspaceKey);
+  console.log("getStateOfWorkspace useCaseContext", useCaseContext);
+
   let states = useCaseContext.statesPerWorkspace[workspaceKey];
   if (!states) {
     states = GetUseCaseStatesByWorkspaceKey(workspaceKey);

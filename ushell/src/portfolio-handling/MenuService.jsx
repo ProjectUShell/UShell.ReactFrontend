@@ -19,11 +19,15 @@ import {
   DesktopOutlined,
   ContainerOutlined,
   UserOutlined,
-  CloseOutlined
+  CloseOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import ModuleLoader from "../federation/ModuleLoader";
-import { currentUsecasesOfWorkspace, EnterNewUsecase, terminateUseCase } from "./UseCaseService";
+import {
+  currentUsecasesOfWorkspace,
+  EnterNewUsecase,
+  terminateUseCase,
+} from "./UseCaseService";
 import { GetUseCaseStatesByWorkspaceKey } from "./StateSerivce";
 import { Button } from "antd";
 
@@ -247,12 +251,17 @@ export function convertToAntdItems(menuItems, addExpandIcon) {
 }
 
 export function getMenuItem(menuItems, id) {
+  if (!menuItems) {
+    return null;
+  }
+  console.log("getMenuItem menuItems", menuItems);
+  console.log("getMenuItem id", id);
   if (!menuItems || !id) return null;
   for (let mi of menuItems) {
-    if (mi.id == id) {
+    if ((mi.id ? mi.id : mi.key) == id) {
       return mi;
     }
-    const r = getMenuItem(mi.items, id);
+    const r = getMenuItem((mi.items ? mi.items : mi.children), id);
     if (r) {
       return r;
     }
@@ -290,8 +299,8 @@ export function getAntdTabItems(
   };
 
   const closeTab = (useCaseState) => {
-    terminateUseCase(portfolio, useCaseState, useCaseContext, navigate);    
-  }
+    terminateUseCase(portfolio, useCaseState, useCaseContext, navigate);
+  };
 
   const dynamicUseCases = currentUsecasesOfWorkspace(
     portfolio,
@@ -313,7 +322,9 @@ export function getAntdTabItems(
       ) : (
         <div>
           {uc.title} {useCaseInput}
-          <Button type="link" onClick={() => closeTab(useCaseState)}><CloseOutlined /></Button>
+          <Button type="link" onClick={() => closeTab(useCaseState)}>
+            <CloseOutlined />
+          </Button>
         </div>
       ),
       key: `${useCaseState.usecaseInstanceUid}`,
