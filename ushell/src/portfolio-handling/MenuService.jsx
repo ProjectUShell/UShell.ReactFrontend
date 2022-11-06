@@ -19,6 +19,7 @@ import {
   DesktopOutlined,
   ContainerOutlined,
   UserOutlined,
+  CloseOutlined
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import ModuleLoader from "../federation/ModuleLoader";
@@ -312,7 +313,7 @@ export function getAntdTabItems(
       ) : (
         <div>
           {uc.title} {useCaseInput}
-          <Button type="link" onClick={() => closeTab(useCaseState)}>x</Button>
+          <Button type="link" onClick={() => closeTab(useCaseState)}><CloseOutlined /></Button>
         </div>
       ),
       key: `${useCaseState.usecaseInstanceUid}`,
