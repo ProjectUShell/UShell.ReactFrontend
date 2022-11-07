@@ -1,6 +1,6 @@
 // react
 import React, { useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 // antd
 import { Tabs } from "antd";
@@ -11,10 +11,12 @@ import { getAntdTabItems } from "../../portfolio-handling/MenuService";
 import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 
 // css
-import './Workspace.css';
+import "./Workspace.css";
+import { rootUrlPath } from "../../constants";
 
 const Workspace = ({ portfolio }) => {
   const params = useParams();
+
   const navigate = useNavigate();
 
   const workspaceKey = params.workspaceKey;
@@ -22,7 +24,7 @@ const Workspace = ({ portfolio }) => {
   const workspace = getWorkspace(portfolio, workspaceKey);
 
   const onChange = (key) => {
-    navigate(`../${workspaceKey}/${key}`);
+    navigate(`../${rootUrlPath}${workspaceKey}/${key}`);
 
     console.log("tab changed", key);
   };
@@ -37,8 +39,9 @@ const Workspace = ({ portfolio }) => {
   );
 
   const activeTab = tabItems.find((t) => t.key == useCaseKey);
+
   if (!activeTab && useCaseKey) {
-    navigate(`../${workspaceKey}`);
+    navigate(`../${rootUrlPath}${workspaceKey}`);
   }
 
   return useCaseKey ? (

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Radio } from "antd";
 
-import darkVars from "./dark.json";
-import lightVars from "./light.json";
+import { setDarkMode, setLightMode } from "./SettingsService";
 
 const Settings = ({ setSettingsValue }) => {
   const [value, setValue] = useState(1);
@@ -11,13 +10,9 @@ const Settings = ({ setSettingsValue }) => {
   const onChange = (e) => {    
     setValue(e.target.value);
     if (e.target.value == 2) {
-      window.less.modifyVars(darkVars).catch((error) => {
-        console.error(`Failed to reset theme`);
-      });
+      setDarkMode();
     } else {
-      window.less.modifyVars(lightVars).catch((error) => {
-        console.error(`Failed to reset theme`);
-      });
+      setLightMode();
     }    
     
   };

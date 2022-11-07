@@ -1,152 +1,36 @@
 import { Menu, Layout, Drawer } from "antd";
 const { Header } = Layout;
 
-import React, { useContext, useState } from "react";
+import React from "react";
 
 import {
-  AppstoreOutlined,
-  MailOutlined,
-  SettingOutlined,
-  DownOutlined,
-  PlayCircleOutlined,
-  GoogleOutlined,
-  PieChartOutlined,
-  DesktopOutlined,
-  ContainerOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+  convertToAntdItems,
+  getMenuItem,
+} from "../../portfolio-handling/MenuService";
+import { useNavigate } from "react-router-dom";
 
-const MobileMenu = ({ open, setOpen }) => {
+const MobileMenu = ({ open, setOpen, menuItems }) => {
+  const navigate = useNavigate();
 
-  const onClose = () => {    
+  const items2 = convertToAntdItems(menuItems, true);
+
+  const onSelectMenuItem = ({ item, key, keyPath, selectedKeys, domEvent }) => {
+    const menuItem = getMenuItem(menuItems, key);
+    if (!menuItem.command) {
+      console.error(`no command set in menuItem ${menuItem.label}`, menuItem);
+    }
+    setOpen(false);
+    menuItem.command(navigate);
+  };
+
+  const onClose = () => {
     setOpen(false);
   };
 
-  const items = [
-    {
-      label: (
-        <span>
-          Navigation 1 <DownOutlined className="subMenuExpandIcon" />
-        </span>
-      ),
-      key: "mail",
-      icon: <MailOutlined />,
-      children: [
-        {
-          type: "group",
-          label: "Item 1",
-          key: "sub1",
-          children: [
-            {
-              label: "Option 1",
-              key: "setting:1",
-            },
-            {
-              label: "Option 2",
-              key: "setting:2",
-            },
-          ],
-        },
-        {
-          type: "group",
-          label: "Item 2",
-          children: [
-            {
-              label: "Option 3",
-              key: "setting:3",
-            },
-            {
-              label: "Option 4",
-              key: "setting:4",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      label: (
-        <span>
-          Navigation 1 <DownOutlined className="subMenuExpandIcon" />
-        </span>
-      ),
-      key: "app",
-      icon: <AppstoreOutlined />,
-      children: [
-        {
-          type: "group",
-          label: "Item 1",
-          children: [
-            {
-              label: "Option 1",
-              key: "setting:1",
-            },
-            {
-              label: "Option 2",
-              key: "setting:2",
-            },
-          ],
-        },
-        {
-          type: "group",
-          label: "Item 2",
-          children: [
-            {
-              label: "Option 3",
-              key: "setting:3",
-            },
-            {
-              label: "Option 4",
-              key: "setting:4",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      label: (
-        <span>
-          Navigation 3 <DownOutlined className="subMenuExpandIcon" />
-        </span>
-      ),
-      key: "SubMenu",
-      icon: <SettingOutlined />,
-      children: [
-        {
-          type: "group",
-          label: "Item 1",
-          children: [
-            {
-              label: "Option 1",
-              key: "setting:1",
-            },
-            {
-              label: "Option 2",
-              key: "setting:2",
-            },
-          ],
-        },
-        {
-          type: "group",
-          label: "Item 2",
-          children: [
-            {
-              label: "Option 3",
-              key: "setting:3",
-            },
-            {
-              label: "Option 4",
-              key: "setting:4",
-            },
-          ],
-        },
-      ],
-    },
-  ];
-
   return (
-    <div className="mobileVisible">
+    <div className="mobileVisible shell__mobile-drawer">
       <Drawer
-        title="Basic Drawer"
+        title="UShell"
         placement="right"
         closable={true}
         onClose={onClose}
@@ -156,7 +40,8 @@ const MobileMenu = ({ open, setOpen }) => {
           mode="inline"
           defaultSelectedKeys={["2"]}
           expandIcon={<i className="fas fas-wheel"></i>}
-          items={items}
+          items={items2}
+          onSelect={onSelectMenuItem}
         />
       </Drawer>
     </div>

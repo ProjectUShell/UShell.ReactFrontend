@@ -1,10 +1,12 @@
 import { v4 as newGuid } from "uuid";
+import { rootUrlPath } from "../constants";
 
 import { getUseCase, getUseCases, getWorkspace } from "./PortfolioService";
 import {
   GetUseCaseStatesByWorkspaceKey,
   storeUsecaseStatesByWorkspaceKey,
 } from "./StateSerivce";
+import { UseCaseStateContextProvider } from "./UseCaseStateContext";
 
 export function EnterNewUsecase(
   portfolio,
@@ -12,16 +14,29 @@ export function EnterNewUsecase(
   useCaseKey,
   parentWorkspaceKey,
   input,
-  navigate
+  navigate,
+  headless
 ) {
+  console.log("portfolio", portfolio);
+  console.log("useCaseContext", useCaseContext);
   let state = getStateOfWorkspace(
     portfolio,
     parentWorkspaceKey,
     useCaseContext
   );
-  const existingUseCase = state.find((ucs) => ucs.usecaseKey == useCaseKey && ucs.input == input);
+  const existingUseCase = state.find(
+    (ucs) => ucs.usecaseKey == useCaseKey && ucs.input == input
+  );
   if (existingUseCase) {
-    navigate(`../${parentWorkspaceKey}/${existingUseCase.usecaseInstanceUid}`);
+    if (headless) {
+      navigate(
+        `../${rootUrlPath}${parentWorkspaceKey}/${existingUseCase.usecaseInstanceUid}?headless`
+      );
+    } else {
+      navigate(
+        `../${rootUrlPath}${parentWorkspaceKey}/${existingUseCase.usecaseInstanceUid}`
+      );
+    }
     return;
   }
 
@@ -43,15 +58,12 @@ export function EnterNewUsecase(
 
   storeUsecaseStatesByWorkspaceKey(parentWorkspaceKey, state);
 
-  navigate(`../${parentWorkspaceKey}/${newUsecase.usecaseInstanceUid}`);
+  navigate(`../${rootUrlPath}${parentWorkspaceKey}/${newUsecase.usecaseInstanceUid}`);
 
   //TODO: dann auch direkt hin-navigieren
 }
 
 function getStateOfWorkspace(portfolio, workspaceKey, useCaseContext) {
-  console.log("getStateOfWorkspace workspaceKey", workspaceKey);
-  console.log("getStateOfWorkspace useCaseContext", useCaseContext);
-
   let states = useCaseContext.statesPerWorkspace[workspaceKey];
   if (!states) {
     states = GetUseCaseStatesByWorkspaceKey(workspaceKey);
@@ -117,6 +129,23 @@ export function currentUsecasesOfWorkspace(
   return state;
 }
 
+export function getUseCaseStateByUseCaseId(
+  portfolio,
+  workspaceKey,
+  useCaseId,
+  useCaseContext
+) {
+  const states = getStateOfWorkspace(portfolio, workspaceKey, useCaseContext);
+
+  let result = null;
+  states.forEach((useCaseState) => {
+    if (useCaseState.usecaseInstanceUid == useCaseId) {
+      result = useCaseState;
+    }
+  });
+  return result;
+}
+
 export function terminateUseCase(
   portfolio,
   useCaseState,
@@ -136,5 +165,5 @@ export function terminateUseCase(
 
   storeUsecaseStatesByWorkspaceKey(workspaceKey, states);
 
-  navigate(`../${workspaceKey}`);
+  navigate(`../${rootUrlPath}${workspaceKey}`);
 }

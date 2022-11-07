@@ -12,7 +12,10 @@ import { getModulePortfolio2 } from "../moduleportfolio";
 import ModuleLoader from "../federation/ModuleLoader";
 import ShellLayout from "./ShellLayout/ShellLayout";
 
-import { SettingsProvider } from "./Settings/settingsContext";
+import {
+  ColorModeProvider,
+  LayoutModeProvider,
+} from "./Settings/settingsContext";
 import Settings from "./Settings/Settings";
 import Welcome from "./Welcome/Welcome";
 import { PortfolioLoader } from "../portfolio-handling/PortfolioLoader";
@@ -24,6 +27,14 @@ import { getMenuItems } from "../portfolio-handling/MenuService";
 import UseCaseStateContext, {
   UseCaseStateContextProvider,
 } from "../portfolio-handling/UseCaseStateContext";
+import {
+  restoreColorMode,
+  restoreLayoutMode,
+  setDarkMode,
+  setLightMode,
+  storeLayoutMode,
+} from "./Settings/SettingsService";
+import ModuleView from "./ModuleView/ModuleView";
 
 function getItem(label, key, icon, children) {
   return {
@@ -40,18 +51,20 @@ const UShell = () => {
   const emptyRoutes = [];
   const [routes, setRoutes] = useState(emptyRoutes);
 
-  const [portfolio, setPortfolio] = useState({});
+  const [portfolio, setPortfolio] = useState(null);
 
   const [useCaseState, setUseCaseState] = useState({
-    statesPerWorkspace: {}
+    statesPerWorkspace: {},
   });
   const useCaseStateValue = { useCaseState, setUseCaseState };
-
+  const [ready, setReady] = useState(false);
   const updateModulePortfolio2 = () => {
     getModulePortfolio2().then((p) => {
-      setPortfolio(p);
       const mi = getMenuItems(p);
       setMenuItems(mi);
+      setPortfolio(p);
+      console.log("updateModulePortfolio2", portfolio);
+      setReady(true);
       // setRoutes(getRoutes(p));
     });
   };
@@ -75,67 +88,79 @@ const UShell = () => {
     setOpen2(false);
   };
 
-  const [settingsValue, setSettingsValue] = useState("horizontal");
+  const [layoutMode, setLayoutModeInternal] = useState(restoreLayoutMode());
+  const setLayoutMode = (v) => {
+    setLayoutModeInternal(v);
+    storeLayoutMode(v);
+  };
+  const settingsContextValue = { layoutMode, setLayoutMode };
+
+  const [colorMode, setColorModeInternal] = useState(restoreColorMode());
+  const setColorMode = (v) => {
+    if (v == "dark") {
+      setDarkMode();
+    } else {
+      setLightMode();
+    }
+    setColorModeInternal(v);
+  };
+  const colorModeContextValue = {
+    colorMode: colorMode,
+    setColorMode: setColorMode,
+  };
+
+  if (!ready) {
+    return <div>loading...</div>
+  }
 
   return (
-    <SettingsProvider value={settingsValue}>
-      <UseCaseStateContextProvider value={useCaseStateValue}>
-        <Routes>
-          <Route
-            path="*"
-            element={
-              <ShellLayout
-                menuItems={menuItems["_Main"]}
-                portfolio={portfolio}
-              ></ShellLayout>
-            }
-          ></Route>
-          <Route
-            path=":workspaceKey"
-            element={
-              headless ? (
-                <Suspense fallback={"Loading . . . "}>
-                  <ModuleLoader
-                    url={r.url}
-                    scope={r.module}
-                    module={r.component}
-                    inputData={{ someInput: "WTF" }}
-                  />
-                </Suspense>
-              ) : (
+    <LayoutModeProvider value={settingsContextValue}>
+      <ColorModeProvider value={colorModeContextValue}>
+        <UseCaseStateContextProvider value={useCaseStateValue}>
+          <Routes>
+            <Route
+              path="*"
+              element={
                 <ShellLayout
-                  workspaces={workspaces}
                   menuItems={menuItems["_Main"]}
-                  content={<Workspace />}
                   portfolio={portfolio}
+                  layoutMode={layoutMode}
                 ></ShellLayout>
-              )
-            }
-          />
-          <Route
-            path=":workspaceKey/:useCaseKey"
-            element={
-              headless ? (
-                <Suspense fallback={"Loading . . . "}>
-                  <ModuleLoader
-                    url={r.url}
-                    scope={r.module}
-                    module={r.component}
-                    inputData={{ someInput: "WTF" }}
+              }
+            ></Route>
+            <Route
+              path=":workspaceKey"
+              element={
+                headless ? (
+                  <ModuleView portfolio={portfolio} />
+                ) : (
+                  <ShellLayout
+                    menuItems={menuItems["_Main"]}
+                    portfolio={portfolio}
+                    layoutMode={layoutMode}
+                  ></ShellLayout>
+                )
+              }
+            />
+            <Route
+              path=":workspaceKey/:useCaseKey"
+              element={
+                headless ? (
+                  <ModuleView
+                    menuItems={menuItems["_Main"]}
+                    portfolio={portfolio}
                   />
-                </Suspense>
-              ) : (
-                <ShellLayout
-                  workspaces={workspaces}
-                  menuItems={menuItems["_Main"]}
-                  content={<Workspace />}
-                  portfolio={portfolio}
-                ></ShellLayout>
-              )
-            }
-          />
-        </Routes>
-        <Button
+                ) : (
+                  <ShellLayout
+                    menuItems={menuItems["_Main"]}
+                    portfolio={portfolio}
+                    layoutMode={layoutMode}
+                  ></ShellLayout>
+                )
+              }
+            />
+          </Routes>
+          {/* <Button
           className="app__settings-button"
           type="primary"
           onClick={showDrawer2}
@@ -149,9 +174,10 @@ const UShell = () => {
           open={open2}
         >
           <Settings setSettingsValue={setSettingsValue}></Settings>
-        </Drawer>
-      </UseCaseStateContextProvider>
-    </SettingsProvider>
+        </Drawer> */}
+        </UseCaseStateContextProvider>
+      </ColorModeProvider>
+    </LayoutModeProvider>
   );
 };
 

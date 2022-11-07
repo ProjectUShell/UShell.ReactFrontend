@@ -30,6 +30,7 @@ import {
 } from "./UseCaseService";
 import { GetUseCaseStatesByWorkspaceKey } from "./StateSerivce";
 import { Button } from "antd";
+import { rootUrlPath } from "../constants";
 
 function getAntdMenuItem(label, key, icon, children, type) {
   return {
@@ -47,22 +48,25 @@ export function getMenuItems(portfolio) {
 
   let menuStructureByMenuKey = {};
 
-  commands.forEach((command) => {
-    let menuKey = command.menuOwnerUseCaseKey;
-    if (!menuKey) {
-      menuKey = "_Main";
-    }
-    let structure = menuStructureByMenuKey[menuKey];
-    if (!structure) {
-      structure = [];
-    }
-    pushIntoMenuStructure(command, structure);
-    menuStructureByMenuKey[menuKey] = structure;
-  });
+  //TODO start-useCase not yet supported in menu structure
+  commands
+    .filter((c) => c.commandType != "start-useCase")
+    .forEach((command) => {
+      let menuKey = command.menuOwnerUseCaseKey;
+      if (!menuKey) {
+        menuKey = "_Main";
+      }
+      let structure = menuStructureByMenuKey[menuKey];
+      if (!structure) {
+        structure = [];
+      }
+      pushIntoMenuStructure(portfolio, command, structure);
+      menuStructureByMenuKey[menuKey] = structure;
+    });
   return menuStructureByMenuKey;
 }
 
-function pushIntoMenuStructure(command, structure) {
+function pushIntoMenuStructure(portfolio, command, structure) {
   let item = {};
   if (!command.menuFolder) {
     if (command.menuOwnerUseCaseKey) {
@@ -99,11 +103,12 @@ function pushIntoMenuStructure(command, structure) {
 
   if (command.commandType == "activate-workspace") {
     item.command = (navigate) => {
-      navigate(`../${command.targetWorkspaceKey}`);
+      navigate(`../${rootUrlPath}${command.targetWorkspaceKey}`);
     };
   } else if (command.commandType == "start-useCase") {
     item.command = (useCaseContext, input) => {
       EnterNewUsecase(
+        portfolio,
         useCaseContext,
         command.targetUsecaseKey,
         command.targetWorkspaceKey,
@@ -254,14 +259,13 @@ export function getMenuItem(menuItems, id) {
   if (!menuItems) {
     return null;
   }
-  console.log("getMenuItem menuItems", menuItems);
-  console.log("getMenuItem id", id);
+
   if (!menuItems || !id) return null;
   for (let mi of menuItems) {
     if ((mi.id ? mi.id : mi.key) == id) {
       return mi;
     }
-    const r = getMenuItem((mi.items ? mi.items : mi.children), id);
+    const r = getMenuItem(mi.items ? mi.items : mi.children, id);
     if (r) {
       return r;
     }

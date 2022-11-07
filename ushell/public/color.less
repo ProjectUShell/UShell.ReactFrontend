@@ -920,7 +920,8 @@ tr > .ant-picker-cell-in-view.ant-picker-cell-range-hover-start:last-child::afte
 .ant-menu-horizontal > .ant-menu-item:hover, .ant-menu-horizontal > .ant-menu-item-active, .ant-menu-horizontal > .ant-menu-submenu .ant-menu-submenu-title:hover {background-color: transparent;}
 .ant-menu-item-selected {color: @primary-color;}
 .ant-menu-item-selected > a, .ant-menu-item-selected > a:hover {color: @primary-color;}
-.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {background-color: color(~`colorPalette("@{primary-color}", 1)`);}
+// .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {background-color: color(~`colorPalette("@{primary-color}", 1)`);}
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {background-color: @select-item-selected-bg}
 .ant-menu-inline, .ant-menu-vertical, .ant-menu-vertical-left {border-right: 1px solid @border-color-split;}
 .ant-menu-vertical-right {border-left: 1px solid @border-color-split;}
 .ant-menu-vertical.ant-menu-sub, .ant-menu-vertical-left.ant-menu-sub, .ant-menu-vertical-right.ant-menu-sub {border-right: 0;}
@@ -2733,6 +2734,7 @@ this.tinycolor = tinycolor;})()`;}
 @steps-desciption-max-width: 140px;
 @steps-nav-content-max-width: auto;
 
+@seleted-item-background: #4E565F;
 .header2 .ant-menu li.ant-menu-item-selected,
 .header2 .ant-menu li.ant-menu-item:hover {
   background-color: @item-hover-bg;

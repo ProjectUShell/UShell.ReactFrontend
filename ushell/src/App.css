@@ -417,6 +417,12 @@ footer
   margin-top: 0px;
 }
 
+.shell__content-layout_vertical-collapsed {
+  margin-left: 50px;
+  transition: 200ms;
+  margin-top: 0px;
+}
+
 .shell__content {
   margin: 24px 16px 0;
   overflow: initial;
@@ -425,6 +431,11 @@ footer
   text-align: center;
   min-height: 40vh;
 }
+
+.ant-drawer-right.ant-drawer-open .ant-drawer-content-wrapper {
+  max-width: 100%;
+}
+
 /* 
 responsive
 ----------

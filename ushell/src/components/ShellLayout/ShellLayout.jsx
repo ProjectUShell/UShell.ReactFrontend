@@ -13,44 +13,56 @@ import MobileMenu from "../MobileMenu/MobileMenu";
 import AppBar from "../AppBar/AppBar";
 import Workspace from "../Workspace/Workspace";
 
-import SettingsContext from "../Settings/settingsContext";
+import LayoutContext from "../Settings/settingsContext";
 
 const { Content } = Layout;
 
-const ShellLayout = ({ portfolio, menuItems }) => {
+const ShellLayout = ({ portfolio, menuItems, layoutMode }) => {
   const [mobileMenuOpen, setmobileMenuOpen] = useState(false);
+  const [siderCollapsed, setSiderCollapsed] = useState(false);
 
   const showMobileMenu = () => {
     setmobileMenuOpen(true);
   };
 
-  const settings = useContext(SettingsContext);
+  // const { settingsValue, setSettingsValue } = useContext(SettingsContext);
 
+  console.log("layoutMode", layoutMode);
   return (
     <>
       <Layout className="shell__outer-layout">
         <AppBar showDrawer={showMobileMenu} portfolio={portfolio} />
-        <MobileMenu open={mobileMenuOpen} setOpen={setmobileMenuOpen} />
+        <MobileMenu
+          open={mobileMenuOpen}
+          setOpen={setmobileMenuOpen}
+          menuItems={menuItems}
+        />
         <Content className="shell__inner-layout">
           <Layout>
-            {settings == "horizontal" && (
+            {layoutMode == "horizontal" && (
               <HorizontalMenu menuItems={menuItems} />
             )}
-            {!(settings == "horizontal") && (
-              <VerticalMenu menuItems={menuItems} />
+            {!(layoutMode == "horizontal") && (
+              <VerticalMenu
+                menuItems={menuItems}
+                siderCollapsed={siderCollapsed}
+                setSiderCollapsed={setSiderCollapsed}
+              />
             )}
             <Layout
               className={
-                settings == "horizontal"
+                layoutMode == "horizontal"
                   ? "shell__content-layout shell__content-layout_horizontal"
+                  : siderCollapsed
+                  ? "shell__content-layout shell__content-layout_vertical-collapsed"
                   : "shell__content-layout shell__content-layout_vertical"
               }
             >
-              <Breadcrumb style={{ margin: "16px 0" }}>
+              {/* <Breadcrumb style={{ margin: "16px 0" }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>List</Breadcrumb.Item>
                 <Breadcrumb.Item>App</Breadcrumb.Item>
-              </Breadcrumb>
+              </Breadcrumb> */}
               <Content className="shell__content">
                 <Workspace portfolio={portfolio}></Workspace>
               </Content>

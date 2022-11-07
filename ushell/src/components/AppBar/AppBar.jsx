@@ -2,7 +2,7 @@
 import React, { useContext } from "react";
 
 // antd
-import { Layout, Menu, Button, Badge } from "antd";
+import { Layout, Menu, Button, Badge, Switch } from "antd";
 const { Header } = Layout;
 
 import { UnorderedListOutlined } from "@ant-design/icons";
@@ -10,14 +10,20 @@ import { UnorderedListOutlined } from "@ant-design/icons";
 // app
 import { getWorkspaces } from "../../portfolio-handling/PortfolioService";
 import { currentUsecasesOfWorkspace } from "../../portfolio-handling/UseCaseService";
-import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 import { getMenuItem } from "../../portfolio-handling/MenuService";
 import { useNavigate } from "react-router-dom";
+import { setDarkMode, setLightMode } from "../Settings/SettingsService";
+import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
+import { LayoutModeContext } from "../Settings/settingsContext";
+import { ColorModeContext } from "../Settings/settingsContext";
+import { rootUrlPath } from "../../constants";
 
 const AppBar = ({ showDrawer, portfolio }) => {
   const navigate = useNavigate();
   const workspaces = getWorkspaces(portfolio);
   const useCaseContext = useContext(UseCaseStateContext);
+  let { layoutMode, setLayoutMode } = useContext(LayoutModeContext);
+  let { colorMode, setColorMode } = useContext(ColorModeContext);
 
   const useCaseItems = workspaces.map((ws) => {
     return {
@@ -45,16 +51,57 @@ const AppBar = ({ showDrawer, portfolio }) => {
 
   const onSelectMenuItem = ({ item, key, keyPath, selectedKeys, domEvent }) => {
     const useCaseItem = getMenuItem(useCaseItems, key);
-    navigate(`../${useCaseItem.item.parentWorkspaceKey}/${key}`);
+    if (!useCaseItem?.item) {
+      return;
+    }
+    navigate(`../${rootUrlPath}${useCaseItem.item.parentWorkspaceKey}/${key}`);
   };
+
+  const settingsItems = [
+    {
+      key: "colorMode",
+      label: "",
+      icon: (
+        <Switch
+          checkedChildren="Dark Mode"
+          unCheckedChildren="Light Mode"
+          checked={(colorMode == 'dark')}
+          onChange={(checked, event) => {
+            if (checked) {
+              setColorMode('dark');
+            } else {
+              setColorMode('light');
+            }
+          }}
+        />
+      ),
+    },
+    {
+      key: "menuMode",
+      label: "",
+      icon: (
+        <Switch
+          checkedChildren="Horizontal Menu"
+          unCheckedChildren="Vertical Menu"
+          checked={(layoutMode == 'horizontal')}
+          onChange={(checked, event) => {
+            if (checked) {
+              setLayoutMode("horizontal");
+            } else {
+              setLayoutMode("vertical");
+            }
+          }}
+        />
+      ),
+    },
+  ];
 
   const topBar = (
     <Menu
       mode="horizontal"
-      defaultSelectedKeys={["2"]}
       items={[
         {
-          key: "1",
+          key: "settings",
           label: "",
           icon: (
             <Badge count={numUseCases}>
@@ -63,6 +110,12 @@ const AppBar = ({ showDrawer, portfolio }) => {
             </Badge>
           ),
           children: useCaseItems,
+        },
+        {
+          key: "1232",
+          label: "",
+          icon: <i className="fas fa-cog" />,
+          children: settingsItems,
         },
       ]}
       triggerSubMenuAction="click"

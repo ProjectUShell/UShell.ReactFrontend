@@ -6,11 +6,14 @@ import { Menu, Layout } from "antd";
 const { Sider } = Layout;
 
 // app
-import { convertToAntdItems, getMenuItem } from "../../portfolio-handling/MenuService";
+import {
+  convertToAntdItems,
+  getMenuItem,
+} from "../../portfolio-handling/MenuService";
 import { useNavigate } from "react-router-dom";
 
-const VerticalMenu = ({ menuItems }) => {
-  const [siderCollapsed2, setSiderCollapsed2] = useState(false);
+const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
+  // const [siderCollapsed, setSiderCollapsed] = useState(false);
 
   const navigate = useNavigate();
 
@@ -37,8 +40,10 @@ const VerticalMenu = ({ menuItems }) => {
           marginTop: "58px",
         }}
         collapsible
-        collapsed={siderCollapsed2}
-        onCollapse={(value) => setSiderCollapsed2(value)}
+        collapsed={siderCollapsed}
+        onCollapse={(value) => {
+          setSiderCollapsed(value);
+        }}
         width={200}
         className="site-layout-background"
       >
