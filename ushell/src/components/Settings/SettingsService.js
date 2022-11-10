@@ -41,3 +41,7 @@ export function setLightMode() {
 export function storeLayoutMode(layoutMode) {
   localStorage.setItem("layoutMode", layoutMode);
 }
+
+export function initColors() {
+  
+}

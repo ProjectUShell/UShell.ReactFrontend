@@ -31,6 +31,7 @@ import {
 import { GetUseCaseStatesByWorkspaceKey } from "./StateSerivce";
 import { Button } from "antd";
 import { rootUrlPath } from "../constants";
+import ModuleViewSuspense from "../components/ModuleView/ModuleViewSuspense";
 
 function getAntdMenuItem(label, key, icon, children, type) {
   return {
@@ -334,18 +335,11 @@ export function getAntdTabItems(
       key: `${useCaseState.usecaseInstanceUid}`,
       closeable: true,
       children: (
-        <Suspense fallback={"Loading . . . "}>
-          <ModuleLoader
-            url={uc.url}
-            scope={uc.module}
-            module={uc.component}
-            inputData={{
-              input: useCaseState.input,
-              executeCommand: (commandKey, input) =>
-                startExecuteCommand(commandKey, input),
-            }}
-          />
-        </Suspense>
+        <ModuleViewSuspense
+          useCase={uc}
+          input={useCaseState.input}
+          startExecuteCommand={startExecuteCommand}
+        ></ModuleViewSuspense>
       ),
     });
   });

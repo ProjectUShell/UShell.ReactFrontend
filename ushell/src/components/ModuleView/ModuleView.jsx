@@ -1,6 +1,5 @@
-import React, { Suspense, useContext } from "react";
+import React, { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ModuleLoader from "../../federation/ModuleLoader";
 import {
   getCommand,
   getUseCase,

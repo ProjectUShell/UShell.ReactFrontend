@@ -18,6 +18,11 @@
           "workspaceKey": "Employees",
           "workspaceTitle": "Employees",
           "defaultStaticUseCaseKeys": ["EmployeeList"]
+        },
+        {
+          "workspaceKey": "Demo",
+          "workspaceTitle": "Demo",
+          "defaultStaticUseCaseKeys": ["DataDisplayDemo"]
         }
       ],
       "useCases": [
@@ -48,6 +53,11 @@
           "module": "ushell_demo_app",
           "component": "./EmployeeDetails",
           "url": "http://localhost:3001/remoteEntry.js"
+        },
+        {
+          "useCaseKey": "DataDisplayDemo",
+          "title": "Data Display Demo",
+          "component": "DataDisplay"
         }
       ],
       "commands": [
@@ -82,6 +92,14 @@
           "targetUseCaseKey": "EmployeeDetails",
           "targetWorkspaceKey": "Employees",
           "menuFolder": "Employees"
+        },
+        {
+          "uniqueCommandKey": "ShowDataDislpayDemo",
+          "label": "Show Data Display Demo",
+          "commandType": "activate-workspace",
+          "targetWorkspacePath": "Demo\\DataDisplayDemo",
+          "targetWorkspaceKey": "Demo",
+          "menuFolder": "Demo"
         }
       ]
     }

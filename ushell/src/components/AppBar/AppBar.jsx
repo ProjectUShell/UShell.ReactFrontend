@@ -65,12 +65,12 @@ const AppBar = ({ showDrawer, portfolio }) => {
         <Switch
           checkedChildren="Dark Mode"
           unCheckedChildren="Light Mode"
-          checked={(colorMode == 'dark')}
+          checked={colorMode == "dark"}
           onChange={(checked, event) => {
             if (checked) {
-              setColorMode('dark');
+              setColorMode("dark");
             } else {
-              setColorMode('light');
+              setColorMode("light");
             }
           }}
         />
@@ -83,7 +83,7 @@ const AppBar = ({ showDrawer, portfolio }) => {
         <Switch
           checkedChildren="Horizontal Menu"
           unCheckedChildren="Vertical Menu"
-          checked={(layoutMode == 'horizontal')}
+          checked={layoutMode == "horizontal"}
           onChange={(checked, event) => {
             if (checked) {
               setLayoutMode("horizontal");
@@ -126,10 +126,12 @@ const AppBar = ({ showDrawer, portfolio }) => {
   return (
     <Header>
       <div className="header">
-        <div className="logo">
-          <i className="fa-brands fa-uniregistry"></i>
-          Shell
-        </div>
+        <a href='/'>
+          <div className="logo">
+            <i className="fa-brands fa-uniregistry"></i>
+            Shell
+          </div>
+        </a>
         <div className="mobileHidden">{topBar}</div>
         <div className="mobileVisible">
           {topBar}
