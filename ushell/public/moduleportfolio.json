@@ -1,19 +1,140 @@
 {
-  "workspaces": [
+  "moduleDescriptions": [
     {
-      "name": "Fitness1",
+      "moduleUid": "DataManager",
+      "moduleTitle": "DataManager",
+      "workspaces": [
+        {
+          "workspaceKey": "Transactions",
+          "workspaceTitle": "Transactions",
+          "defaultStaticUseCaseKeys": ["TransactionList"]
+        },
+        {
+          "workspaceKey": "Products",
+          "workspaceTitle": "Products",
+          "defaultStaticUseCaseKeys": ["ProductList"]
+        },
+        {
+          "workspaceKey": "Employees",
+          "workspaceTitle": "Employees",
+          "defaultStaticUseCaseKeys": ["EmployeeList"]
+        },
+        {
+          "workspaceKey": "Payments",
+          "workspaceTitle": "Payments",
+          "defaultStaticUseCaseKeys": ["PaymentList"]
+        },
+        {
+          "workspaceKey": "Demo",
+          "workspaceTitle": "Demo",
+          "defaultStaticUseCaseKeys": ["DataDisplayDemo"]
+        }
+      ],
       "useCases": [
         {
-          "name": "Exercises",
+          "useCaseKey": "TransactionList",
+          "title": "All Transaction",
           "module": "ushell_demo_app",
-          "component": "./Exercises",
+          "component": "./TransactionList",
+          "url": "http://localhost:3002/remoteEntry.js"
+        },
+        {
+          "useCaseKey": "ProductList",
+          "title": "All Products",
+          "module": "ushell_demo_app",
+          "component": "./ProductList",
+          "url": "http://localhost:3002/remoteEntry.js"
+        },
+        {
+          "useCaseKey": "ProductDetails",
+          "title": "Product Details",
+          "module": "ushell_demo_app",
+          "component": "./ProductDetails",
+          "url": "http://localhost:3002/remoteEntry.js"
+        },
+        {
+          "useCaseKey": "PaymentList",
+          "title": "All Payments",
+          "module": "ushell_demo_app",
+          "component": "./PaymentList",
           "url": "http://localhost:3001/remoteEntry.js"
         },
         {
-          "name": "Workout",
+          "useCaseKey": "EmployeeList",
+          "title": "Employee List",
           "module": "ushell_demo_app",
-          "component": "./Workout",
+          "component": "./EmployeeList",
           "url": "http://localhost:3001/remoteEntry.js"
+        },
+        {
+          "useCaseKey": "EmployeeDetails",
+          "title": "Edit Employee",
+          "module": "ushell_demo_app",
+          "component": "./EmployeeDetails",
+          "url": "http://localhost:3001/remoteEntry.js"
+        },
+        {
+          "useCaseKey": "DataDisplayDemo",
+          "title": "Data Display Demo",
+          "component": "DataDisplay"
+        }
+      ],
+      "commands": [
+        {
+          "uniqueCommandKey": "Transactions",
+          "label": "Transactions",
+          "commandType": "activate-workspace",
+          "targetWorkspacePath": "Business\\Transactions",
+          "targetWorkspaceKey": "Transactions",
+          "menuFolder": "Business"
+        },
+        {
+          "uniqueCommandKey": "Products",
+          "label": "Products",
+          "commandType": "activate-workspace",
+          "targetWorkspacePath": "Business\\Products",
+          "targetWorkspaceKey": "Products",
+          "menuFolder": "Business"
+        },
+        {
+          "uniqueCommandKey": "EmployeeList",
+          "label": "Employees",
+          "commandType": "activate-workspace",
+          "targetWorkspacePath": "Employees\\EmployeeList",
+          "targetWorkspaceKey": "Employees",
+          "menuFolder": "Employees"
+        },
+        {
+          "uniqueCommandKey": "ShowEmployeeDetails",
+          "label": "Employee Details",
+          "commandType": "start-useCase",
+          "targetUseCaseKey": "EmployeeDetails",
+          "targetWorkspaceKey": "Employees",
+          "menuFolder": "Employees"
+        },
+        {
+          "uniqueCommandKey": "ShowProductDetails",
+          "label": "Product Details",
+          "commandType": "start-useCase",
+          "targetUseCaseKey": "ProductDetails",
+          "targetWorkspaceKey": "Products",
+          "menuFolder": "Business"
+        },
+        {
+          "uniqueCommandKey": "PaymentList",
+          "label": "Payments",
+          "commandType": "activate-workspace",
+          "targetWorkspacePath": "Employees\\Payments",
+          "targetWorkspaceKey": "Payments",
+          "menuFolder": "Employees"
+        },
+        {
+          "uniqueCommandKey": "ShowDataDislpayDemo",
+          "label": "Show Data Display Demo",
+          "commandType": "activate-workspace",
+          "targetWorkspacePath": "Demo\\DataDisplayDemo",
+          "targetWorkspaceKey": "Demo",
+          "menuFolder": "Demo"
         }
       ]
     }
