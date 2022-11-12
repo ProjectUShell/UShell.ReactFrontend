@@ -18,6 +18,8 @@ import LayoutContext from "../Settings/settingsContext";
 const { Content } = Layout;
 
 const ShellLayout = ({ portfolio, menuItems, layoutMode }) => {
+  console.log("Menu Items", menuItems);
+
   const [mobileMenuOpen, setmobileMenuOpen] = useState(false);
   const [siderCollapsed, setSiderCollapsed] = useState(false);
 

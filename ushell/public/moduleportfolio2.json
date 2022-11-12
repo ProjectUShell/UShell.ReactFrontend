@@ -1,4 +1,6 @@
 {
+  "homeUseCaseKey": "DataDisplayDemo",
+  "title": "QS Manager",
   "moduleDescriptions": [
     {
       "moduleUid": "DataManager",
@@ -135,6 +137,14 @@
           "targetWorkspacePath": "Demo\\DataDisplayDemo",
           "targetWorkspaceKey": "Demo",
           "menuFolder": "Demo"
+        },
+        {
+          "uniqueCommandKey": "ShowDataDislpayDemo2",
+          "label": "Show Data Display Demo",
+          "commandType": "activate-workspace",
+          "targetWorkspacePath": "Demo\\DataDisplayDemo",
+          "targetWorkspaceKey": "Demo",
+          "menuOwnerUseCaseKey": "ProductDetails"
         }
       ]
     }

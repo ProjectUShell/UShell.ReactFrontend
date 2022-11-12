@@ -8,7 +8,10 @@ const { Header } = Layout;
 import { UnorderedListOutlined } from "@ant-design/icons";
 
 // app
-import { getWorkspaces } from "../../portfolio-handling/PortfolioService";
+import {
+  getTitle,
+  getWorkspaces,
+} from "../../portfolio-handling/PortfolioService";
 import { currentUsecasesOfWorkspace } from "../../portfolio-handling/UseCaseService";
 import { getMenuItem } from "../../portfolio-handling/MenuService";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +20,8 @@ import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 import { LayoutModeContext } from "../Settings/settingsContext";
 import { ColorModeContext } from "../Settings/settingsContext";
 import { rootUrlPath } from "../../constants";
+
+import "./AppBar.css";
 
 const AppBar = ({ showDrawer, portfolio }) => {
   const navigate = useNavigate();
@@ -124,15 +129,23 @@ const AppBar = ({ showDrawer, portfolio }) => {
     />
   );
 
+  const title = getTitle(portfolio);
+
+  const titleDiv = title ? (
+    <div className="shell__app-bar_title">
+      <span>{title}</span>
+    </div>
+  ) : (
+    <div className="logo">
+      <i className="fa-brands fa-uniregistry"></i>
+      Shell
+    </div>
+  );
+
   return (
     <Header>
       <div className="header">
-        <a href='/'>
-          <div className="logo">
-            <i className="fa-brands fa-uniregistry"></i>
-            Shell
-          </div>
-        </a>
+        <a href="/">{titleDiv}</a>
         <div className="mobileHidden">{topBar}</div>
         <div className="mobileVisible">
           {topBar}

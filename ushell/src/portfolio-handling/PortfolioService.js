@@ -119,3 +119,13 @@ export function getCommand(portfolio, commandKey) {
   const commands = getCommands(portfolio);
   return commands.find((c) => c.uniqueCommandKey == commandKey);
 }
+
+export function getHomeUseCase(portfolio) {
+  const homeUseCaseKey = portfolio.homeUseCaseKey;
+  console.log("home key", homeUseCaseKey);
+  return getUseCase(portfolio, homeUseCaseKey);
+}
+
+export function getTitle(portfolio) {
+  return portfolio.title;
+}

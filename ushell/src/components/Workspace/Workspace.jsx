@@ -6,20 +6,50 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Tabs } from "antd";
 
 // app
-import { getWorkspace } from "../../portfolio-handling/PortfolioService";
+import { getHomeUseCase, getWorkspace } from "../../portfolio-handling/PortfolioService";
 import { getAntdTabItems } from "../../portfolio-handling/MenuService";
 import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 
 // css
 import "./Workspace.css";
 import { rootUrlPath } from "../../constants";
+import ModuleView from "../ModuleView/ModuleView";
+import ModuleViewSuspense from "../ModuleView/ModuleViewSuspense";
 
 const Workspace = ({ portfolio }) => {
   const params = useParams();
 
   const navigate = useNavigate();
+  const { useCaseState, setUseCaseState } = useContext(UseCaseStateContext);
 
   const workspaceKey = params.workspaceKey;
+
+  if (!workspaceKey) {
+    const startExecuteCommand = (commandKey, input) => {
+      const commandDescription = getCommand(portfolio, commandKey);
+
+      if (!commandDescription) {
+        console.error(`No Command with key ${commandKey}`);
+      }
+      if (commandDescription.commandType == "activate-workspace") {
+      } else if (commandDescription.commandType == "start-useCase") {
+        EnterNewUsecase(
+          portfolio,
+          useCaseState,
+          commandDescription.targetUseCaseKey,
+          commandDescription.targetWorkspaceKey,
+          input,
+          navigate,
+          true
+        );
+      }
+    };
+
+    const useCase = getHomeUseCase(portfolio);
+
+    return <ModuleViewSuspense startExecuteCommand={startExecuteCommand} portfolio ={portfolio} useCase={useCase}></ModuleViewSuspense>;
+  }
+
   const useCaseKey = params.useCaseKey;
   const workspace = getWorkspace(portfolio, workspaceKey);
 
@@ -29,7 +59,7 @@ const Workspace = ({ portfolio }) => {
     console.log("tab changed", key);
   };
 
-  const { useCaseState, setUseCaseState } = useContext(UseCaseStateContext);
+ 
 
   const tabItems = getAntdTabItems(
     portfolio,
