@@ -58,7 +58,11 @@ export function EnterNewUsecase(
 
   storeUsecaseStatesByWorkspaceKey(parentWorkspaceKey, state);
 
-  navigate(`../${rootUrlPath}${parentWorkspaceKey}/${newUsecase.usecaseInstanceUid}`);
+  if (headless) {
+    navigate(`../${rootUrlPath}${parentWorkspaceKey}/${newUsecase.usecaseInstanceUid}?headless`);
+  } else {
+    navigate(`../${rootUrlPath}${parentWorkspaceKey}/${newUsecase.usecaseInstanceUid}`);
+  }
 
   //TODO: dann auch direkt hin-navigieren
 }

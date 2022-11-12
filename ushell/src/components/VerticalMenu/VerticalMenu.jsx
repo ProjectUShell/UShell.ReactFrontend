@@ -1,5 +1,5 @@
 // react
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 // antd
 import { Menu, Layout } from "antd";
@@ -10,12 +10,18 @@ import {
   convertToAntdItems,
   getMenuItem,
 } from "../../portfolio-handling/MenuService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 
 const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
-  // const [siderCollapsed, setSiderCollapsed] = useState(false);
-
+  
   const navigate = useNavigate();
+  const params = useParams();
+
+  const workspaceKey = params.workspaceKey;
+  const { useCaseState, setUseCaseState } = useContext(UseCaseStateContext);
+  const useCaseKey = useCaseState.usecaseKey;
+  const parentWorkspaceKey = useCaseState.parentWorkspaceKey;
 
   const items = convertToAntdItems(menuItems, false);
 
@@ -49,11 +55,12 @@ const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
       >
         <Menu
           mode="inline"
-          defaultSelectedKeys={["1"]}
-          defaultOpenKeys={["sub1"]}
           style={{ height: "100%", borderRight: 0 }}
           items={items}
-          onSelect={onSelectMenuItem}
+          onSelect={onSelectMenuItem}        
+          defaultSelectedKeys={[workspaceKey]}
+          selectedKeys={[useCaseKey]}
+          defaultOpenKeys={[parentWorkspaceKey]}           
         />
       </Sider>
     </div>

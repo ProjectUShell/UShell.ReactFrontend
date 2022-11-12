@@ -22,13 +22,20 @@ import {
   convertToAntdItems,
   getMenuItem,
 } from "../../portfolio-handling/MenuService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 
 const HorizontalMenu = ({ menuItems }) => {
 
   const navigate = useNavigate();  
+  const params = useParams();
 
-  const items2 = convertToAntdItems(menuItems, true);
+  const workspaceKey = params.workspaceKey;
+  const { useCaseState, setUseCaseState } = useContext(UseCaseStateContext);
+  const useCaseKey = useCaseState.usecaseKey;
+  const parentWorkspaceKey = useCaseState.parentWorkspaceKey;
+
+  const items = convertToAntdItems(menuItems, true);
 
   const onSelectMenuItem = ({ item, key, keyPath, selectedKeys, domEvent }) => {
     const menuItem = getMenuItem(menuItems, key);
@@ -49,10 +56,12 @@ const HorizontalMenu = ({ menuItems }) => {
           <div className="header2">
             <Menu
               mode="horizontal"
-              defaultSelectedKeys={["2"]}
-              items={items2}
+              items={items}
               triggerSubMenuAction="click"
-              onSelect={onSelectMenuItem}
+              onSelect={onSelectMenuItem}              
+              defaultSelectedKeys={[workspaceKey]}
+              selectedKeys={[useCaseKey]}
+              defaultOpenKeys={[parentWorkspaceKey]}              
             />
           </div>
         </div>

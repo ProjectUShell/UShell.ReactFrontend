@@ -120,6 +120,7 @@ const AppBar = ({ showDrawer, portfolio }) => {
       ]}
       triggerSubMenuAction="click"
       onSelect={onSelectMenuItem}
+      selectedKeys={[]}
     />
   );
 
