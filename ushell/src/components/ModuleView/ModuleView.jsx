@@ -29,6 +29,8 @@ const ModuleView = ({ portfolio }) => {
       return <div>No UseCase</div>;
     }
     useCaseKey = defaultStaticUseCaseKeys[0];
+  } else if (!workspaceKey) {
+    useCaseKey = useCaseId;
   } else {
     useCaseInstanceState = getUseCaseStateByUseCaseId(
       portfolio,

@@ -14,11 +14,18 @@ import AppBar from "../AppBar/AppBar";
 import Workspace from "../Workspace/Workspace";
 
 import LayoutContext from "../Settings/settingsContext";
+import ModuleViewSuspense from "../ModuleView/ModuleViewSuspense";
+import ModuleView from "../ModuleView/ModuleView";
 
 const { Content } = Layout;
 
-const ShellLayout = ({ portfolio, menuItems, layoutMode }) => {
-  console.log("Menu Items", menuItems);
+const ShellLayout = ({
+  portfolio,
+  menuItems,
+  layoutMode,
+  isStandaloneUseCase,
+}) => {
+  console.log("isStandaloneUseCase", isStandaloneUseCase);
 
   const [mobileMenuOpen, setmobileMenuOpen] = useState(false);
   const [siderCollapsed, setSiderCollapsed] = useState(false);
@@ -29,7 +36,7 @@ const ShellLayout = ({ portfolio, menuItems, layoutMode }) => {
 
   // const { settingsValue, setSettingsValue } = useContext(SettingsContext);
 
-  console.log("layoutMode", layoutMode);
+  console.log("menuItems", menuItems);
   return (
     <>
       <Layout className="shell__outer-layout">
@@ -66,7 +73,11 @@ const ShellLayout = ({ portfolio, menuItems, layoutMode }) => {
                 <Breadcrumb.Item>App</Breadcrumb.Item>
               </Breadcrumb> */}
               <Content className="shell__content">
-                <Workspace portfolio={portfolio}></Workspace>
+                {isStandaloneUseCase ? (
+                  <ModuleView portfolio={portfolio}></ModuleView>
+                ) : (
+                  <Workspace portfolio={portfolio}></Workspace>
+                )}
               </Content>
             </Layout>
           </Layout>

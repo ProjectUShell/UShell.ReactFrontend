@@ -108,7 +108,7 @@ const UShell = ({ customComponentResolverRegister }) => {
 
   let componetResolverRegister = customComponentResolverRegister;
   if (!componetResolverRegister) {
-    componetResolverRegister =  new ComponentResolverRegister();
+    componetResolverRegister = new ComponentResolverRegister();
   }
   componetResolverRegister.register("DataDisplay", (inputData) => {
     return <DataDisplay inputData={inputData}></DataDisplay>;
@@ -130,6 +130,21 @@ const UShell = ({ customComponentResolverRegister }) => {
                   ></ShellLayout>
                 }
               ></Route>
+              <Route
+                path="main/:useCaseKey"
+                element={
+                  headless ? (
+                    <ModuleView portfolio={portfolio} />
+                  ) : (
+                    <ShellLayout
+                      menuItems={menuItems["_Main"]}
+                      portfolio={portfolio}
+                      layoutMode={layoutMode}
+                      isStandaloneUseCase={true}
+                    ></ShellLayout>
+                  )
+                }
+              />
               <Route
                 path=":workspaceKey"
                 element={

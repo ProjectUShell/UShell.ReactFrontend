@@ -59,9 +59,13 @@ export function EnterNewUsecase(
   storeUsecaseStatesByWorkspaceKey(parentWorkspaceKey, state);
 
   if (headless) {
-    navigate(`../${rootUrlPath}${parentWorkspaceKey}/${newUsecase.usecaseInstanceUid}?headless`);
+    navigate(
+      `../${rootUrlPath}${parentWorkspaceKey}/${newUsecase.usecaseInstanceUid}?headless`
+    );
   } else {
-    navigate(`../${rootUrlPath}${parentWorkspaceKey}/${newUsecase.usecaseInstanceUid}`);
+    navigate(
+      `../${rootUrlPath}${parentWorkspaceKey}/${newUsecase.usecaseInstanceUid}`
+    );
   }
 
   //TODO: dann auch direkt hin-navigieren
@@ -69,38 +73,45 @@ export function EnterNewUsecase(
 
 function getStateOfWorkspace(portfolio, workspaceKey, useCaseContext) {
   let states = useCaseContext.statesPerWorkspace[workspaceKey];
-  if (!states) {
-    states = GetUseCaseStatesByWorkspaceKey(workspaceKey);
-
-    const workspaceDescription = getWorkspace(portfolio, workspaceKey);
-
-    let idx = 0;
-    let newFixesUsecasesToStart = [];
-    for (var defaultStaticUseCaseKey of workspaceDescription.defaultStaticUseCaseKeys) {
-      if (
-        idx > states.length - 1 ||
-        !states[idx].fixed ||
-        states[idx].usecaseKey != defaultStaticUseCaseKey
-      ) {
-        newFixesUsecasesToStart.push(
-          initializeUsecase(
-            portfolio,
-            defaultStaticUseCaseKey,
-            workspaceKey,
-            true,
-            null
-          )
-        );
-      }
-      idx++;
-    }
-    if (newFixesUsecasesToStart.length > 0) {
-      states = newFixesUsecasesToStart.concat(states.filter((u) => !u.fixed));
-      storeUsecaseStatesByWorkspaceKey(workspaceKey, states);
-    }
-
-    useCaseContext.statesPerWorkspace[workspaceKey] = states;
+  if (states) {
+    return states;
   }
+
+  states = GetUseCaseStatesByWorkspaceKey(workspaceKey);
+
+  const workspaceDescription = getWorkspace(portfolio, workspaceKey);
+
+  if (!workspaceDescription) {
+    return [];
+  }
+
+  let idx = 0;
+  let newFixesUsecasesToStart = [];
+  for (var defaultStaticUseCaseKey of workspaceDescription.defaultStaticUseCaseKeys) {
+    if (
+      idx > states.length - 1 ||
+      !states[idx].fixed ||
+      states[idx].usecaseKey != defaultStaticUseCaseKey
+    ) {
+      newFixesUsecasesToStart.push(
+        initializeUsecase(
+          portfolio,
+          defaultStaticUseCaseKey,
+          workspaceKey,
+          true,
+          null
+        )
+      );
+    }
+    idx++;
+  }
+  if (newFixesUsecasesToStart.length > 0) {
+    states = newFixesUsecasesToStart.concat(states.filter((u) => !u.fixed));
+    storeUsecaseStatesByWorkspaceKey(workspaceKey, states);
+  }
+
+  useCaseContext.statesPerWorkspace[workspaceKey] = states;
+
   return states;
 }
 
@@ -111,6 +122,7 @@ function initializeUsecase(
   fixed,
   input
 ) {
+  console.log("useCaseKey", useCaseKey);
   let desc = getUseCase(portfolio, useCaseKey);
 
   let newState = {

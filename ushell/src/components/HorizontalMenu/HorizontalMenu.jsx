@@ -26,8 +26,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 
 const HorizontalMenu = ({ menuItems }) => {
-
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
   const params = useParams();
 
   const workspaceKey = params.workspaceKey;
@@ -40,9 +39,9 @@ const HorizontalMenu = ({ menuItems }) => {
   const onSelectMenuItem = ({ item, key, keyPath, selectedKeys, domEvent }) => {
     const menuItem = getMenuItem(menuItems, key);
     if (!menuItem.command) {
-     console.error(`no command set in menuItem ${menuItem.label}`, menuItem)
-    }    
-    menuItem.command(navigate);
+      console.error(`no command set in menuItem ${menuItem.label}`, menuItem);
+    }
+    menuItem.command(navigate, useCaseState, null);
   };
 
   return (
@@ -58,10 +57,10 @@ const HorizontalMenu = ({ menuItems }) => {
               mode="horizontal"
               items={items}
               triggerSubMenuAction="click"
-              onSelect={onSelectMenuItem}              
+              onSelect={onSelectMenuItem}
               defaultSelectedKeys={[workspaceKey]}
               selectedKeys={[useCaseKey]}
-              defaultOpenKeys={[parentWorkspaceKey]}              
+              defaultOpenKeys={[parentWorkspaceKey]}
             />
           </div>
         </div>

@@ -45,25 +45,26 @@ function getAntdMenuItem(label, key, icon, children, type) {
 
 export function getMenuItems(portfolio) {
   const commands = getCommands(portfolio);
+
+  console.log("commands", commands);
+
   let result = [];
 
   let menuStructureByMenuKey = {};
 
   //TODO start-useCase not yet supported in menu structure
-  commands
-    .filter((c) => c.commandType != "start-useCase")
-    .forEach((command) => {
-      let menuKey = command.menuOwnerUseCaseKey;
-      if (!menuKey) {
-        menuKey = "_Main";
-      }
-      let structure = menuStructureByMenuKey[menuKey];
-      if (!structure) {
-        structure = [];
-      }
-      pushIntoMenuStructure(portfolio, command, structure);
-      menuStructureByMenuKey[menuKey] = structure;
-    });
+  commands.forEach((command) => {
+    let menuKey = command.menuOwnerUseCaseKey;
+    if (!menuKey) {
+      menuKey = "_Main";
+    }
+    let structure = menuStructureByMenuKey[menuKey];
+    if (!structure) {
+      structure = [];
+    }
+    pushIntoMenuStructure(portfolio, command, structure);
+    menuStructureByMenuKey[menuKey] = structure;
+  });
   return menuStructureByMenuKey;
 }
 
@@ -103,17 +104,33 @@ function pushIntoMenuStructure(portfolio, command, structure) {
   //item.styleClass
 
   if (command.commandType == "activate-workspace") {
-    item.command = (navigate) => {
+    item.command = (navigate, useCaseContext, input) => {
       navigate(`../${rootUrlPath}${command.targetWorkspaceKey}`);
     };
   } else if (command.commandType == "start-useCase") {
-    item.command = (useCaseContext, input) => {
+    item.command = (navigate, useCaseContext, input) => {
+      console.log("start-useCase", {
+        useCaseContext: useCaseContext,
+        input: input,
+      });
       EnterNewUsecase(
         portfolio,
         useCaseContext,
-        command.targetUsecaseKey,
+        command.targetUseCaseKey,
         command.targetWorkspaceKey,
-        input
+        input,
+        navigate,
+        false
+      );
+    };
+  } else if (command.commandType == "start-standalone-useCase") {
+    item.command = (navigate, useCaseContext, input) => {
+      console.log("start-useCase", {
+        useCaseContext: useCaseContext,
+        input: input,
+      });
+      navigate(
+        `../${rootUrlPath}main/${command.targetUseCaseKey}`
       );
     };
   } else if (command.commandType == "usecase-action") {
@@ -236,22 +253,47 @@ export function convertToAntdItems(menuItems, addExpandIcon) {
   }
   let result = [];
 
-  menuItems.forEach((mi) => {
-    result.push({
-      label:
-        addExpandIcon && mi.items?.length > 0 ? (
-          <span>
-            {mi.label} <DownOutlined className="subMenuExpandIcon" />
-          </span>
-        ) : (
-          mi.label
-        ),
-      key: mi.id ? mi.id : mi.label,
-      icon: <MailOutlined />,
-      children: mi.items?.length > 0 ? convertToAntdItems(mi.items) : undefined,
-      onSelect: () => console.log("selected"),
+  menuItems
+    .filter((mi) => mi.label == "...")
+    .forEach((mi) => {
+      mi.items.forEach((mii) => {
+        result.push({
+          label:
+            addExpandIcon && mii.items?.length > 0 ? (
+              <span>
+                {mii.label} <DownOutlined className="subMenuExpandIcon" />
+              </span>
+            ) : (
+              mii.label
+            ),
+          key: mii.id ? mii.id : mii.label,
+          icon: <MailOutlined />,
+          children:
+            mii.items?.length > 0 ? convertToAntdItems(mii.items) : undefined,
+          onSelect: () => console.log("selected"),
+        });
+      });
     });
-  });
+
+  menuItems
+    .filter((mi) => mi.label != "...")
+    .forEach((mi) => {
+      result.push({
+        label:
+          addExpandIcon && mi.items?.length > 0 ? (
+            <span>
+              {mi.label} <DownOutlined className="subMenuExpandIcon" />
+            </span>
+          ) : (
+            mi.label
+          ),
+        key: mi.id ? mi.id : mi.label,
+        icon: <MailOutlined />,
+        children:
+          mi.items?.length > 0 ? convertToAntdItems(mi.items) : undefined,
+        onSelect: () => console.log("selected"),
+      });
+    });
 
   return result;
 }
