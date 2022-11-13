@@ -95,7 +95,8 @@
           "commandType": "activate-workspace",
           "targetWorkspacePath": "Business\\Transactions",
           "targetWorkspaceKey": "Transactions",
-          "menuFolder": "Business"
+          "menuFolder": "Business",
+          "iconKey": "fa-solid fa-heart"
         },
         {
           "uniqueCommandKey": "Products",

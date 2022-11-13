@@ -2,7 +2,7 @@ import { PortfolioModel } from "./PortfolioModel";
 
 export class PortfolioLoader {
   loadModulePortfolio() {
-    return fetch("moduleportfolio2.json", {
+    return fetch("moduleportfolio.json", {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

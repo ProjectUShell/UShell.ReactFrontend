@@ -14,13 +14,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 
 const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
-  
   const navigate = useNavigate();
   const params = useParams();
 
   const workspaceKey = params.workspaceKey;
+  const useCaseId = params.useCaseKey;
   const { useCaseState, setUseCaseState } = useContext(UseCaseStateContext);
-  const useCaseKey = useCaseState.usecaseKey;
+  const useCaseStates = useCaseState?.statesPerWorkspace[workspaceKey];
+  let useCaseKey = null;
+  if (useCaseStates) {
+    useCaseKey = useCaseStates.find((s) => s.usecaseInstanceUid == useCaseId);
+  }
   const parentWorkspaceKey = useCaseState.parentWorkspaceKey;
 
   const items = convertToAntdItems(menuItems, false);
@@ -32,6 +36,14 @@ const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
     }
     menuItem.command(navigate);
   };
+
+  console.log("workspaceKey", workspaceKey);
+  console.log(
+    "useCaseState?.statesPerWorkspace[workspaceKey]",
+    useCaseState?.statesPerWorkspace[workspaceKey]
+  );
+  console.log("useCaseState", useCaseState);
+  console.log("Selected useCaseKey", useCaseKey);
 
   return (
     <div className="mobileHidden">
@@ -53,15 +65,26 @@ const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
         width={200}
         className="site-layout-background"
       >
-        <Menu
-          mode="inline"
-          style={{ height: "100%", borderRight: 0 }}
-          items={items}
-          onSelect={onSelectMenuItem}        
-          defaultSelectedKeys={[workspaceKey]}
-          selectedKeys={[useCaseKey]}
-          defaultOpenKeys={[parentWorkspaceKey]}           
-        />
+        {useCaseKey ? (
+          <Menu
+            mode="inline"
+            style={{ height: "100%", borderRight: 0 }}
+            items={items}
+            onSelect={onSelectMenuItem}
+            defaultSelectedKeys={[workspaceKey]}
+            selectedKeys={[workspaceKey]}
+            defaultOpenKeys={[parentWorkspaceKey]}
+          />
+        ) : (
+          <Menu
+            mode="inline"
+            style={{ height: "100%", borderRight: 0 }}
+            items={items}
+            onSelect={onSelectMenuItem}
+            defaultSelectedKeys={[workspaceKey]}
+            defaultOpenKeys={[parentWorkspaceKey]}
+          />
+        )}
       </Sider>
     </div>
   );

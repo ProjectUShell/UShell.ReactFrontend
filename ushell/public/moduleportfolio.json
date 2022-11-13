@@ -1,4 +1,6 @@
 {
+  "homeUseCaseKey": "DataDisplayDemo",
+  "title": "QS Manager",
   "moduleDescriptions": [
     {
       "moduleUid": "DataManager",
@@ -81,12 +83,20 @@
       ],
       "commands": [
         {
+          "uniqueCommandKey": "ShowDashboard",
+          "label": "Dashboard",
+          "commandType": "start-standalone-useCase",
+          "targetWorkspacePath": "Demo\\DataDisplayDemo1",
+          "targetUseCaseKey": "DataDisplayDemo"
+        },
+        {
           "uniqueCommandKey": "Transactions",
           "label": "Transactions",
           "commandType": "activate-workspace",
           "targetWorkspacePath": "Business\\Transactions",
           "targetWorkspaceKey": "Transactions",
-          "menuFolder": "Business"
+          "menuFolder": "Business",
+          "iconKey": "fa-solid fa-heart"
         },
         {
           "uniqueCommandKey": "Products",

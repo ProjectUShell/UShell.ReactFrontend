@@ -32,6 +32,7 @@ import { GetUseCaseStatesByWorkspaceKey } from "./StateSerivce";
 import { Button } from "antd";
 import { rootUrlPath } from "../constants";
 import ModuleViewSuspense from "../components/ModuleView/ModuleViewSuspense";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function getAntdMenuItem(label, key, icon, children, type) {
   return {
@@ -129,9 +130,7 @@ function pushIntoMenuStructure(portfolio, command, structure) {
         useCaseContext: useCaseContext,
         input: input,
       });
-      navigate(
-        `../${rootUrlPath}main/${command.targetUseCaseKey}`
-      );
+      navigate(`../${rootUrlPath}main/${command.targetUseCaseKey}`);
     };
   } else if (command.commandType == "usecase-action") {
     console.warn("usecase-action");
@@ -278,6 +277,7 @@ export function convertToAntdItems(menuItems, addExpandIcon) {
   menuItems
     .filter((mi) => mi.label != "...")
     .forEach((mi) => {
+      const icon = mi.icon ? mi.icon : "fa-solid fa-heart";
       result.push({
         label:
           addExpandIcon && mi.items?.length > 0 ? (
@@ -288,7 +288,7 @@ export function convertToAntdItems(menuItems, addExpandIcon) {
             mi.label
           ),
         key: mi.id ? mi.id : mi.label,
-        icon: <MailOutlined />,
+        icon: <i className={icon}></i>,
         children:
           mi.items?.length > 0 ? convertToAntdItems(mi.items) : undefined,
         onSelect: () => console.log("selected"),

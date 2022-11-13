@@ -33,6 +33,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@types/jest": "^29.2.0",
     "@types/node": "^18.11.7",
     "@types/react": "^18.0.24",

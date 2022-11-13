@@ -245,3 +245,4 @@ ModelManifest.xml
 .fake/
 
 /(Vendor)/NuGet/
+ushell/public/moduleportfolio.json

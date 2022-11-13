@@ -12,7 +12,7 @@ export const getModulePortfolio = () => {
 };
 
 export const getModulePortfolio2 = () => {  
-  return fetch("moduleportfolio2.json", {
+  return fetch("moduleportfolio.json", {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
