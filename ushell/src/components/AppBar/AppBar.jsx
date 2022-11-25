@@ -2,7 +2,7 @@
 import React, { useContext } from "react";
 
 // antd
-import { Layout, Menu, Button, Badge, Switch } from "antd";
+import { Layout, Menu, Button, Badge, Switch, Dropdown, Space } from "antd";
 const { Header } = Layout;
 
 import { UnorderedListOutlined } from "@ant-design/icons";
@@ -22,6 +22,7 @@ import { ColorModeContext } from "../Settings/settingsContext";
 import { rootUrlPath } from "../../constants";
 
 import "./AppBar.css";
+import HorizontalMenu from "../HorizontalMenu/HorizontalMenu";
 
 const AppBar = ({ showDrawer, portfolio }) => {
   const navigate = useNavigate();
@@ -85,18 +86,20 @@ const AppBar = ({ showDrawer, portfolio }) => {
       key: "menuMode",
       label: "",
       icon: (
-        <Switch
-          checkedChildren="Horizontal Menu"
-          unCheckedChildren="Vertical Menu"
-          checked={layoutMode == "horizontal"}
-          onChange={(checked, event) => {
-            if (checked) {
-              setLayoutMode("horizontal");
-            } else {
-              setLayoutMode("vertical");
-            }
-          }}
-        />
+        <Space wrap>
+          <Dropdown.Button
+            menu={{
+              items: [
+                { label: "Horizontal", key: "horizontal" },
+                { label: "Vertical", key: "vertical" },
+                { label: "Vertical Thin", key: "verticalthin" },
+              ],
+              onClick: (e) => setLayoutMode(e.key),
+            }}
+          >
+            Layout Mode
+          </Dropdown.Button>
+        </Space>
       ),
     },
   ];
@@ -104,7 +107,7 @@ const AppBar = ({ showDrawer, portfolio }) => {
   const topBar = (
     <Menu
       style={{
-        background: 'none'
+        background: "none",
       }}
       mode="horizontal"
       items={[
