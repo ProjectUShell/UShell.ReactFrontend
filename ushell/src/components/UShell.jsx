@@ -29,6 +29,9 @@ import {
 import DataDisplay from "./DefaultUseCases/DataDisplay";
 import { PortfolioLoader } from "../portfolio-handling/PortfolioLoader";
 import { ConfigProvider, theme } from "antd";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 const UShell = ({ customComponentResolverRegister }) => {
   // State
@@ -84,7 +87,8 @@ const UShell = ({ customComponentResolverRegister }) => {
     return <div>loading...</div>;
   }
 
-  const colorAlgorithm = colorMode == 'dark'? theme.darkAlgorithm : theme.defaultAlgorithm;
+  const colorAlgorithm =
+    colorMode == "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm;
 
   let componetResolverRegister = customComponentResolverRegister;
   if (!componetResolverRegister) {
@@ -95,75 +99,79 @@ const UShell = ({ customComponentResolverRegister }) => {
   });
 
   return (
-    <ConfigProvider theme={{
-      algorithm: colorAlgorithm
-    }}>
-      <LayoutModeProvider value={layoutContextValue}>
-        <ColorModeProvider value={colorModeContextValue}>
-          <UseCaseStateContextProvider value={useCaseStateValue}>
-            <ComponetResloverProvider value={componetResolverRegister}>
-              <Routes>
-                <Route
-                  path="*"
-                  element={
-                    <ShellLayout
-                      menuItems={menuItems["_Main"]}
-                      portfolio={portfolio}
-                      layoutMode={layoutMode}
-                    ></ShellLayout>
-                  }
-                ></Route>
-                <Route
-                  path="main/:useCaseKey"
-                  element={
-                    headless ? (
-                      <ModuleView portfolio={portfolio} />
-                    ) : (
-                      <ShellLayout
-                        menuItems={menuItems["_Main"]}
-                        portfolio={portfolio}
-                        layoutMode={layoutMode}
-                        isStandaloneUseCase={true}
-                      ></ShellLayout>
-                    )
-                  }
-                />
-                <Route
-                  path=":workspaceKey"
-                  element={
-                    headless ? (
-                      <ModuleView portfolio={portfolio} />
-                    ) : (
+    <ConfigProvider
+      theme={{
+        algorithm: colorAlgorithm,
+      }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <LayoutModeProvider value={layoutContextValue}>
+          <ColorModeProvider value={colorModeContextValue}>
+            <UseCaseStateContextProvider value={useCaseStateValue}>
+              <ComponetResloverProvider value={componetResolverRegister}>
+                <Routes>
+                  <Route
+                    path="*"
+                    element={
                       <ShellLayout
                         menuItems={menuItems["_Main"]}
                         portfolio={portfolio}
                         layoutMode={layoutMode}
                       ></ShellLayout>
-                    )
-                  }
-                />
-                <Route
-                  path=":workspaceKey/:useCaseKey"
-                  element={
-                    headless ? (
-                      <ModuleView
-                        menuItems={menuItems["_Main"]}
-                        portfolio={portfolio}
-                      />
-                    ) : (
-                      <ShellLayout
-                        menuItems={menuItems["_Main"]}
-                        portfolio={portfolio}
-                        layoutMode={layoutMode}
-                      ></ShellLayout>
-                    )
-                  }
-                />
-              </Routes>
-            </ComponetResloverProvider>
-          </UseCaseStateContextProvider>
-        </ColorModeProvider>
-      </LayoutModeProvider>
+                    }
+                  ></Route>
+                  <Route
+                    path="main/:useCaseKey"
+                    element={
+                      headless ? (
+                        <ModuleView portfolio={portfolio} />
+                      ) : (
+                        <ShellLayout
+                          menuItems={menuItems["_Main"]}
+                          portfolio={portfolio}
+                          layoutMode={layoutMode}
+                          isStandaloneUseCase={true}
+                        ></ShellLayout>
+                      )
+                    }
+                  />
+                  <Route
+                    path=":workspaceKey"
+                    element={
+                      headless ? (
+                        <ModuleView portfolio={portfolio} />
+                      ) : (
+                        <ShellLayout
+                          menuItems={menuItems["_Main"]}
+                          portfolio={portfolio}
+                          layoutMode={layoutMode}
+                        ></ShellLayout>
+                      )
+                    }
+                  />
+                  <Route
+                    path=":workspaceKey/:useCaseKey"
+                    element={
+                      headless ? (
+                        <ModuleView
+                          menuItems={menuItems["_Main"]}
+                          portfolio={portfolio}
+                        />
+                      ) : (
+                        <ShellLayout
+                          menuItems={menuItems["_Main"]}
+                          portfolio={portfolio}
+                          layoutMode={layoutMode}
+                        ></ShellLayout>
+                      )
+                    }
+                  />
+                </Routes>
+              </ComponetResloverProvider>
+            </UseCaseStateContextProvider>
+          </ColorModeProvider>
+        </LayoutModeProvider>
+      </QueryClientProvider>
     </ConfigProvider>
   );
 };
