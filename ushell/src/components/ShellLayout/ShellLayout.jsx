@@ -25,7 +25,6 @@ const ShellLayout = ({
   layoutMode,
   isStandaloneUseCase,
 }) => {
-  console.log("isStandaloneUseCase", isStandaloneUseCase);
 
   const [mobileMenuOpen, setmobileMenuOpen] = useState(false);
   const [siderCollapsed, setSiderCollapsed] = useState(false);
@@ -34,9 +33,6 @@ const ShellLayout = ({
     setmobileMenuOpen(true);
   };
 
-  // const { settingsValue, setSettingsValue } = useContext(SettingsContext);
-
-  console.log("menuItems", menuItems);
   return (
     <>
       <Layout className="shell__outer-layout">

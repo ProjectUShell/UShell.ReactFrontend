@@ -6,7 +6,10 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Tabs } from "antd";
 
 // app
-import { getHomeUseCase, getWorkspace } from "../../portfolio-handling/PortfolioService";
+import {
+  getHomeUseCase,
+  getWorkspace,
+} from "../../portfolio-handling/PortfolioService";
 import { getAntdTabItems } from "../../portfolio-handling/MenuService";
 import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 
@@ -47,7 +50,13 @@ const Workspace = ({ portfolio }) => {
 
     const useCase = getHomeUseCase(portfolio);
 
-    return <ModuleViewSuspense startExecuteCommand={startExecuteCommand} portfolio ={portfolio} useCase={useCase}></ModuleViewSuspense>;
+    return (
+      <ModuleViewSuspense
+        startExecuteCommand={startExecuteCommand}
+        portfolio={portfolio}
+        useCase={useCase}
+      ></ModuleViewSuspense>
+    );
   }
 
   const useCaseKey = params.useCaseKey;
@@ -59,14 +68,16 @@ const Workspace = ({ portfolio }) => {
     console.log("tab changed", key);
   };
 
- 
-
   const tabItems = getAntdTabItems(
     portfolio,
     workspace,
     useCaseState,
     navigate
   );
+
+  if (tabItems.length == 1) {
+    return tabItems[0].children;
+  }
 
   const activeTab = tabItems.find((t) => t.key == useCaseKey);
 

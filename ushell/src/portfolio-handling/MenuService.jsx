@@ -387,14 +387,3 @@ export function getAntdTabItems(
   });
   return result;
 }
-
-{
-  /* <Suspense fallback={"Loading . . . "}>
-  <ModuleLoader
-    url={r.url}
-    scope={r.module}
-    module={r.component}
-    inputData={{ someInput: "WTF" }}
-  />
-</Suspense> */
-}

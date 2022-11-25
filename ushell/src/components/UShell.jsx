@@ -5,7 +5,6 @@ import { Routes, Route, useSearchParams } from "react-router-dom";
 // antd
 
 // app
-import { getModulePortfolio2 } from "../moduleportfolio";
 import ShellLayout from "./ShellLayout/ShellLayout";
 
 import {
@@ -28,22 +27,12 @@ import {
   ComponetResloverProvider,
 } from "../services/componentService";
 import DataDisplay from "./DefaultUseCases/DataDisplay";
-
-function getItem(label, key, icon, children) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  };
-}
+import { PortfolioLoader } from "../portfolio-handling/PortfolioLoader";
+import { ConfigProvider, theme } from "antd";
 
 const UShell = ({ customComponentResolverRegister }) => {
-  const [workspaces, setWorkspaces] = useState([]);
+  // State
   const [menuItems, setMenuItems] = useState([]);
-  const emptyRoutes = [];
-  const [routes, setRoutes] = useState(emptyRoutes);
-
   const [portfolio, setPortfolio] = useState(null);
 
   const [useCaseState, setUseCaseState] = useState({
@@ -51,43 +40,32 @@ const UShell = ({ customComponentResolverRegister }) => {
   });
   const useCaseStateValue = { useCaseState, setUseCaseState };
   const [ready, setReady] = useState(false);
-  const updateModulePortfolio2 = () => {
-    getModulePortfolio2().then((p) => {
+
+  useEffect(() => {
+    PortfolioLoader.loadModulePortfolio().then((p) => {
       const mi = getMenuItems(p);
       setMenuItems(mi);
       setPortfolio(p);
       console.log("updateModulePortfolio2", portfolio);
       setReady(true);
-      // setRoutes(getRoutes(p));
     });
-  };
-
-  useEffect(() => {
-    // updateModulePortfolio();
-    updateModulePortfolio2();
   }, []);
 
+  // Headless
   const [searchParams, setSearchParams] = useSearchParams();
   const headlessParam = searchParams.get("headless");
   const headless = headlessParam == undefined ? false : true;
 
-  const [open2, setOpen2] = useState(false);
-
-  const showDrawer2 = () => {
-    setOpen2(true);
-  };
-
-  const onClose2 = () => {
-    setOpen2(false);
-  };
-
+  // Layout Mode
   const [layoutMode, setLayoutModeInternal] = useState(restoreLayoutMode());
   const setLayoutMode = (v) => {
     setLayoutModeInternal(v);
     storeLayoutMode(v);
   };
-  const settingsContextValue = { layoutMode, setLayoutMode };
 
+  const layoutContextValue = { layoutMode, setLayoutMode };
+
+  // Color Mode
   const [colorMode, setColorModeInternal] = useState(restoreColorMode());
   const setColorMode = (v) => {
     if (v == "dark") {
@@ -106,6 +84,8 @@ const UShell = ({ customComponentResolverRegister }) => {
     return <div>loading...</div>;
   }
 
+  const colorAlgorithm = colorMode == 'dark'? theme.darkAlgorithm : theme.defaultAlgorithm;
+
   let componetResolverRegister = customComponentResolverRegister;
   if (!componetResolverRegister) {
     componetResolverRegister = new ComponentResolverRegister();
@@ -115,87 +95,76 @@ const UShell = ({ customComponentResolverRegister }) => {
   });
 
   return (
-    <LayoutModeProvider value={settingsContextValue}>
-      <ColorModeProvider value={colorModeContextValue}>
-        <UseCaseStateContextProvider value={useCaseStateValue}>
-          <ComponetResloverProvider value={componetResolverRegister}>
-            <Routes>
-              <Route
-                path="*"
-                element={
-                  <ShellLayout
-                    menuItems={menuItems["_Main"]}
-                    portfolio={portfolio}
-                    layoutMode={layoutMode}
-                  ></ShellLayout>
-                }
-              ></Route>
-              <Route
-                path="main/:useCaseKey"
-                element={
-                  headless ? (
-                    <ModuleView portfolio={portfolio} />
-                  ) : (
-                    <ShellLayout
-                      menuItems={menuItems["_Main"]}
-                      portfolio={portfolio}
-                      layoutMode={layoutMode}
-                      isStandaloneUseCase={true}
-                    ></ShellLayout>
-                  )
-                }
-              />
-              <Route
-                path=":workspaceKey"
-                element={
-                  headless ? (
-                    <ModuleView portfolio={portfolio} />
-                  ) : (
+    <ConfigProvider theme={{
+      algorithm: colorAlgorithm
+    }}>
+      <LayoutModeProvider value={layoutContextValue}>
+        <ColorModeProvider value={colorModeContextValue}>
+          <UseCaseStateContextProvider value={useCaseStateValue}>
+            <ComponetResloverProvider value={componetResolverRegister}>
+              <Routes>
+                <Route
+                  path="*"
+                  element={
                     <ShellLayout
                       menuItems={menuItems["_Main"]}
                       portfolio={portfolio}
                       layoutMode={layoutMode}
                     ></ShellLayout>
-                  )
-                }
-              />
-              <Route
-                path=":workspaceKey/:useCaseKey"
-                element={
-                  headless ? (
-                    <ModuleView
-                      menuItems={menuItems["_Main"]}
-                      portfolio={portfolio}
-                    />
-                  ) : (
-                    <ShellLayout
-                      menuItems={menuItems["_Main"]}
-                      portfolio={portfolio}
-                      layoutMode={layoutMode}
-                    ></ShellLayout>
-                  )
-                }
-              />
-            </Routes>
-            {/* <Button
-          className="app__settings-button"
-          type="primary"
-          onClick={showDrawer2}
-        >
-          <i className="fas fa-cog" />
-        </Button>
-        <Drawer
-          title="Customize Theme"
-          placement="right"
-          onClose={onClose2}
-          open={open2}
-        >
-          <Settings setSettingsValue={setSettingsValue}></Settings>
-        </Drawer> */}
-          </ComponetResloverProvider>
-        </UseCaseStateContextProvider>
-      </ColorModeProvider>
-    </LayoutModeProvider>
+                  }
+                ></Route>
+                <Route
+                  path="main/:useCaseKey"
+                  element={
+                    headless ? (
+                      <ModuleView portfolio={portfolio} />
+                    ) : (
+                      <ShellLayout
+                        menuItems={menuItems["_Main"]}
+                        portfolio={portfolio}
+                        layoutMode={layoutMode}
+                        isStandaloneUseCase={true}
+                      ></ShellLayout>
+                    )
+                  }
+                />
+                <Route
+                  path=":workspaceKey"
+                  element={
+                    headless ? (
+                      <ModuleView portfolio={portfolio} />
+                    ) : (
+                      <ShellLayout
+                        menuItems={menuItems["_Main"]}
+                        portfolio={portfolio}
+                        layoutMode={layoutMode}
+                      ></ShellLayout>
+                    )
+                  }
+                />
+                <Route
+                  path=":workspaceKey/:useCaseKey"
+                  element={
+                    headless ? (
+                      <ModuleView
+                        menuItems={menuItems["_Main"]}
+                        portfolio={portfolio}
+                      />
+                    ) : (
+                      <ShellLayout
+                        menuItems={menuItems["_Main"]}
+                        portfolio={portfolio}
+                        layoutMode={layoutMode}
+                      ></ShellLayout>
+                    )
+                  }
+                />
+              </Routes>
+            </ComponetResloverProvider>
+          </UseCaseStateContextProvider>
+        </ColorModeProvider>
+      </LayoutModeProvider>
+    </ConfigProvider>
   );
 };
 

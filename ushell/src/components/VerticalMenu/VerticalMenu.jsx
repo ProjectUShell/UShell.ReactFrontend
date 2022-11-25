@@ -50,12 +50,11 @@ const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
       <Sider
         style={{
           overflow: "auto",
-          height: "calc(100vh - 85px)",
           position: "fixed",
           left: 0,
           top: 0,
           bottom: 0,
-          marginTop: "58px",
+          marginTop: "50px"
         }}
         collapsible
         collapsed={siderCollapsed}

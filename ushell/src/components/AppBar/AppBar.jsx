@@ -103,6 +103,9 @@ const AppBar = ({ showDrawer, portfolio }) => {
 
   const topBar = (
     <Menu
+      style={{
+        background: 'none'
+      }}
       mode="horizontal"
       items={[
         {

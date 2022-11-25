@@ -19,17 +19,21 @@ body {
   font-size: 16px;
   line-height: 1.6;
   overflow-x: hidden;
+  margin: 0;
 }
+
+p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* antd customization */
 
 .ant-drawer-body {
   padding: 0px;
 }
 
-.shell__outer-layout .ant-layout-header {
-  padding: 0;
-  height: auto;
-  line-height: 1.6;
-}
+/* app */
 
 #app {
   height: 100%;
@@ -42,15 +46,15 @@ body {
   z-index: 9;
 }
 
-p {
-  font-size: 16px;
+/* ShellLayout */
+
+.shell__outer-layout .ant-layout-header {
+  padding: 0;
+  height: auto;
   line-height: 1.6;
+  background: inherit!important;
 }
 
-/* 
-topBar
------- 
-*/
 .ant-layout-header {
   position: fixed;
   left: 0;
@@ -58,13 +62,18 @@ topBar
   z-index: 999;
 }
 
+/* 
+topBar
+------ 
+*/
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0px 0;
-  padding-top: 7px;
-  padding-bottom: 12px;
+  padding-top: 2px;
+  padding-bottom: 4px;
   margin-bottom: 0px;
   box-shadow: 0 24px 64px -2px rgb(0 0 0 / 2%), 0 6px 16px -2px rgb(0 0 0 / 6%),
     0 2px 6px -2px rgb(0 0 0 / 8%);
@@ -78,13 +87,8 @@ topBar
 }
 
 .header .logo .fas {
-  color: #1890ff;
   margin: 0 5px 0 0;
   font-size: 28px;
-}
-
-.header .ant-anchor-wrapper {
-  background: none;
 }
 
 .header .ant-anchor {
@@ -104,7 +108,6 @@ topBar
 .header .ant-anchor-link:before,
 .header .ant-anchor-link:after {
   content: "";
-  background: #1890ff;
   width: 1px;
   position: absolute;
   top: 2px;
@@ -134,13 +137,11 @@ topBar
 /* ant menu */
 .header .ant-menu {
   border: 0;
-  background: none !important;
   min-width: 100px;
 }
 
 .header .ant-menu li.ant-menu-item {
   position: relative;
-  /* color: #333; */
 }
 
 .header .ant-menu li.ant-menu-item:after {
@@ -155,8 +156,7 @@ topBar
 
 .header .ant-menu li.ant-menu-item-selected,
 .header .ant-menu li.ant-menu-item:hover {
-  color: #1890ff;
-  background: none;
+  /* background: none; */
 }
 
 .header .ant-menu li.ant-menu-item-selected:before,
@@ -175,7 +175,7 @@ topBar
 .shell__inner-layout {
   margin: 24px 0px 0;
   overflow: initial;
-  margin-top: 55px;
+  margin-top: 50px;
 }
 
 /* 
@@ -200,13 +200,12 @@ header 2
 }
 
 .header2 .logo .fas {
-  color: #1890ff;
   margin: 0 5px 0 0;
   font-size: 28px;
 }
 
 .header2 .ant-anchor-wrapper {
-  background: none;
+  /* background: none; */
 }
 
 .header2 .ant-anchor {
@@ -226,7 +225,6 @@ header 2
 .header2 .ant-anchor-link:before,
 .header2 .ant-anchor-link:after {
   content: "";
-  background: #1890ff;
   width: 1px;
   position: absolute;
   top: 2px;
@@ -267,7 +265,6 @@ header 2
 .header2 .ant-menu li.ant-menu-item:before,
 .header2 .ant-menu li.ant-menu-item:after {
   content: "";
-  background: #1890ff;
   width: 0px;
   position: absolute;
   top: 2px;
@@ -314,7 +311,6 @@ header 2
 
 .header2 .ant-menu li.ant-menu-item-selected,
 .header2 .ant-menu li.ant-menu-item:hover {
-  color: #1890ff;
   border: 0 !important;
 }
 
@@ -337,8 +333,6 @@ footer
 ------
 */
 .ant-layout-footer {
-  background: #111 !important;
-  color: #fff !important;
   padding: 60px 0 !important;
   text-align: center;
 }
@@ -347,17 +341,11 @@ footer
   font-size: 22px;
   text-transform: uppercase;
   margin: 0 0 20px;
-  background: #111;
 }
 
 .footer .fas {
-  color: #1890ff;
   font-size: 28px;
   margin: 0 5px 0 0;
-}
-
-.footer .logo a {
-  color: #fff;
 }
 
 .footer .socials {
@@ -371,14 +359,6 @@ footer
 
 .footer .socials li {
   margin: 0 20px;
-}
-
-.footer .socials a {
-  color: #fff;
-}
-
-.footer .socials a:hover {
-  color: #1890ff;
 }
 
 .footer .goTop:hover {
@@ -401,14 +381,14 @@ footer
 /* resposnive classes */
 
 .shell__content-layout {
-  padding: 0 24px 24px;
+  padding: 0;
   height: 100vh;
 }
 
 .shell__content-layout_horizontal {
   margin-left: 0px;
   transition: 200ms;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 .shell__content-layout_vertical {
@@ -427,7 +407,7 @@ footer
   margin: 24px 16px 0;
   overflow: initial;
   margin-top: 0px;
-  padding: 24px;
+  padding: 10px;
   text-align: center;
   min-height: 40vh;
 }

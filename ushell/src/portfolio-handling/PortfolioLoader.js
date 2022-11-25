@@ -1,7 +1,7 @@
 import { PortfolioModel } from "./PortfolioModel";
 
 export class PortfolioLoader {
-  loadModulePortfolio() {
+  static loadModulePortfolio() {
     return fetch("moduleportfolio.json", {
       headers: {
         "Content-Type": "application/json",
