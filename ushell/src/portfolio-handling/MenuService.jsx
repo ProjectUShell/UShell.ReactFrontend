@@ -189,6 +189,39 @@ function pushIntoMenuStructure(portfolio, command, structure) {
     };
   }
 
+  function stringContains(base, stringsToCheck) {
+    console.log("base", base);
+
+    for (let s of stringsToCheck) {
+      if (base.toLowerCase().includes(s)) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
+  function tryGetIcon(hint) {
+    if (stringContains(hint, ["data", "daten", "employ"])) {
+      return "fa-solid fa-database";
+    }
+    if (
+      stringContains(hint, ["prozess", "process", "verarbeitung", "verarbeite"])
+    ) {
+      return "fa-solid fa-forward";
+    }
+    if (stringContains(hint, ["report", "auswert", "diagra", "grafik"])) {
+      return "fa-solid fa-chart-simple";
+    }
+    if (stringContains(hint, ["custom", "konfig", "develop", "einricht"])) {
+      return "fa-solid fa-pencil";
+    }
+    if (stringContains(hint, ["import", "export", "communic", "kommuni"])) {
+      return "fa-solid fa-pencil";
+    }
+    return "fa-solid fa-bars";
+  }
+
   function peekOrCreateItem(path, itemsOfCurrentLevel, locateAfter, priority) {
     const nextsplitterIndex = path.indexOf("/");
 
@@ -214,6 +247,7 @@ function pushIntoMenuStructure(portfolio, command, structure) {
         state: {
           priority: 100,
         },
+        icon: tryGetIcon(currentTitleToPeek),
       };
       if (nextsplitterIndex < 0) {
         foundItemForCurrentLevel.state = {
