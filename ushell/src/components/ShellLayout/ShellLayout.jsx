@@ -78,9 +78,9 @@ const ShellLayout = ({
             </Layout>
           </Layout>
         </Content>
-        <Footer>
+        {/* <Footer>
           <AppFooter></AppFooter>
-        </Footer>
+        </Footer> */}
       </Layout>
     </>
   );

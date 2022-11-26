@@ -2,7 +2,7 @@
 import React, { useState, useContext } from "react";
 
 // antd
-import { Menu, Layout } from "antd";
+import { Menu, Layout, theme } from "antd";
 const { Sider } = Layout;
 
 // app
@@ -13,6 +13,8 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 
+const { useToken } = theme; 
+
 const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
   const navigate = useNavigate();
   const params = useParams();
@@ -21,6 +23,8 @@ const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
   const useCaseId = params.useCaseKey;
   const { useCaseState, setUseCaseState } = useContext(UseCaseStateContext);
   const useCaseStates = useCaseState?.statesPerWorkspace[workspaceKey];
+  const { token } = useToken();
+
   let useCaseKey = null;
   if (useCaseStates) {
     useCaseKey = useCaseStates.find((s) => s.usecaseInstanceUid == useCaseId);
@@ -54,7 +58,9 @@ const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
           left: 0,
           top: 0,
           bottom: 0,
-          marginTop: "50px"
+          marginTop: "44px",
+          background: token.colorBgContainer,
+          color: token.colorText
         }}
         collapsible
         collapsed={siderCollapsed}
@@ -67,7 +73,7 @@ const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
         {useCaseKey ? (
           <Menu
             mode="inline"
-            style={{ height: "100%", borderRight: 0 }}
+            style={{ height: "calc(100%-6px)", borderRight: 0 }}
             items={items}
             onSelect={onSelectMenuItem}
             defaultSelectedKeys={[workspaceKey]}
@@ -77,7 +83,7 @@ const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
         ) : (
           <Menu
             mode="inline"
-            style={{ height: "100%", borderRight: 0 }}
+            style={{ height: "calc(100%-6px)", borderRight: 0 }}
             items={items}
             onSelect={onSelectMenuItem}
             defaultSelectedKeys={[workspaceKey]}

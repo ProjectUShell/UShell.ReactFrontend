@@ -98,10 +98,23 @@ const UShell = ({ customComponentResolverRegister }) => {
     return <DataDisplay inputData={inputData}></DataDisplay>;
   });
 
+  const { darkAlgorithm, compactAlgorithm } = theme;
+
+  const colorBgBase =
+    colorMode == "dark"
+      ? "linear-gradient(99deg, rgb(57, 65, 73) 0%, rgb(47, 54, 62) 100%)"
+      : "linear-gradient(99deg, rgb(246, 249, 254) 0%, rgb(232, 241, 248) 100%)";
+
+  const colorContainerBgBase = colorMode == "dark" ? "#434B54" : "#FDFEFF";
+  
   return (
     <ConfigProvider
       theme={{
-        algorithm: colorAlgorithm,
+        algorithm: [colorAlgorithm, compactAlgorithm],
+        token: {
+          colorBgBase: colorBgBase,
+          colorBgContainer: colorContainerBgBase,
+        },
       }}
     >
       <QueryClientProvider client={queryClient}>

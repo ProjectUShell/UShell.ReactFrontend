@@ -16,8 +16,9 @@ import {
 } from "@ant-design/icons";
 const { Header } = Layout;
 
+import { Menu, Layout, theme } from "antd";
+
 // app
-import { Menu, Layout } from "antd";
 import {
   convertToAntdItems,
   getMenuItem,
@@ -25,9 +26,12 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 
+const { useToken } = theme;
+
 const HorizontalMenu = ({ menuItems }) => {
   const navigate = useNavigate();
   const params = useParams();
+  const { token } = useToken();
 
   const workspaceKey = params.workspaceKey;
   const { useCaseState, setUseCaseState } = useContext(UseCaseStateContext);
@@ -52,7 +56,12 @@ const HorizontalMenu = ({ menuItems }) => {
     >
       <div className="container-fluid2">
         <div className="mobileHidden">
-          <div className="header2">
+          <div
+            className="header2"
+            style={{
+              background: token.colorBgContainer,
+            }}
+          >
             <Menu
               mode="horizontal"
               items={items}

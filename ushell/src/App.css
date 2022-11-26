@@ -3,16 +3,16 @@ general
 -------
 */
 
-body::-webkit-scrollbar {
-  width: 0.75rem;
+::-webkit-scrollbar {
+  width: 0.65rem;
 }
 
-body::-webkit-scrollbar-track {
-  background: #1e1e24;
+::-webkit-scrollbar-track {
+  background: rgb(67, 75, 84);
 }
 
-body::-webkit-scrollbar-thumb {
-  background: #6649b8;
+::-webkit-scrollbar-thumb {
+  background: #1669dcea;
 }
 
 body {
@@ -52,7 +52,6 @@ p {
   padding: 0;
   height: auto;
   line-height: 1.6;
-  background: inherit!important;
 }
 
 .ant-layout-header {
@@ -62,6 +61,18 @@ p {
   z-index: 999;
 }
 
+.ant-layout-sider-trigger {
+  height: 30px!important;
+}
+
+.ant-layout-sider-children > ul {
+  margin-top: 6px!important;
+}
+
+.ant-layout-sider-trigger {
+  color: inherit!important;
+  background: inherit!important;
+}
 /* 
 topBar
 ------ 
@@ -72,8 +83,6 @@ topBar
   justify-content: space-between;
   align-items: center;
   padding: 0px 0;
-  padding-top: 2px;
-  padding-bottom: 4px;
   margin-bottom: 0px;
   box-shadow: 0 24px 64px -2px rgb(0 0 0 / 2%), 0 6px 16px -2px rgb(0 0 0 / 6%),
     0 2px 6px -2px rgb(0 0 0 / 8%);
@@ -175,7 +184,7 @@ topBar
 .shell__inner-layout {
   margin: 24px 0px 0;
   overflow: initial;
-  margin-top: 50px;
+  margin-top: 44px;
 }
 
 /* 
@@ -382,32 +391,33 @@ footer
 
 .shell__content-layout {
   padding: 0;
-  height: 100vh;
+  min-height: calc(100vh - 44.8px);
+  height:100%;
 }
 
 .shell__content-layout_horizontal {
   margin-left: 0px;
   transition: 200ms;
-  margin-top: 30px;
+  margin-top: 39px;
 }
 
 .shell__content-layout_vertical {
-  margin-left: 187px;
+  margin-left: 201px;
   transition: 200ms;
   margin-top: 0px;
 }
 
 .shell__content-layout_vertical-collapsed {
-  margin-left: 50px;
+  margin-left: 81px;
   transition: 200ms;
   margin-top: 0px;
 }
 
 .shell__content {
-  margin: 24px 16px 0;
+  margin: 0;
   overflow: initial;
   margin-top: 0px;
-  padding: 10px;
+  padding: 0px;
   text-align: center;
   min-height: 40vh;
 }

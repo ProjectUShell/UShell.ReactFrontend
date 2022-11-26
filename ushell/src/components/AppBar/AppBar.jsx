@@ -2,7 +2,16 @@
 import React, { useContext } from "react";
 
 // antd
-import { Layout, Menu, Button, Badge, Switch, Dropdown, Space } from "antd";
+import {
+  Layout,
+  Menu,
+  Button,
+  Badge,
+  Switch,
+  Dropdown,
+  Space,
+  theme,
+} from "antd";
 const { Header } = Layout;
 
 import { UnorderedListOutlined } from "@ant-design/icons";
@@ -24,12 +33,15 @@ import { rootUrlPath } from "../../constants";
 import "./AppBar.css";
 import HorizontalMenu from "../HorizontalMenu/HorizontalMenu";
 
+const { useToken } = theme; 
+
 const AppBar = ({ showDrawer, portfolio }) => {
   const navigate = useNavigate();
   const workspaces = getWorkspaces(portfolio);
   const useCaseContext = useContext(UseCaseStateContext);
   let { layoutMode, setLayoutMode } = useContext(LayoutModeContext);
   let { colorMode, setColorMode } = useContext(ColorModeContext);
+  const { token } = useToken();
 
   const useCaseItems = workspaces.map((ws) => {
     return {
@@ -149,7 +161,11 @@ const AppBar = ({ showDrawer, portfolio }) => {
   );
 
   return (
-    <Header>
+    <Header
+      style={{
+        background: token.colorBgContainer,
+      }}
+    >
       <div className="header">
         <a href="/">{titleDiv}</a>
         <div className="mobileHidden">{topBar}</div>
