@@ -177,9 +177,12 @@ export function terminateUseCase(
   if (i < 0) {
     console.error(`Invalid States`);
   }
-  states = states.splice(i, 1);
+  console.log("terminating use case befor splice", i);
+  states.splice(i, 1);
 
+  console.log("terminating use case", states);
   storeUsecaseStatesByWorkspaceKey(workspaceKey, states);
+  useCaseContext.statesPerWorkspace[workspaceKey] = states;
 
   navigate(`../${rootUrlPath}${workspaceKey}`);
 }
