@@ -280,7 +280,7 @@ function pushIntoMenuStructure(portfolio, command, structure) {
   }
 }
 
-export function convertToAntdItems(menuItems, addExpandIcon) {
+export function convertToAntdItems(menuItems, addExpandIcon, hasParent = false) {
   if (!menuItems) {
     return [];
   }
@@ -324,8 +324,9 @@ export function convertToAntdItems(menuItems, addExpandIcon) {
         key: mi.id ? mi.id : mi.label,
         icon: <i className={icon}></i>,
         children:
-          mi.items?.length > 0 ? convertToAntdItems(mi.items) : undefined,
+          mi.items?.length > 0 ? convertToAntdItems(mi.items, false, true) : undefined,
         onSelect: () => console.log("selected"),
+        type: mi.items?.length > 0 ? (hasParent ? "group" : "submenu") : null
       });
     });
 

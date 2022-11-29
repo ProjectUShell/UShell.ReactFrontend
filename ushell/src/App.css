@@ -18,7 +18,7 @@ general
 body {
   font-size: 16px;
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow: hidden;
   margin: 0;
 }
 
@@ -415,11 +415,21 @@ footer
 
 .shell__content {
   margin: 0;
-  overflow: initial;
   margin-top: 0px;
   padding: 0px;
   text-align: center;
   min-height: 40vh;
+  max-height: 100%;
+  overflow-y: scroll;
+  height: calc(100vh - 44.8px);
+}
+
+.shell__content-vertical {
+  height: calc(100vh - 44.8px);
+}
+
+.shell__content-vertical {
+  height: calc(100vh - 44.8px);
 }
 
 .ant-drawer-right.ant-drawer-open .ant-drawer-content-wrapper {
