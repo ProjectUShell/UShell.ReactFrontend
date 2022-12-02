@@ -1,10 +1,13 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
-
+const path = require('path');
 const deps = require("./package.json").dependencies;
+const express = require('express')
+
 module.exports = {
   output: {
     publicPath: "",
+    //publicPath: "http://localhost:3000/ushell/",
   },
 
   resolve: {
@@ -14,6 +17,10 @@ module.exports = {
   devServer: {
     port: 3000,
     historyApiFallback: true,
+    /*setupMiddlewares: (middlewares, devServer) => {
+      devServer.app.use('/ushell/', express.static(path.resolve(__dirname, 'public')));
+      return middlewares;
+    }*/
   },
 
   module: {

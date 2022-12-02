@@ -8,7 +8,9 @@
     "start": "webpack serve --open --mode development",
     "start:live": "webpack serve --open --mode development --live-reload --hot"
   },
-  "files": [ "ushell/src"],
+  "files": [
+    "ushell/src"
+  ],
   "main": "ushell/dist/main.js",
   "license": "MIT",
   "author": {
@@ -41,6 +43,7 @@
     "@types/react-dom": "^18.0.8",
     "antd": "^4.23.2",
     "antd-theme": "^0.3.4",
+    "express": "^4.18.2",
     "json-loader": "^0.5.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
