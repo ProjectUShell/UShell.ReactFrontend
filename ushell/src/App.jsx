@@ -8,7 +8,6 @@ import "./App.css";
 import "./styles/main.less";
 
 import UShell from "./components/UShell";
-import { QueryClientProvider } from "react-query";
 
 const pickBasePath = () => {
   let baseHref = (document.getElementsByTagName("base")[0] || { href: "/" })
@@ -29,14 +28,10 @@ const pickBasePath = () => {
   return baseHref;
 };
 
-const queryClient = new QueryClientProvider();
-
 const App = () => {
   return (
     <BrowserRouter basename={pickBasePath()}>
-      <QueryClientProvider client={queryClient}>
-        <UShell></UShell>
-      </QueryClientProvider>
+      <UShell></UShell>
     </BrowserRouter>
   );
 };
