@@ -31,12 +31,20 @@ import { PortfolioLoader } from "../portfolio-handling/PortfolioLoader";
 import { ConfigProvider, theme } from "antd";
 import { QueryClient, QueryClientProvider } from "react-query";
 
+//Route Guard
+import LoginForm from "./Login/Login";
+import ProtectedRoute from "../services/RouteGuardService";
+
 const queryClient = new QueryClient();
 
 const UShell = ({ customComponentResolverRegister }) => {
   // State
   const [menuItems, setMenuItems] = useState([]);
   const [portfolio, setPortfolio] = useState(null);
+
+  // Auth
+  // HACK_Lisa: to get rid of sign in form just set is isAutheticated = true
+  const [isAutheticated, setisAutheticated] = useState(false);
 
   const [useCaseState, setUseCaseState] = useState({
     statesPerWorkspace: {},
@@ -123,16 +131,22 @@ const UShell = ({ customComponentResolverRegister }) => {
             <UseCaseStateContextProvider value={useCaseStateValue}>
               <ComponetResloverProvider value={componetResolverRegister}>
                 <Routes>
+                  <Route element={<ProtectedRoute auth={isAutheticated} />}>
+                    <Route
+                      path="*"
+                      element={
+                        <ShellLayout
+                          menuItems={menuItems["_Main"]}
+                          portfolio={portfolio}
+                          layoutMode={layoutMode}
+                        ></ShellLayout>
+                      }
+                    ></Route>
+                  </Route>
                   <Route
-                    path="*"
-                    element={
-                      <ShellLayout
-                        menuItems={menuItems["_Main"]}
-                        portfolio={portfolio}
-                        layoutMode={layoutMode}
-                      ></ShellLayout>
-                    }
-                  ></Route>
+                    path="/login"
+                    element={<LoginForm/>}
+                  />
                   <Route
                     path="main/:useCaseKey"
                     element={
