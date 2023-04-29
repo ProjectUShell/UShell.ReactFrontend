@@ -8,8 +8,6 @@ import "./App.css";
 import "./styles/main.less";
 
 import UShell from "./components/UShell";
-import ModuleLoader from "./federation/ModuleLoader";
-import ModuleViewSuspense from "./components/ModuleView/ModuleViewSuspense";
 
 const pickBasePath = () => {
   let baseHref = (document.getElementsByTagName("base")[0] || { href: "/" })
@@ -31,16 +29,6 @@ const pickBasePath = () => {
 };
 
 const App = () => {
-  return (
-    <ModuleViewSuspense
-      useCase={{
-        component: "./Test",
-        module: "ushell_demo_app",
-        url: "http://localhost:3001/remoteEntry.js",
-      }}
-      input={{}}
-    ></ModuleViewSuspense>
-  );
   return (
     <BrowserRouter basename={pickBasePath()}>
       <UShell></UShell>
