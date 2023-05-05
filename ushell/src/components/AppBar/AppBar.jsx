@@ -11,10 +11,11 @@ import {
   Dropdown,
   Space,
   theme,
+  Avatar
 } from "antd";
 const { Header } = Layout;
 
-import { UnorderedListOutlined } from "@ant-design/icons";
+import { UnorderedListOutlined, UserOutlined, ApiTwoTone, StopTwoTone, LoginOutlined } from "@ant-design/icons";
 
 // app
 import {
@@ -34,6 +35,12 @@ import "./AppBar.css";
 import HorizontalMenu from "../HorizontalMenu/HorizontalMenu";
 
 const { useToken } = theme; 
+
+import useSignOff from "../../hooks/useSignOff";
+
+import {
+  deleteToken
+} from "../../services/TokenService";
 
 const AppBar = ({ showDrawer, portfolio }) => {
   const navigate = useNavigate();
@@ -69,9 +76,22 @@ const AppBar = ({ showDrawer, portfolio }) => {
 
   const onSelectMenuItem = ({ item, key, keyPath, selectedKeys, domEvent }) => {
     const useCaseItem = getMenuItem(useCaseItems, key);
+
+    if (key == 'signoff') {
+      // useSignOff(portfolio.primaryUiTokenSourceUid);
+      if (portfolio.primaryUiTokenSourceUid && portfolio.primaryUiTokenSourceUid != "00000000-0000-0000-0000-000000000000") {
+        console.info("LOGGING OUT!");
+        deleteToken(portfolio.primaryUiTokenSourceUid);
+      }
+    
+      navigate(`/login`, {tokenSourceUid: portfolio.primaryUiTokenSourceUid});
+      return;
+    }
+
     if (!useCaseItem?.item) {
       return;
     }
+
     navigate(`../${rootUrlPath}${useCaseItem.item.parentWorkspaceKey}/${key}`);
   };
 
@@ -116,6 +136,23 @@ const AppBar = ({ showDrawer, portfolio }) => {
     },
   ];
 
+  const userItems = [
+    {
+      key: "userEmail",
+      label: "User",
+      icon: (
+      <Avatar shape="circle" size="small" icon="UserOutlined"/>
+      ),
+    },
+    {
+      key: "signoff",
+      label: "Sign off",
+      icon: (
+      <StopTwoTone/>
+      ),
+    },
+  ];
+
   const topBar = (
     <Menu
       style={{
@@ -140,6 +177,12 @@ const AppBar = ({ showDrawer, portfolio }) => {
           icon: <i className="fas fa-cog" />,
           children: settingsItems,
         },
+        {
+          key: "user",
+          label: "",
+          icon: <LoginOutlined/>,
+          children: userItems,
+        }
       ]}
       triggerSubMenuAction="click"
       onSelect={onSelectMenuItem}

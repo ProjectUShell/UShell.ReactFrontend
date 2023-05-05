@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 import { Button, Card, Collapse } from 'antd';
+import { useNavigate } from "react-router-dom";
 
 const { Panel } = Collapse;
 
@@ -35,6 +36,8 @@ const SignIn = ({tokenSourceUid}) => {
 
   const interval = useRef(null);
 
+  const navigate = useNavigate();
+
   var oAuthProxyUrl = '';
   var oAuthProxyProfile = '';
   var clientId = '';
@@ -43,6 +46,10 @@ const SignIn = ({tokenSourceUid}) => {
 
   useEffect(() => {
     PortfolioLoader.loadModulePortfolio().then((p) => {
+      
+      interval.current = setInterval(() => {
+        checkForTokenArrived();
+      }, delay);
       
       // TODO: select by
       // issueMode: OAUTH_CIBA_CODEGRAND, etc.
@@ -69,7 +76,7 @@ const SignIn = ({tokenSourceUid}) => {
     });
 
     // Just in case, clear interval on component un-mount, to be safe.
-    return () => clearInterval(interval.current);
+    // return () => clearInterval(interval.current);
   }, []);
 
   const startSignIn = () => {
@@ -81,7 +88,6 @@ const SignIn = ({tokenSourceUid}) => {
   const cancelSignIn = () => {
     setActiveCollapse(2);
     setCurrentLoginState("Sing in cancelled!");
-    setIsOverlayOpen(false);
 
     onSinInCancelled();
   }
@@ -121,7 +127,9 @@ const SignIn = ({tokenSourceUid}) => {
 
     console.log("...Checking for token arrived...");
 
-    var result = getPersistentState("stagedtoken_" + state);
+    //var result = getPersistentState("stagedtoken_" + state);
+    // HACK: use this line instead a line below -> var result = getPersistentState("stagedtoken_" + state);
+    var result = getPersistentState("stagedtoken_" + "stateFromUrl");
     if (result) {
       console.info("SignIn: Got token -> " + result);
 
@@ -139,17 +147,18 @@ const SignIn = ({tokenSourceUid}) => {
       // else {  
         console.info("SinIn: GOT NEW TOKEN -> " + result);
 
-        let isValid = setToken(this.tokenSourceUid, result);
-          if (isValid) {
-            success = true;
-            setIsOverlayOpen(false);
+        let isValid = setToken(tokenSourceUid, result);
 
+          if (isValid) {
             navigate(`/`);
           }
           else {
-            error = "An invalid token was returned: '" + result + "'";
+            console.log("An invalid token was returned: '" + result + "'");
           }
       // }
+    }
+    else {
+      console.log("...no token arrived...");
     }
   }
 
@@ -228,3 +237,5 @@ const SignIn = ({tokenSourceUid}) => {
     </div>
     );
   };
+
+export default SignIn;
