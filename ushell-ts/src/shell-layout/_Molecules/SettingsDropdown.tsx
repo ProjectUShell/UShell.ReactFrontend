@@ -32,46 +32,48 @@ const SettingsDropdown: React.FC<{
           />
         </svg>
       </button>
-      <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>
-        <div className="bg-backgroundone dark:bg-backgroundonedark p-1 rounded-md">
-          <div className="mb-4">
-            <RadioGroup
-              value={0}
-              key={0}
-              labelText="Layout Mode"
-              options={[<div>Vertical</div>, <div>Horizontal</div>]}
-              onChange={(index) => {
-                switch (index) {
-                  case 0:
-                    setLayoutMode(LayoutMode.Vertical);
-                    break;
-                  case 1:
-                    setLayoutMode(LayoutMode.Horizontal);
-                    break;
-                }
-              }}
-            ></RadioGroup>
+      {isOpen && (
+        <Dropdown setIsOpen={setIsOpen}>
+          <div className="bg-backgroundone dark:bg-backgroundonedark p-1 rounded-md">
+            <div className="mb-4">
+              <RadioGroup
+                value={0}
+                key={0}
+                labelText="Layout Mode"
+                options={[<div>Vertical</div>, <div>Horizontal</div>]}
+                onChange={(index) => {
+                  switch (index) {
+                    case 0:
+                      setLayoutMode(LayoutMode.Vertical);
+                      break;
+                    case 1:
+                      setLayoutMode(LayoutMode.Horizontal);
+                      break;
+                  }
+                }}
+              ></RadioGroup>
+            </div>
+            <div className="mb-4">
+              <RadioGroup
+                labelText="Color Mode"
+                value={0}
+                key={0}
+                options={[<div>Light</div>, <div>Dark</div>]}
+                onChange={(index) => {
+                  switch (index) {
+                    case 0:
+                      setColorMode(ColorMode.Light);
+                      break;
+                    case 1:
+                      setColorMode(ColorMode.Dark);
+                      break;
+                  }
+                }}
+              ></RadioGroup>
+            </div>
           </div>
-          <div className="mb-4">
-            <RadioGroup
-              labelText="Color Mode"
-              value={0}
-              key={0}
-              options={[<div>Light</div>, <div>Dark</div>]}
-              onChange={(index) => {
-                switch (index) {
-                  case 0:
-                    setColorMode(ColorMode.Light);
-                    break;
-                  case 1:
-                    setColorMode(ColorMode.Dark);
-                    break;
-                }
-              }}
-            ></RadioGroup>
-          </div>
-        </div>
-      </Dropdown>
+        </Dropdown>
+      )}
     </div>
   );
 };

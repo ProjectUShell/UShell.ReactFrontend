@@ -1,3 +1,5 @@
+import { MenuItem } from "./ShellMenu";
+
 export interface MenuItemState {
   collapsed: boolean;
 }
@@ -44,8 +46,11 @@ export async function toggleFolderCollapse(
   return shellMenuState;
 }
 
-export function activateItem(itemId: string, shellMenuState?: ShellMenuState) {
+export function activateItem(item: MenuItem, shellMenuState?: ShellMenuState) {
   if (!shellMenuState) shellMenuState = loadShellMenuState();
-  shellMenuState.activeItemId = itemId;
+  shellMenuState.activeItemId = item.id;
+  if (item.command) {
+    item.command(null);
+  }
   saveShellMenuState(shellMenuState);
 }

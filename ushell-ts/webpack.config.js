@@ -5,7 +5,7 @@ const deps = require("./package.json").dependencies;
 
 module.exports = {
   output: {
-    publicPath: "",
+    publicPath: "/",
     //publicPath: "http://localhost:3000/ushell/",
   },
   devServer: {

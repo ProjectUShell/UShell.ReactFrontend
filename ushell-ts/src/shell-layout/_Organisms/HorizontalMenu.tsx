@@ -18,23 +18,13 @@ const HorizontalMenu: React.FC<{ menuItems: MenuItem[] }> = ({ menuItems }) => {
     let newIsOpenState = { ...openStateById };
     newIsOpenState[id] = isOpen;
     setOpenStateById(newIsOpenState);
-    console.log("init render", newIsOpenState);
-    // rerender();
-
-    // setOpenStateById((os) => {
-    //   os[id] = isOpen;
-    //   console.log("isOpenState on Set", os);
-    //   return { ...os };
-    // });
   }
 
-  console.log("render", openStateById);
   return (
     <div className="flex items-center text-sm select-none">
       {menuItems.map((mi: MenuItem) => (
-        <>
+        <div key={mi.id}>
           <div
-            key={mi.id}
             className="flex items-center justify-between px-2 py-1 rounded-md hover:bg-backgroundfour dark:hover:bg-backgroundfourdark cursor-pointer"
             onClick={(e) => {
               setiIsOpen(mi.id, true);
@@ -43,13 +33,11 @@ const HorizontalMenu: React.FC<{ menuItems: MenuItem[] }> = ({ menuItems }) => {
             <div className="px-1"> {mi.label}</div>
             {mi.children && <ChevronDown size={4}></ChevronDown>}
           </div>
-          {mi.children && (
+          {mi.children && openStateById[mi.id] && (
             <Dropdown
               topOffset={2}
               rightOffset={0}
-              isOpen={openStateById[mi.id]}
               setIsOpen={(i) => {
-                console.log("setIsOpen");
                 setiIsOpen(mi.id, false);
               }}
             >
@@ -58,7 +46,7 @@ const HorizontalMenu: React.FC<{ menuItems: MenuItem[] }> = ({ menuItems }) => {
               </div>
             </Dropdown>
           )}
-        </>
+        </div>
       ))}
     </div>
   );

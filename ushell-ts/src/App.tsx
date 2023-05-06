@@ -16,14 +16,135 @@ import {
   Router,
   redirect,
   useNavigate,
+  createRoutesFromElements,
 } from "react-router-dom";
 import { activateItem } from "./shell-layout/ShellMenuState";
 
-import { UShellLayout } from "ushell-common-components"
+import { UShellLayout } from "ushell-common-components";
 import FolderIcon from "./shell-layout/_Icons/FolderIcon";
+import { WorkspaceManager } from "./workspace-handling/WorkspaceManager";
+import Workspace from "./workspace-handling/_Templates/Workspace";
+import { UsecaseState } from "ushell-modulebase/lib/usecaseState";
+import { PortfolioBasedWorkspaceManager } from "./portfolio-handling/PortfolioBasedWorkspaceManager";
+import { ModuleDescription } from "ushell-portfoliodescription";
+import { PortfolioManager } from "./portfolio-handling/PortfolioManager";
+import { PortfolioBasedMenuService } from "./portfolio-handling/PortfolioBasedMenuService";
+
+const demoModule: ModuleDescription = {
+  moduleUid: "1",
+  moduleTitle: "Demo",
+  moduleScopingKey: "1",
+  datasources: [],
+  workspaces: [
+    {
+      workspaceKey: "Employees",
+      workspaceTitle: "Employees",
+      isSidebar: false,
+    },
+    {
+      workspaceKey: "Products",
+      workspaceTitle: "Products",
+      isSidebar: false,
+    },
+  ],
+  usecases: [
+    {
+      useCaseKey: "EmployeeList",
+      title: "Employee List",
+      singletonActionkey: "1",
+      iconName: "",
+      widgetClass: "{test}",
+      unitOfWorkDefaults: {},
+    },
+    {
+      useCaseKey: "EmployeeDetails",
+      title: "Employee Details",
+      singletonActionkey: "2",
+      iconName: "",
+      widgetClass: "{test}",
+      unitOfWorkDefaults: {},
+    },
+    {
+      useCaseKey: "ProductList",
+      title: "Product List",
+      singletonActionkey: "3",
+      iconName: "",
+      widgetClass: "{test}",
+      unitOfWorkDefaults: {},
+    },
+    {
+      useCaseKey: "ProductDetails",
+      title: "Product Details",
+      singletonActionkey: "4",
+      iconName: "",
+      widgetClass: "{test}",
+      unitOfWorkDefaults: {},
+    },
+  ],
+  commands: [
+    {
+      uniqueCommandKey: "ShowEmplyees",
+      label: "Employees",
+      semantic: "",
+      iconKey: "testIcon",
+      targetWorkspacePath: "Employees",
+      targetWorkspaceKey: "Employees",
+      menuFolder: "Employees",
+      commandType: "ActivateWorkspace",
+    },
+    {
+      uniqueCommandKey: "ShowEmplyeeDetails",
+      label: "Edit Employee",
+      semantic: "",
+      iconKey: "testIcon",
+      targetWorkspacePath: "Employees",
+      targetWorkspaceKey: "Employees",
+      targetUsecaseKey: "EmployeeDetails",
+      menuFolder: "Employees",
+      commandType: "start-usecase",
+    },
+    {
+      uniqueCommandKey: "ShowProducts",
+      label: "Products",
+      semantic: "",
+      iconKey: "testIcon",
+      targetWorkspacePath: "Products",
+      targetWorkspaceKey: "Products",
+      menuFolder: "Products",
+      commandType: "ActivateWorkspace",
+    },
+    {
+      uniqueCommandKey: "ShowProductDetails",
+      label: "Edit Product",
+      semantic: "",
+      iconKey: "testIcon",
+      targetWorkspacePath: "Products",
+      targetWorkspaceKey: "Products",
+      targetUsecaseKey: "ProductDetails",
+      menuFolder: "Products",
+      commandType: "start-usecase",
+    },
+  ],
+  staticUsecaseAssignments: [
+    {
+      targetWorkspaceKey: "Employees",
+      useCaseKey: "EmployeeList",
+    },
+  ],
+};
+
+// class DummyWorkspaceManager extends WorkspaceManager {
+//   getUsecaseStates(workspaceKey: string): UsecaseState[] {
+//     return [];
+//   }
+// }
+
+PortfolioManager.SetModule(demoModule);
 
 const App = () => {
   const navigate = useNavigate();
+
+  PortfolioManager.GetWorkspaceManager().navigateMethod = navigate;
 
   const demoMenu: ShellMenu = {
     items: [
@@ -42,9 +163,8 @@ const App = () => {
             type: "Command",
             label: "Test",
             id: "3",
-            icon: <FolderIcon/>,
+            icon: <FolderIcon />,
             command: () => {
-              activateItem("3");
               navigate("/test");
             },
           },
@@ -52,26 +172,29 @@ const App = () => {
             type: "Command",
             label: "GItem 2",
             id: "4",
-            icon: <FolderIcon/>,
+            icon: <FolderIcon />,
           },
         ],
       },
       {
         type: "Folder",
-        label: "Folder 1",
+        label: "Employees",
         id: "5",
         children: [
           {
             type: "Command",
-            label: "Item 1",
+            label: "List of Employees",
             id: "6",
-            icon: <FolderIcon/>,
+            icon: <FolderIcon />,
+            command: (e) => {
+              PortfolioManager.GetWorkspaceManager().activateWorkspace("1");
+            },
           },
           {
             type: "Command",
             label: "Item 2",
             id: "7",
-            icon: <FolderIcon/>,
+            icon: <FolderIcon />,
           },
         ],
       },
@@ -84,13 +207,13 @@ const App = () => {
             type: "Command",
             label: "Item 3",
             id: "9",
-            icon: <FolderIcon/>,
+            icon: <FolderIcon />,
           },
           {
             type: "Command",
             label: "Item 4",
             id: "10",
-            icon: <FolderIcon/>,
+            icon: <FolderIcon />,
           },
           {
             type: "Folder",
@@ -101,13 +224,13 @@ const App = () => {
                 type: "Command",
                 label: "Item 3",
                 id: "12",
-                icon: <FolderIcon/>,
+                icon: <FolderIcon />,
               },
               {
                 type: "Command",
                 label: "Item 4",
                 id: "13",
-                icon: <FolderIcon/>,
+                icon: <FolderIcon />,
               },
             ],
           },
@@ -116,8 +239,10 @@ const App = () => {
     ],
   };
 
+  const demoMenu2: ShellMenu = PortfolioBasedMenuService.buildMenuFromModule();
+
   return (
-    <ShellLayout shellMenu={demoMenu}>
+    <ShellLayout shellMenu={demoMenu2}>
       <Outlet />
     </ShellLayout>
     // <FederatedComponentProxy
@@ -133,7 +258,26 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [{ path: "test", element: <UShellLayout></UShellLayout> }],
+
+    children: [
+      { path: "test", element: <UShellLayout></UShellLayout> },
+      {
+        path: ":workspaceKey",
+        element: (
+          <Workspace
+            workspaceManager={PortfolioManager.GetWorkspaceManager()}
+          ></Workspace>
+        ),
+      },
+      {
+        path: ":workspaceKey/:usecaseId",
+        element: (
+          <Workspace
+            workspaceManager={PortfolioManager.GetWorkspaceManager()}
+          ></Workspace>
+        ),
+      },
+    ],
   },
 ]);
 

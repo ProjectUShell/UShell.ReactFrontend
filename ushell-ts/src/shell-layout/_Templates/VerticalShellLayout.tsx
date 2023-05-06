@@ -9,7 +9,7 @@ const VerticalShellLayout: React.FC<{
   children: any;
 }> = ({ sidebarOpen, shellMenu, children }) => {
   return (
-    <div className={`h-screen flex overflow-hidden`}>
+    <div className={`flex overflow-hidden h-screen`}>
       {/* Sidebar */}
       <div
         className={`fixed z-30 lg:static inset-y-0 left-0 
@@ -24,7 +24,7 @@ const VerticalShellLayout: React.FC<{
 
       {/* Content */}
       <div
-        className="w-screen flex flex-col min-w-0 
+        className="w-screen flex h-full min-w-0 
           bg-backgroundtwo dark:bg-backgroundtwodark overflow-hidden"
       >
         {children}

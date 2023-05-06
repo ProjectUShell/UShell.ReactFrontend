@@ -1,15 +1,17 @@
 import React, { useEffect } from "react";
 
 const Dropdown: React.FC<{
-  isOpen: boolean;
   setIsOpen: (o: boolean) => void;
   topOffset?: number;
   rightOffset?: number;
   children: any;
-}> = ({ isOpen, setIsOpen, children, topOffset, rightOffset }) => {
-  if (!isOpen) {
-    return <></>;
-  }
+}> = ({ setIsOpen, children, topOffset, rightOffset }) => {
+  // if (!isOpen) {
+  //   console.log("not open");
+  //   return <></>;
+  // }
+
+  // return null;
 
   const handleEscape = (e: any) => {
     if (e.key == "Esc" || e.key == "Escape") {
@@ -18,6 +20,7 @@ const Dropdown: React.FC<{
   };
 
   useEffect(() => {
+    console.log("useEffect");
     document.addEventListener("keydown", handleEscape);
 
     return () => {
@@ -26,7 +29,9 @@ const Dropdown: React.FC<{
   }, []);
 
   const topOffsetCss: string = topOffset ? `top-${topOffset}` : "top-0";
-  const rightOffsetCss: string = rightOffset ? `right-${rightOffset}` : "right-0";
+  const rightOffsetCss: string = rightOffset
+    ? `right-${rightOffset}`
+    : "right-0";
   // const rightOffsetCss: string = rightOffset ? `left-${rightOffset}` : "left-0";
 
   return (

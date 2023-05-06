@@ -17,8 +17,6 @@ const VerticalMenu: React.FC<{ menuItems: MenuItem[] }> = ({ menuItems }) => {
     setRerenderTrigger((t) => t + 1);
   }
 
-  console.log("render Vert menu");
-
   return (
     <VerticalMenuInternal
       menuItems={menuItems}
@@ -35,7 +33,6 @@ const VerticalMenuInternal: React.FC<{
   triggerRerender: () => void;
   shellMenuState: ShellMenuState;
 }> = ({ menuItems, depth, triggerRerender, shellMenuState }) => {
-  console.log("render Vert menu Inner", depth);
 
   function onToggleFolderCollapse(itemId: string) {
     toggleFolderCollapse(shellMenuState!, itemId).then(
@@ -48,7 +45,6 @@ const VerticalMenuInternal: React.FC<{
 
   let depthCssClass: string = getDepthCssClass(depth);
 
-  console.log("depthCssClass", depthCssClass);
   return (
     <ul className="pt-2 select-none text-sm bg-backgroundone dark:bg-backgroundonedark rounded-md">
       {menuItems.map((mi: MenuItem) => (
@@ -66,12 +62,9 @@ const VerticalMenuInternal: React.FC<{
                 onToggleFolderCollapse(mi.id);
               }
               if (mi.type == "Command") {
-                activateItem(mi.id, shellMenuState);
+                activateItem(mi, shellMenuState);
               }
               triggerRerender();
-              if (mi.type == "Command" && mi.command) {
-                mi.command("asd");
-              }
             }}
           >
             {mi.icon && (

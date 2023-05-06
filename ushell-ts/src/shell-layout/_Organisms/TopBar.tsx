@@ -8,7 +8,7 @@ const TopBar: React.FC<{
   toggleSidebarOpen: () => void;
 }> = ({ setLayoutMode, setColorMode, toggleSidebarOpen }) => {
   return (
-    <header className="flex flex-col z-50 px-6 bg-backgroundone dark:bg-backgroundonedark text-textone dark:text-textonedark shadow-lg">
+    <header className="static top-0 flex flex-col z-50 px-6 bg-backgroundone dark:bg-backgroundonedark text-textone dark:text-textonedark shadow-lg">
       <div className="flex justify-between items-center py-1">
         <div className="flex items-center py-2">
           <h1>USHell</h1>

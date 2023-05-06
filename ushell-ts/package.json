@@ -14,6 +14,7 @@
     "@babel/core": "^7.21.4",
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-react": "^7.18.6",
+    "@types/uuid": "^9.0.1",
     "autoprefixer": "^10.4.14",
     "babel-loader": "^9.1.2",
     "html-webpack-plugin": "^5.5.0",
@@ -35,6 +36,8 @@
     "react-router-dom": "^6.10.0",
     "style-loader": "^3.3.2",
     "ushell-common-components": "^1.0.2",
-    "ushell-modulebase": "^1.0.0"
+    "ushell-modulebase": "^1.0.0",
+    "ushell-portfoliodescription": "^0.1.0",
+    "uuid": "^9.0.0"
   }
 }
