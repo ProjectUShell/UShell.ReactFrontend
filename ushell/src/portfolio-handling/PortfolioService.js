@@ -129,3 +129,25 @@ export function getHomeUseCase(portfolio) {
 export function getTitle(portfolio) {
   return portfolio.title;
 }
+
+export function getTokenSourcesForPrimaryUiTokenSourceUid(portfolio, primaryUiTokenSourceUid) {
+  let result = [];
+
+  console.log("Portfolio service: Current token source primary Uid -> ", primaryUiTokenSourceUid);
+
+  portfolio.tokenSources.forEach((ts) => {
+    console.log("Found token source: ", ts);
+
+    var tokenSourceKeys = Object.keys(ts);
+    var tokenSourceValues = Object.values(ts);
+
+    console.log("Portfolio service: Token source keys -> ", tokenSourceKeys[0]);
+    console.log("Portfolio service: Token source values -> ", tokenSourceValues[0]);
+
+    if (tokenSourceKeys[0] == primaryUiTokenSourceUid && tokenSourceValues) {
+      result.push(tokenSourceValues[0]);
+    }
+  });
+
+  return result;
+}

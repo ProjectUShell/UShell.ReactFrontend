@@ -1,0 +1,12 @@
+.shell__signin_container {
+    font-size: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.shell__signin_card {
+    height: 100%;
+    width: 500;
+    margin: 30px 0 0 0;
+}
