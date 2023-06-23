@@ -8,9 +8,7 @@ const HorizontalShellLayout: React.FC<{
   children: any;
 }> = ({ shellMenu, children }) => {
   return (
-    <div
-      className={`h-screen w-screen flex flex-col overflow-hidden bg-red-100`}
-    >
+    <div className={`h-screen flex flex-col overflow-hidden`}>
       <header
         className="flex flex-col z-20 px-6 bg-backgroundone dark:bg-backgroundonedark
       text-textone dark:text-textonedark shadow-md"
@@ -20,7 +18,7 @@ const HorizontalShellLayout: React.FC<{
         </div>
       </header>
       <div
-        className="w-screen h-screen flex flex-col min-w-0 
+        className="w-screen h-full flex min-w-0 
           bg-backgroundtwo text-gray-800 dark:bg-backgroundtwodark dark:text-white overflow-hidden"
       >
         {children}

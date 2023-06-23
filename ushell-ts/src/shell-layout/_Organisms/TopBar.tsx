@@ -6,12 +6,14 @@ const TopBar: React.FC<{
   setLayoutMode: (layoutMode: LayoutMode) => void;
   setColorMode: (colorMode: ColorMode) => void;
   toggleSidebarOpen: () => void;
-}> = ({ setLayoutMode, setColorMode, toggleSidebarOpen }) => {
+  title: string;
+  topBarElements?: JSX.Element[];
+}> = ({ setLayoutMode, setColorMode, toggleSidebarOpen, topBarElements, title }) => {
   return (
     <header className="static top-0 flex flex-col z-50 px-6 bg-backgroundone dark:bg-backgroundonedark text-textone dark:text-textonedark shadow-lg">
       <div className="flex justify-between items-center py-1">
         <div className="flex items-center py-2">
-          <h1>USHell</h1>
+          <h1>{title}</h1>
           <button className="ml-4" onClick={() => toggleSidebarOpen()}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -33,6 +35,10 @@ const TopBar: React.FC<{
         <div>Search</div>
 
         <div className="flex items-center justify-between py-2">
+          {topBarElements &&
+            topBarElements!.map((e: JSX.Element) => (
+              <div className="px-2"> {e}</div>
+            ))}
           <SettingsDropdown
             setLayoutMode={setLayoutMode}
             setColorMode={setColorMode}

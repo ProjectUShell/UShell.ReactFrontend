@@ -29,6 +29,10 @@ import { PortfolioBasedWorkspaceManager } from "./portfolio-handling/PortfolioBa
 import { ModuleDescription } from "ushell-portfoliodescription";
 import { PortfolioManager } from "./portfolio-handling/PortfolioManager";
 import { PortfolioBasedMenuService } from "./portfolio-handling/PortfolioBasedMenuService";
+import { RemoteWidgetDescription } from "./federation/RemoteWidgetDescription";
+import { IWidget } from "ushell-modulebase";
+import FederatedComponentProxy from "./federation/_Molecules/FederatedComponentProxy";
+import UsecaseInstanceDropdown from "./workspace-handling/_Molecules/UsecaseInstanceDropdown";
 
 const demoModule: ModuleDescription = {
   moduleUid: "1",
@@ -49,7 +53,7 @@ const demoModule: ModuleDescription = {
   ],
   usecases: [
     {
-      useCaseKey: "EmployeeList",
+      usecaseKey: "EmployeeList",
       title: "Employee List",
       singletonActionkey: "1",
       iconName: "",
@@ -57,15 +61,16 @@ const demoModule: ModuleDescription = {
       unitOfWorkDefaults: {},
     },
     {
-      useCaseKey: "EmployeeDetails",
-      title: "Employee Details",
+      usecaseKey: "EmployeeDetails",
+      title: "Employee Details {employeeId}",
       singletonActionkey: "2",
       iconName: "",
-      widgetClass: "{test}",
-      unitOfWorkDefaults: {},
+      widgetClass:
+        '{"scope": "ushell_demo_app", "module": "./EmployeeDetails", "url": "http://localhost:3001/remoteEntry.js"}',
+      unitOfWorkDefaults: { employeeId: 0 },
     },
     {
-      useCaseKey: "ProductList",
+      usecaseKey: "ProductList",
       title: "Product List",
       singletonActionkey: "3",
       iconName: "",
@@ -73,7 +78,7 @@ const demoModule: ModuleDescription = {
       unitOfWorkDefaults: {},
     },
     {
-      useCaseKey: "ProductDetails",
+      usecaseKey: "ProductDetails",
       title: "Product Details",
       singletonActionkey: "4",
       iconName: "",
@@ -85,50 +90,53 @@ const demoModule: ModuleDescription = {
     {
       uniqueCommandKey: "ShowEmplyees",
       label: "Employees",
-      semantic: "",
+      semantic: "primary",
       iconKey: "testIcon",
       targetWorkspacePath: "Employees",
       targetWorkspaceKey: "Employees",
       menuFolder: "Employees",
-      commandType: "ActivateWorkspace",
+      commandType: "activate-workspace",
     },
     {
-      uniqueCommandKey: "ShowEmplyeeDetails",
-      label: "Edit Employee",
-      semantic: "",
+      uniqueCommandKey: "ShowEmployeeDetails",
+      label: "New Employee",
+      semantic: "primary",
       iconKey: "testIcon",
       targetWorkspacePath: "Employees",
       targetWorkspaceKey: "Employees",
       targetUsecaseKey: "EmployeeDetails",
       menuFolder: "Employees",
       commandType: "start-usecase",
+      initUnitOfWork: {
+        mapDynamic: [{ use: "commandArgs://employeeId", for: "employeeId" }],
+      },
     },
     {
       uniqueCommandKey: "ShowProducts",
       label: "Products",
-      semantic: "",
+      semantic: "primary",
       iconKey: "testIcon",
       targetWorkspacePath: "Products",
       targetWorkspaceKey: "Products",
       menuFolder: "Products",
-      commandType: "ActivateWorkspace",
+      commandType: "activate-workspace",
     },
     {
       uniqueCommandKey: "ShowProductDetails",
       label: "Edit Product",
-      semantic: "",
+      semantic: "primary",
       iconKey: "testIcon",
       targetWorkspacePath: "Products",
       targetWorkspaceKey: "Products",
       targetUsecaseKey: "ProductDetails",
-      menuFolder: "Products",
+      menuFolder: "",
       commandType: "start-usecase",
     },
   ],
   staticUsecaseAssignments: [
     {
       targetWorkspaceKey: "Employees",
-      useCaseKey: "EmployeeList",
+      usecaseKey: "EmployeeList",
     },
   ],
 };
@@ -141,10 +149,46 @@ const demoModule: ModuleDescription = {
 
 PortfolioManager.SetModule(demoModule);
 
+function parseWidgetClass(
+  widgetClass: string,
+  input: IWidget
+): RemoteWidgetDescription {
+  try {
+    let result: RemoteWidgetDescription | undefined = JSON.parse(widgetClass);
+    if (result) {
+      result.inputData = input;
+      return result;
+    }
+  } catch (error) {}
+  return {
+    scope: "ushell_demo_app",
+    module: "./EmployeeList",
+    url: "http://localhost:3001/remoteEntry.js",
+    inputData: input,
+  };
+}
+
 const App = () => {
   const navigate = useNavigate();
 
   PortfolioManager.GetWorkspaceManager().navigateMethod = navigate;
+  PortfolioManager.GetWorkspaceManager().renderWidgetMethod = (
+    widgetClass: string,
+    input: IWidget
+  ) => {
+    const remoteWidgetDesc: RemoteWidgetDescription = parseWidgetClass(
+      widgetClass,
+      input
+    );
+    return (
+      <FederatedComponentProxy
+        scope={remoteWidgetDesc.scope}
+        module={remoteWidgetDesc.module}
+        url={remoteWidgetDesc.url}
+        inputData={remoteWidgetDesc.inputData}
+      ></FederatedComponentProxy>
+    );
+  };
 
   const demoMenu: ShellMenu = {
     items: [
@@ -242,7 +286,15 @@ const App = () => {
   const demoMenu2: ShellMenu = PortfolioBasedMenuService.buildMenuFromModule();
 
   return (
-    <ShellLayout shellMenu={demoMenu2}>
+    <ShellLayout
+      title="UShell"
+      shellMenu={demoMenu2}
+      topBarElements={[
+        <UsecaseInstanceDropdown
+          workspaceManager={PortfolioManager.GetWorkspaceManager()}
+        ></UsecaseInstanceDropdown>,
+      ]}
+    >
       <Outlet />
     </ShellLayout>
     // <FederatedComponentProxy

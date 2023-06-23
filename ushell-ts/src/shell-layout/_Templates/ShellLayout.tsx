@@ -11,10 +11,12 @@ import {
 } from "../ShellSettings";
 import { ShellMenu } from "../ShellMenu";
 
-const ShellLayout: React.FC<{ shellMenu: ShellMenu; children: any }> = ({
-  shellMenu,
-  children,
-}) => {
+const ShellLayout: React.FC<{
+  shellMenu: ShellMenu;
+  topBarElements?: JSX.Element[];
+  children: any;
+  title: string;
+}> = ({ shellMenu, children, topBarElements, title }) => {
   const [shellSettings, setShellSettings] = useState<ShellSettings>({
     colorMode: ColorMode.Light,
     layoutMode: LayoutMode.Vertical,
@@ -60,7 +62,7 @@ const ShellLayout: React.FC<{ shellMenu: ShellMenu; children: any }> = ({
   //       ></TopBar>
   //       <div className="bg-green-200 w-screen flex h-screen border-4 border-violet-600">
   //         <div
-  //           className={`fixed z-30 lg:static inset-y-0 left-0 
+  //           className={`fixed z-30 lg:static inset-y-0 left-0
   //         bg-backgroundone dark:bg-backgroundonedark py-4 overflow-auto transform ${
   //           sidebarOpen
   //             ? "translate-x-0 w-64 px-2  ease-out transition-all duration-200"
@@ -89,6 +91,8 @@ const ShellLayout: React.FC<{ shellMenu: ShellMenu; children: any }> = ({
           setLayoutMode={setLayoutMode}
           setColorMode={setColorMode}
           toggleSidebarOpen={toggleSidebarOpen}
+          topBarElements={topBarElements}
+          title={title}
         ></TopBar>
         {shellSettings.layoutMode == LayoutMode.Vertical ? (
           <VerticalShellLayout sidebarOpen={sidebarOpen} shellMenu={shellMenu}>

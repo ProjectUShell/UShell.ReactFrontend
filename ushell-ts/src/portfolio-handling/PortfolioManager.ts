@@ -2,11 +2,12 @@ import {
   ModuleDescription,
   UsecaseDescription,
 } from "ushell-portfoliodescription";
+
 import { WorkspaceManager } from "../workspace-handling/WorkspaceManager";
 import { PortfolioBasedWorkspaceManager } from "./PortfolioBasedWorkspaceManager";
 
 export class PortfolioManager {
-  constructor(private _WorkspaceManager: WorkspaceManager) {}
+  constructor(private _WorkspaceManager: PortfolioBasedWorkspaceManager) {}
 
   private static _Instance: PortfolioManager | null = null;
   static GetModule(): ModuleDescription {
@@ -30,7 +31,7 @@ export class PortfolioManager {
     this._Instance._Module = module;
   }
 
-  public static GetWorkspaceManager(): WorkspaceManager {
+  public static GetWorkspaceManager(): PortfolioBasedWorkspaceManager {
     return this._Instance!._WorkspaceManager;
   }
 }

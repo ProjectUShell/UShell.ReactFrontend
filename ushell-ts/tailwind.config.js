@@ -30,6 +30,7 @@ module.exports = {
           "rgb(var(--color-background-four-dark) / <alpha-value>)",
         textonedark: "rgb(var(--color-text-one-dark) / <alpha-value>)",
         texttwodark: "rgb(var(--color-text-two-dark) / <alpha-value>)",
+        accent: "rgb(var(--color-accent) / <alpha-value>)"
       },
     },
     fontFamily: {

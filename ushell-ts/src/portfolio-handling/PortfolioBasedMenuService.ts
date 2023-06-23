@@ -5,6 +5,7 @@ import {
 import { MenuItem, ShellMenu } from "../shell-layout/ShellMenu";
 import { PortfolioManager } from "./PortfolioManager";
 import { ShellMenuState } from "../shell-layout/ShellMenuState";
+import { PortfolioBasedWorkspaceManager } from "./PortfolioBasedWorkspaceManager";
 
 export class PortfolioBasedMenuService {
   public static buildMenuFromModule(): ShellMenu {
@@ -15,39 +16,6 @@ export class PortfolioBasedMenuService {
       this.pushIntoMenu(command, result, module);
     });
     return result;
-    return {
-      items: module.commands.map((c: CommandDescription) => {
-        return {
-          id: c.uniqueCommandKey,
-          label: c.label,
-          type: "Command",
-          command: PortfolioBasedMenuService.getCommandMethod(c),
-        };
-      }),
-    };
-  }
-
-  private static getCommandMethod(c: CommandDescription): () => void {
-    switch (
-      c.commandType //TODO_KRN CommandType festlegen
-    ) {
-      case "ActivateWorkspace": {
-        return () => {
-          PortfolioManager.GetWorkspaceManager().activateWorkspace(
-            c.targetWorkspaceKey!
-          );
-        };
-      }
-      case "start-usecase": {
-        return () => {
-          PortfolioManager.GetWorkspaceManager().startUsecase(
-            c.targetWorkspaceKey!,
-            c.targetUsecaseKey!
-          );
-        };
-      }
-    }
-    throw "invalid command type";
   }
 
   private static pushIntoMenu(
@@ -55,7 +23,10 @@ export class PortfolioBasedMenuService {
     shellMenu: ShellMenu,
     module: ModuleDescription
   ) {
-    //TODO_KRN what is menuOwnerUsecaseKey?
+    if (command.menuFolder == "") {
+      return;
+    }
+    //TODO_KRN what is menuOwnerUsecaseKey? => tooblar im usecase selbst
     const menuFolders: string[] = command.menuFolder
       ? command.menuFolder.split("\\")
       : [];
@@ -72,7 +43,8 @@ export class PortfolioBasedMenuService {
         id: command.uniqueCommandKey,
         label: command.label,
         type: "Command",
-        command: this.getCommandMethod(command),
+        command: (e: any) =>
+          PortfolioManager.GetWorkspaceManager().executeCommand(command, e),
       };
       menuItems.push(menuItem);
     }

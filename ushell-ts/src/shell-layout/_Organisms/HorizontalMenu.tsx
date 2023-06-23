@@ -35,13 +35,13 @@ const HorizontalMenu: React.FC<{ menuItems: MenuItem[] }> = ({ menuItems }) => {
           </div>
           {mi.children && openStateById[mi.id] && (
             <Dropdown
-              topOffset={2}
+              topOffset={0}
               rightOffset={0}
               setIsOpen={(i) => {
                 setiIsOpen(mi.id, false);
               }}
             >
-              <div className="p-2 bg-backgroundone dark:bg-backgroundonedark rounded-md">
+              <div className="p-2 bg-backgroundone dark:bg-backgroundonedark rounded-md border-2 border-solid border-black">
                 <VerticalMenu menuItems={mi.children}></VerticalMenu>
               </div>
             </Dropdown>

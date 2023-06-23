@@ -6,12 +6,6 @@ const Dropdown: React.FC<{
   rightOffset?: number;
   children: any;
 }> = ({ setIsOpen, children, topOffset, rightOffset }) => {
-  // if (!isOpen) {
-  //   console.log("not open");
-  //   return <></>;
-  // }
-
-  // return null;
 
   const handleEscape = (e: any) => {
     if (e.key == "Esc" || e.key == "Escape") {
@@ -20,7 +14,6 @@ const Dropdown: React.FC<{
   };
 
   useEffect(() => {
-    console.log("useEffect");
     document.addEventListener("keydown", handleEscape);
 
     return () => {
