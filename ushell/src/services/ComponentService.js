@@ -11,10 +11,7 @@ export class ComponentResolverRegister {
     if (!componentIdentifer) {
       return null;
     }
-    console.log("componentIdentifer", componentIdentifer);
-    console.log("resolversByIdentifer", this);
-    console.log("resolversByIdentifer1", this.resolversByIdentifer);
-    console.log("resolversByIdentifer2", this.resolversByIdentifer[componentIdentifer]);
+
     // return null;
     return this.resolversByIdentifer[componentIdentifer](inputData);
   }

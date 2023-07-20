@@ -8,12 +8,15 @@ const ModuleViewSuspense = ({ useCase, input, startExecuteCommand }) => {
     input: input,
     executeCommand: startExecuteCommand,
   };
+  if (!useCase) {
+    return <div>No Home Usecase defined</div>;
+  }
+
   if (!useCase.url) {
     const UseCaseComponent = componentRegister.resolve(
       useCase.component,
       inputData
     );
-    console.log("UseCaseComponent", UseCaseComponent);
     return <div>{UseCaseComponent}</div>;
   }
   return (

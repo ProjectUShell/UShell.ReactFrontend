@@ -27,6 +27,7 @@ import {
   ComponetResloverProvider,
 } from "../services/componentService";
 import DataDisplay from "./DefaultUseCases/DataDisplay";
+import TeresasKomponente from "./DefaultUseCases/TeresasKomponente";
 import { PortfolioLoader } from "../portfolio-handling/PortfolioLoader";
 import { ConfigProvider, theme } from "antd";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -45,12 +46,21 @@ const UShell = ({ customComponentResolverRegister }) => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    PortfolioLoader.loadModulePortfolio().then((p) => {
+    PortfolioLoader.loadModulePortfolio2().then((p) => {
+      console.log("loadModulePortfolio2", p);
       const mi = getMenuItems(p);
+      console.log("mi", mi);
       setMenuItems(mi);
       setPortfolio(p);
-      console.log("updateModulePortfolio2", portfolio);
       setReady(true);
+    });
+    PortfolioLoader.loadModulePortfolio().then((p) => {
+      // console.log("loadModulePortfolio", p);
+      // const mi = getMenuItems(p);
+      // console.log("mi", mi);
+      // setMenuItems(mi);
+      // setPortfolio(p);
+      // setReady(true);
     });
   }, []);
 
@@ -94,8 +104,8 @@ const UShell = ({ customComponentResolverRegister }) => {
   if (!componetResolverRegister) {
     componetResolverRegister = new ComponentResolverRegister();
   }
-  componetResolverRegister.register("DataDisplay", (inputData) => {
-    return <DataDisplay inputData={inputData}></DataDisplay>;
+  componetResolverRegister.register("TeresasKomponente", (inputData) => {
+    return <TeresasKomponente inputData={inputData}></TeresasKomponente>;
   });
 
   const { darkAlgorithm, compactAlgorithm } = theme;
@@ -106,7 +116,7 @@ const UShell = ({ customComponentResolverRegister }) => {
       : "linear-gradient(99deg, rgb(246, 249, 254) 0%, rgb(232, 241, 248) 100%)";
 
   const colorContainerBgBase = colorMode == "dark" ? "#434B54" : "#FDFEFF";
-  
+
   return (
     <ConfigProvider
       theme={{

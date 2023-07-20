@@ -46,9 +46,7 @@ function getAntdMenuItem(label, key, icon, children, type) {
 
 export function getMenuItems(portfolio) {
   const commands = getCommands(portfolio);
-
   console.log("commands", commands);
-
   let result = [];
 
   let menuStructureByMenuKey = {};
@@ -110,10 +108,6 @@ function pushIntoMenuStructure(portfolio, command, structure) {
     };
   } else if (command.commandType == "start-useCase") {
     item.command = (navigate, useCaseContext, input) => {
-      console.log("start-useCase", {
-        useCaseContext: useCaseContext,
-        input: input,
-      });
       EnterNewUsecase(
         portfolio,
         useCaseContext,
@@ -126,10 +120,6 @@ function pushIntoMenuStructure(portfolio, command, structure) {
     };
   } else if (command.commandType == "start-standalone-useCase") {
     item.command = (navigate, useCaseContext, input) => {
-      console.log("start-useCase", {
-        useCaseContext: useCaseContext,
-        input: input,
-      });
       navigate(`../${rootUrlPath}main/${command.targetUseCaseKey}`);
     };
   } else if (command.commandType == "usecase-action") {
@@ -190,14 +180,12 @@ function pushIntoMenuStructure(portfolio, command, structure) {
   }
 
   function stringContains(base, stringsToCheck) {
-    console.log("base", base);
-
     for (let s of stringsToCheck) {
       if (base.toLowerCase().includes(s)) {
         return true;
       }
     }
-    
+
     return false;
   }
 
@@ -280,7 +268,11 @@ function pushIntoMenuStructure(portfolio, command, structure) {
   }
 }
 
-export function convertToAntdItems(menuItems, addExpandIcon, hasParent = false) {
+export function convertToAntdItems(
+  menuItems,
+  addExpandIcon,
+  hasParent = false
+) {
   if (!menuItems) {
     return [];
   }
@@ -324,9 +316,11 @@ export function convertToAntdItems(menuItems, addExpandIcon, hasParent = false) 
         key: mi.id ? mi.id : mi.label,
         icon: <i className={icon}></i>,
         children:
-          mi.items?.length > 0 ? convertToAntdItems(mi.items, false, true) : undefined,
+          mi.items?.length > 0
+            ? convertToAntdItems(mi.items, false, true)
+            : undefined,
         onSelect: () => console.log("selected"),
-        type: mi.items?.length > 0 ? (hasParent ? "group" : "submenu") : null
+        type: mi.items?.length > 0 ? (hasParent ? "group" : "submenu") : null,
       });
     });
 

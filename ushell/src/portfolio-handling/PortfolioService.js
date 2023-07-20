@@ -121,9 +121,8 @@ export function getCommand(portfolio, commandKey) {
 }
 
 export function getHomeUseCase(portfolio) {
-  const homeUseCaseKey = portfolio.homeUseCaseKey;
-  console.log("home key", homeUseCaseKey);
-  return getUseCase(portfolio, homeUseCaseKey);
+  // const homeUseCaseKey = portfolio.homeUseCaseKey;
+  return getUseCase(portfolio, "home");
 }
 
 export function getTitle(portfolio) {

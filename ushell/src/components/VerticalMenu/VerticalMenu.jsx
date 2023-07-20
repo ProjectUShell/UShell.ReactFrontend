@@ -13,7 +13,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import UseCaseStateContext from "../../portfolio-handling/UseCaseStateContext";
 
-const { useToken } = theme; 
+const { useToken } = theme;
 
 const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
   const navigate = useNavigate();
@@ -41,14 +41,6 @@ const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
     menuItem.command(navigate);
   };
 
-  console.log("workspaceKey", workspaceKey);
-  console.log(
-    "useCaseState?.statesPerWorkspace[workspaceKey]",
-    useCaseState?.statesPerWorkspace[workspaceKey]
-  );
-  console.log("useCaseState", useCaseState);
-  console.log("Selected useCaseKey", useCaseKey);
-
   return (
     <div className="mobileHidden">
       <Sider
@@ -60,7 +52,7 @@ const VerticalMenu = ({ menuItems, siderCollapsed, setSiderCollapsed }) => {
           bottom: 0,
           marginTop: "44px",
           background: token.colorBgContainer,
-          color: token.colorText
+          color: token.colorText,
         }}
         collapsible
         collapsed={siderCollapsed}

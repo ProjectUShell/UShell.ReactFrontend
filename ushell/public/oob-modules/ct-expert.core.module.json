@@ -1,0 +1,217 @@
+{
+  "moduleUid": "1B6CB9E8-4D5C-8481-4990-DA95321A818F",
+  "moduleTitle":"CT-Expert Core-Module",
+  "moduleScopingKey":"cte-",
+  "dataSchema": {
+    "Entities": [
+        {
+          "invariantTechnicalName": "orscf/sms/institute",
+          "displayLabelSingular": "Institute",
+          "displayLabelPlural": "Institutes",
+          "iconKeySingular":"pi pi-tag",
+          "iconKeyPlural":"pi pi-tags"
+        }
+    ],
+    "Relations": [
+    ]
+  },
+  "dataSources":[
+    {
+      "dataSourceUid":"3FFD0BC8-A790-4EB3-49EA-AEA3A8B3E403",
+      "entityName": "orscf/sms/institute",
+      "provider": "rest-ujmw-crud-v1",
+      "connectionParams": { "url": "http://localhost:12345/sms" },
+      "readOnly": false,
+      "searchableByKeyFields": true,
+      "searchableByFulltext": true
+    }
+  ],
+  "displayModels": [
+    {
+        "TargetEntityName":"Institute",
+        "invisibleFields": [],
+        "iconNameSingular":"pi pi-tag",
+        "iconNamePlural":"pi pi-tags"
+    }
+  ],
+  "workspaces":[
+    {
+      "workspaceKey": "{M}sms/institutes",
+      "iconName": "pi pi-tags",
+      "defaultStaticUseCaseKeys":[ "{M}sms-institute-list" ],
+      "isSidebar": false
+    }
+  ],
+  "useCases": [
+    {
+      "useCaseKey":"{M}sms-institute-list",
+      "title": "anhand WidgetProperty: {labelPlural}",
+      "singletonActionkey":"{UseCaseKey} <<<<< singlton",
+      "widgetClass": "genericEntityList",
+      "widgetArguments":{
+        "dataSourceUid":"3FFD0BC8-A790-4EB3-49EA-AEA3A8B3E403",
+        "mandatoryScopingFilter": { }
+       }
+    },
+    {
+      "useCaseKey":"{M}sms-institute-createnew",
+      "title": "anhand WidgetProperty: {labelSingular} #{recordId}{dirtyMarker}",
+      "singletonActionkey":"{useCaseInstanceUid}",
+      "widgetClass": "genericEntityDetails",
+      "widgetArguments":{
+        "dataSourceUid":"3FFD0BC8-A790-4EB3-49EA-AEA3A8B3E403",
+        "createNewMode": true,
+        "mandatoryScopingFilter": { }   ,
+        "INFO": "jedes widget hat per inteface folgende props: UseCaseKey + parentWorkSpaceKey + useCaseInstanceUid über die es an die sachen drankommen kann",
+        "INFO2":" aber auch, dass diese al variable da sind, was wichtig für singletonActionkey ist!!!!"
+      }
+    },
+    {
+      "useCaseKey":"{M}sms-institute-edit",
+      "title": "anhand WidgetProperty: {labelSingular} #{recordId}{dirtyMarker}",
+      "singletonActionkey":"{uniqueUseCaseKey}-{recordId}",
+      "widgetClass": "genericEntityDetails",
+      "widgetArguments":{
+        "dataSourceUid":"3FFD0BC8-A790-4EB3-49EA-AEA3A8B3E403",
+        "createNewMode": false,
+        "mandatoryScopingFilter": { },
+        "INFO": "jedes widget hat per inteface folgende props: uniqueUseCaseKey + parentWorkSpacePath + useCaseInstanceUid über die es an die sachen drankommen kann",
+        "INFO2":" aber auch, dass diese al variable da sind, was wichtig für singletonActionkey ist!!!!"
+      }
+    }
+  ],
+  "useCaseExtensionRules":[
+    {
+      "useCaseExtensionRuleUid": "C9EC0CF2-D78B-7689-415A-037A21195A8D",
+      "label": "Related documents",
+      "useCaseToExtendKey":"tools-panel  <<<< (default-uc der immer da ist! und die primäre sidebar representiert! darin ist alles untereineander!!!!",
+      "extendingUseCaseKey":"{M}sms-institute-edit",
+      "argumentMapping":{ "recordId": "recordIf (PropAmQuellUc), für alle anderen vom widget geforderten args geht ein modaler dialog BEIM START DES EXTENDETEN USECASE AUF auf"},
+      "requiredRuntimeTagsToEnable": ["DMS"],
+      "separateCommandbar": false
+    }
+  ],
+  "commands":[
+    {
+      "uniqueCommandKey":"{M}sms-sxxxxxxxxxxxx",
+      "label": "submit...",
+      "semantic": "primray|secondary|success|info|warning|help|danger",
+      "description": null,
+      "iconKey":"pi pi-tag",
+      "iconKeyChecked": null,
+      "WarningToConfirm": null,
+
+      "commandType":"activate-workspace",
+      "targetWorkspaceUniqueName": "{M}sms-institutes",
+
+      "requiredRuntimeTagsForAvailability": [],
+      "requiredRuntimeTagsForVisibility": ["devmode"],
+      "checkedRepresentingRuntimeTag": null,
+      "locateAfterCommand": "{M}sms-sxxxxxxxxxxxx",
+      "locationPriority": 100,
+      "menuOwnerUseCaseKey":"uniqueUseCaseKey (magicValue 'menu') der null für GLOBAL (das menü ist das menü des global usecases)",
+      "menuFolder":"root ist nicht erlaubt, wenn null oder '' dann wird 'MISC' draus am ende! dann gibts noch debn magicvalue 'MY' -> diese items landen im user.menü rechts oben"
+    },
+    {
+      "uniqueCommandKey":"{M}sms-sxxxxxxxxxxxx",
+      "label": "ffff",
+      "semantic": "primray|secondary|success|info|warning|help|danger",
+      "description": null,
+      "iconKey":"pi pi-tag",
+      "iconKeyChecked": null,
+      "WarningToConfirm": null,
+
+      "commandType":"start-usecase     nur für dynmische!!!!, weil statische sind immer in einem workpace oder enderen UC drin",
+      "targetWorkspacePath": "{M}sms/institutes   KANN AUCH NULL SEIN, dann ist es modal (aber auch mit tabs!! submit ist dann gemeinsam!), oder der maigic-value '<CURRENT>'",
+      "useCaseArgumentMapping":{ "idToEdit": "selectedId (PropAmQuellUc), für alle anderen vom widget geforderten args geht ein modaler dialog auf"},
+
+      "requiredRuntimeTagsForAvailability": [],
+      "requiredRuntimeTagsForVisibility": ["devmode"],
+      "checkedRepresentingRuntimeTag": null,
+      "locateAfterCommand": "{M}sms-sxxxxxxxxxxxx",
+      "locationPriority": 100,
+      "menuOwnerUseCaseKey":"uniqueUseCaseKey (magicValue 'menu') der null für GLOBAL (das menü ist das menü des global usecases)",
+      "menuFolder":"root ist nicht erlaubt, wenn null oder '' dann wird 'MISC' draus am ende! dann gibts noch debn magicvalue 'MY' -> diese items landen im user.menü rechts oben"
+    },
+    {
+      "uniqueCommandKey":"{M}sms-sxxxxxxxxxxxx",
+      "label": "Submit!",
+      "semantic": "primray|secondary|success|info|warning|help|danger",
+      "description": null,
+      "iconKey":"pi pi-tag",
+      "iconKeyChecked": null,
+      "WarningToConfirm": null,
+
+
+      "commandType":"usecase-action",
+      "actionName": "submit",
+
+      "requiredRuntimeTagsForAvailability": ["!{invalid}", "klammer-scgreibweise geht nur für usecase-actions und geht direkt auf boolsche member des widgets vom akt usecase!"],
+      "requiredRuntimeTagsForVisibility": [],
+      "checkedRepresentingRuntimeTag": null,
+      "locateAfterCommand": "{M}sms-sxxxxxxxxxxxx",
+      "locationPriority": 100,
+      "menuOwnerUseCaseKey":"uniqueUseCaseKey (magicValue 'menu') der null für GLOBAL (das menü ist das menü des global usecases)",
+      "menuFolder":"root ist nicht erlaubt, wenn null oder '' dann wird 'MISC' draus am ende! dann gibts noch debn magicvalue 'MY' -> diese items landen im user.menü rechts oben"
+    },
+    {
+      "uniqueCommandKey":"{M}sms-sxxxxxxxxxxxx",
+      "label": "Submit!",
+      "semantic": "primray|secondary|success|info|warning|help|danger",
+      "description": null,
+      "iconKey":"pi pi-tag",
+      "iconKeyChecked": null,
+      "WarningToConfirm": null,
+
+      "commandType":"usecase-action",
+      "triggerableFrom":"usecase:KEYKEYEKY",
+      "actionName": "cancel",
+
+      "requiredRuntimeTagsForAvailability": [],
+      "requiredRuntimeTagsForVisibility": ["devmode"],
+      "checkedRepresentingRuntimeTag": null,
+      "locateAfterCommand": "{M}sms-sxxxxxxxxxxxx",
+      "locationPriority": 100,
+
+      "menuOwnerUseCaseKey":"uniqueUseCaseKey (magicValue 'menu') der null für GLOBAL (das menü ist das menü des global usecases)",
+      "menuFolder":"root ist nicht erlaubt, wenn null oder '' dann wird 'MISC' draus am ende! dann gibts noch debn magicvalue 'MY' -> diese items landen im user.menü rechts oben"
+    },
+    {
+        "relatedEntityName":"klassex",
+        "relatedEntityMultiple":true
+    },
+    {
+      "commandUid":"75130448-F728-2487-43D4-4D923A0AB579",
+      "commandType":"backend-action",
+      "actionName" : "foo",
+      "wait": true
+    },
+    {
+      "uniqueCommandKey":"{M}sms-sxxxxxxxxxxxx",
+      "label": "DEV-MODE",
+      "semantic": "warning",
+      "description": "toggle dev-mode",
+      "iconKey":"pi pi-circle-off",
+      "iconKeyChecked": "pi pi-check-circle",
+      "WarningToConfirm": null,
+
+      "commandType":"set-runtime-tag",
+      "tagsToSet": ["!devmode", "! ist hier ein toggle  -einREMOVE"],
+
+       "requiredRuntimeTagsForAvailability": [],
+       "requiredRuntimeTagsForVisibility": [],
+       "checkedRepresentingRuntimeTag": "devmode",
+       "locateAfterCommand": "{M}sms-sxxxxxxxxxxxx",
+       "locationPriority": 100,
+       "menuOwnerUseCaseKey":"uniqueUseCaseKey (magicValue 'menu') der null für GLOBAL (das menü ist das menü des global usecases)",
+       "menuFolder":"root ist nicht erlaubt, wenn null oder '' dann wird 'MISC' draus am ende! dann gibts noch debn magicvalue 'MY' -> diese items landen im user.menü rechts oben"
+     }
+  ],
+  "handlers":[
+    {
+      "handlerUid":"{75130448-F728-2487-43D4-4D923A0AB579}",
+      "requiredRuntimeTag": ["devmode"],
+      "eventType":"after-command-triggered|after-tag-set|after-tag-removed|after-usecase-action|after-usecase-start|after-backend-action-failed/after-backend-action-completed"
+    }
+  ]
+}
