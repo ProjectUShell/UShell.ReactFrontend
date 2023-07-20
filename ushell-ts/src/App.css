@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 250 210 225;
+    --color-secondary: 197 222 221;
+    --color-background-one: 253 254 255;
+    --color-background-two: 231 240 247;
+    --color-background-three: 238 245 250;
+    --color-background-four: 201 206 217;
+    --color-text-one: 81 92 102;    
+    --color-text-two: 52 58 64;
+    --color-background-one-dark: 67 75 84;
+    --color-background-two-dark: 51 59 66;
+    --color-background-three-dark: 94 101 111;
+    --color-background-four-dark: 103 110 119;
+    --color-text-one-dark: 253 254 255;
+    --color-text-two-dark: 231 240 247;
+    --color-accent: 200 140 235;
+    /* ... */
+  }
+}
