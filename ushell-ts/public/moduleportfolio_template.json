@@ -1,6 +1,28 @@
 {
   "homeUseCaseKey": "DataDisplayDemo",
-  "title": "Teresas Antiquitäten",
+  "title": "QS Manager",
+  "primaryUiTokenSourceUid": "2DB9CFC8-67B2-8DA9-4790-BC7FDE7ECB73",
+	"tokenSources": [
+    {
+      "2DB9CFC8-67B2-8DA9-4790-BC7FDE7ECB73": [
+        {
+          "issueMode": "OAUTH_CIBA_CODEGRAND",
+          "clientId":"1c295a48ec933ccdf6b7",
+          "clientSecret":"345fe992a7255b396a0b4ab47dafcd54f127c924",
+          "authEndpointUrl": "https://github.com/login/oauth/authorize",
+          "authProxyProfile": "github_lh3000",
+          "additionalAuthArgs": {
+
+          },
+          "retrieveEndpointUrl": "https://github.com/login/oauth/access_token",
+          "additionalRetrieveArgs":{
+            
+          },
+          "retrieveViaGet": false
+        }
+      ]
+    }
+  ],
   "moduleDescriptions": [
     {
       "moduleUid": "DataManager",

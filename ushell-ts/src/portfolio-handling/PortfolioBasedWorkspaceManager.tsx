@@ -44,6 +44,10 @@ export class PortfolioBasedWorkspaceManager extends WorkspaceManager {
       PortfolioManager.GetModule().staticUsecaseAssignments.filter(
         (sua) => sua.targetWorkspaceKey == workspaceKey
       );
+    console.log(
+      "PortfolioManager.GetModule().staticUsecaseAssignments.",
+      PortfolioManager.GetModule().staticUsecaseAssignments
+    );
 
     const unsavedStaticUsecaseAssignments: StaticUsecaseAssignment[] =
       staticUsecaseAssignments.filter(
@@ -53,6 +57,14 @@ export class PortfolioBasedWorkspaceManager extends WorkspaceManager {
           ) == undefined
       );
 
+    console.log(
+      "PortfolioManager.GetModule().usecases",
+      PortfolioManager.GetModule().usecases
+    );
+    console.log(
+      "unsavedStaticUsecaseAssignments",
+      unsavedStaticUsecaseAssignments
+    );
     const usecaseStatesFromUnsavedStaticUsecaseAssignments: UsecaseState[] =
       unsavedStaticUsecaseAssignments.map((sua) => {
         const useCase: UsecaseDescription | undefined =
@@ -134,7 +146,6 @@ export class PortfolioBasedWorkspaceManager extends WorkspaceManager {
   }
 
   startUsecase(workspaceKey: string, usecaseKey: string, uowData: any): void {
-
     //TODO für init von uow: auch aufrufendes usecaseInstance verwenden => iwie pushen / merken
     const usecase: UsecaseDescription | undefined =
       PortfolioManager.GetModule().usecases.find(
@@ -193,7 +204,8 @@ export class PortfolioBasedWorkspaceManager extends WorkspaceManager {
     );
   }
 
-  areEqual(unitOfWork: any, uowData: any): Boolean { //TODO singletonActionKey ist Vergeichsschlüssel (so wie title auflösen mit Platzhaltern)
+  areEqual(unitOfWork: any, uowData: any): Boolean {
+    //TODO singletonActionKey ist Vergeichsschlüssel (so wie title auflösen mit Platzhaltern)
     if (!unitOfWork && !uowData) {
       return true;
     }
@@ -242,6 +254,7 @@ export class PortfolioBasedWorkspaceManager extends WorkspaceManager {
     if (!usecase) {
       return <div>No Usecase Description</div>;
     }
+    console.log("usecase", usecase);
     if (!this.renderWidgetMethod) {
       return <div>{usecase.widgetClass}</div>;
     }

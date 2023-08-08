@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import * as ReactDOMClient from "react-dom/client";
 
 import "./App.css";
-import ShellLayout from "./shell-layout/_Templates/ShellLayout";
+// import ShellLayout from "./shell-layout/_Templates/ShellLayout";
+import { ShellLayout } from "ushell-common-components";
 import SettingsDropdown from "./shell-layout/_Molecules/SettingsDropdown";
 import RadioGroup from "./shell-layout/_Atoms/RadioGroup";
 import { MenuItemType, ShellMenu } from "./shell-layout/ShellMenu";
@@ -20,7 +21,7 @@ import {
 } from "react-router-dom";
 import { activateItem } from "./shell-layout/ShellMenuState";
 
-import { UShellLayout } from "ushell-common-components";
+// import { UShellLayout } from "ushell-common-components";
 import FolderIcon from "./shell-layout/_Icons/FolderIcon";
 import { WorkspaceManager } from "./workspace-handling/WorkspaceManager";
 import Workspace from "./workspace-handling/_Templates/Workspace";
@@ -33,6 +34,7 @@ import { RemoteWidgetDescription } from "./federation/RemoteWidgetDescription";
 import { IWidget } from "ushell-modulebase";
 import FederatedComponentProxy from "./federation/_Molecules/FederatedComponentProxy";
 import UsecaseInstanceDropdown from "./workspace-handling/_Molecules/UsecaseInstanceDropdown";
+import { loadModuleDescription } from "./portfolio-handling/PortfolioLoader";
 
 const demoModule: ModuleDescription = {
   moduleUid: "1",
@@ -141,12 +143,6 @@ const demoModule: ModuleDescription = {
   ],
 };
 
-// class DummyWorkspaceManager extends WorkspaceManager {
-//   getUsecaseStates(workspaceKey: string): UsecaseState[] {
-//     return [];
-//   }
-// }
-
 PortfolioManager.SetModule(demoModule);
 
 function parseWidgetClass(
@@ -159,7 +155,9 @@ function parseWidgetClass(
       result.inputData = input;
       return result;
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log("error parsing widget class", error)
+  }
   return {
     scope: "ushell_demo_app",
     module: "./EmployeeList",
@@ -170,6 +168,15 @@ function parseWidgetClass(
 
 const App = () => {
   const navigate = useNavigate();
+
+  const [menu, setMenu] = useState<ShellMenu | null>(null);
+
+  useEffect(() => {
+    loadModuleDescription().then((md) => {
+      PortfolioManager.SetModule(md);
+      setMenu(PortfolioBasedMenuService.buildMenuFromModule());
+    });
+  }, []);
 
   PortfolioManager.GetWorkspaceManager().navigateMethod = navigate;
   PortfolioManager.GetWorkspaceManager().renderWidgetMethod = (
@@ -285,10 +292,14 @@ const App = () => {
 
   const demoMenu2: ShellMenu = PortfolioBasedMenuService.buildMenuFromModule();
 
+  if (!menu) {
+    return <div>Shell is loading...</div>;
+  }
+
   return (
     <ShellLayout
       title="UShell"
-      shellMenu={demoMenu2}
+      shellMenu={menu}
       topBarElements={[
         <UsecaseInstanceDropdown
           workspaceManager={PortfolioManager.GetWorkspaceManager()}
@@ -312,7 +323,6 @@ const router = createBrowserRouter([
     element: <App />,
 
     children: [
-      { path: "test", element: <UShellLayout></UShellLayout> },
       {
         path: ":workspaceKey",
         element: (

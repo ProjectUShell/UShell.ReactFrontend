@@ -21,8 +21,8 @@ const Workspace: React.FC<{
     (ucs) => ucs.usecaseInstanceUid == usecaseId
   ); //TODO_KRN how to determine which usecase is active? => save in wsm
 
-
   // TODO Idee: usecaseKey-singletonActionKey (oder instanceUid) als key im localstorage für einzelne usecaseStates
+  console.log("workspaceManager", workspaceManager);
 
   if (!activeUsecaseState) {
     const staticUsecaseStates: UsecaseState[] = usecaseStates.filter(
