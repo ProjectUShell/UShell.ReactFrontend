@@ -57,28 +57,30 @@ export class PortfolioBasedWorkspaceManager extends WorkspaceManager {
           ) == undefined
       );
 
-    console.log(
-      "PortfolioManager.GetModule().usecases",
-      PortfolioManager.GetModule().usecases
-    );
-    console.log(
-      "unsavedStaticUsecaseAssignments",
-      unsavedStaticUsecaseAssignments
-    );
     const usecaseStatesFromUnsavedStaticUsecaseAssignments: UsecaseState[] =
       unsavedStaticUsecaseAssignments.map((sua) => {
         const useCase: UsecaseDescription | undefined =
           PortfolioManager.GetModule().usecases.find(
             (u) => u.usecaseKey == sua.usecaseKey
           );
-        return {
-          fixed: true,
-          parentWorkspaceKey: workspaceKey,
-          unitOfWork: sua.initUnitOfWork ? sua.initUnitOfWork : {},
-          usecaseInstanceUid: uuidv4(),
-          title: useCase!.title,
-          usecaseKey: sua.usecaseKey,
-        };
+        if (!useCase) {
+          console.error("No UsecaseDescription", sua);
+          throw "No UsecaseDescription";
+        }
+        return this.initializeUsecase(
+          useCase,
+          workspaceKey,
+          true,
+          sua.initUnitOfWork
+        );
+        // return {
+        //   fixed: true,
+        //   parentWorkspaceKey: workspaceKey,
+        //   unitOfWork: sua.initUnitOfWork ? sua.initUnitOfWork : {},
+        //   usecaseInstanceUid: uuidv4(),
+        //   title: useCase!.title,
+        //   usecaseKey: sua.usecaseKey,
+        // };
       });
     const usecaseStates: UsecaseState[] =
       usecaseStatesFromUnsavedStaticUsecaseAssignments.concat(
@@ -86,6 +88,34 @@ export class PortfolioBasedWorkspaceManager extends WorkspaceManager {
       );
     this.saveWorkspaceState(workspaceKey, usecaseStates);
     return usecaseStates;
+  }
+
+  private initializeUsecase(
+    useCase: UsecaseDescription,
+    parentWorkspaceKey: string,
+    fixed: boolean,
+    uowInitializationData?: any
+  ): UsecaseState {
+    let uow: any = {};
+    if (useCase.unitOfWorkDefaults) {
+      uow = ArgumentMapper.resolveDynamicMapping(
+        useCase.unitOfWorkDefaults,
+        {},
+        true
+      );
+    }
+    if (uowInitializationData) {
+      ArgumentMapper.copyRecursive(uowInitializationData, uow);
+    }
+    console.log("uow", uow)
+    return {
+      usecaseInstanceUid: uuidv4(),
+      usecaseKey: useCase.usecaseKey,
+      title: useCase.title,
+      fixed: fixed,
+      parentWorkspaceKey: parentWorkspaceKey,
+      unitOfWork: uow,
+    };
   }
 
   getDynamicUsecaseStates(): UsecaseState[] {
@@ -255,6 +285,7 @@ export class PortfolioBasedWorkspaceManager extends WorkspaceManager {
       return <div>No Usecase Description</div>;
     }
     console.log("usecase", usecase);
+    console.log("input", input);
     if (!this.renderWidgetMethod) {
       return <div>{usecase.widgetClass}</div>;
     }

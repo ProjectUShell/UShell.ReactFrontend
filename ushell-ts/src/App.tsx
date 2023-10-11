@@ -3,7 +3,7 @@ import * as ReactDOMClient from "react-dom/client";
 
 import "./App.css";
 // import ShellLayout from "./shell-layout/_Templates/ShellLayout";
-import { ShellLayout } from "ushell-common-components";
+import { GuifadFuse, ShellLayout } from "ushell-common-components";
 import SettingsDropdown from "./shell-layout/_Molecules/SettingsDropdown";
 import RadioGroup from "./shell-layout/_Atoms/RadioGroup";
 import { MenuItemType, ShellMenu } from "./shell-layout/ShellMenu";
@@ -148,7 +148,7 @@ PortfolioManager.SetModule(demoModule);
 function parseWidgetClass(
   widgetClass: string,
   input: IWidget
-): RemoteWidgetDescription {
+): RemoteWidgetDescription | null {
   try {
     let result: RemoteWidgetDescription | undefined = JSON.parse(widgetClass);
     if (result) {
@@ -156,7 +156,8 @@ function parseWidgetClass(
       return result;
     }
   } catch (error) {
-    console.log("error parsing widget class", error)
+    // console.log("error parsing widget class", error)
+    return null;
   }
   return {
     scope: "ushell_demo_app",
@@ -183,18 +184,32 @@ const App = () => {
     widgetClass: string,
     input: IWidget
   ) => {
-    const remoteWidgetDesc: RemoteWidgetDescription = parseWidgetClass(
+    const remoteWidgetDesc: RemoteWidgetDescription | null = parseWidgetClass(
       widgetClass,
       input
     );
-    return (
-      <FederatedComponentProxy
-        scope={remoteWidgetDesc.scope}
-        module={remoteWidgetDesc.module}
-        url={remoteWidgetDesc.url}
-        inputData={remoteWidgetDesc.inputData}
-      ></FederatedComponentProxy>
-    );
+    if (remoteWidgetDesc) {
+      return (
+        <FederatedComponentProxy
+          scope={remoteWidgetDesc.scope}
+          module={remoteWidgetDesc.module}
+          url={remoteWidgetDesc.url}
+          inputData={remoteWidgetDesc.inputData}
+        ></FederatedComponentProxy>
+      );
+    }
+    if (widgetClass == "guifadFuse") {
+      const uow: any = input.state.unitOfWork;
+      const fuseUrl: string = uow.fuseUrl;
+      console.log("fuseUrl", fuseUrl);
+      return (
+        <GuifadFuse
+          fuseUrl={uow.fuseUrl}
+          rootEntityName="Employee"
+        ></GuifadFuse>
+      );
+    }
+    return <div>Invalid Widget Class</div>;
   };
 
   const demoMenu: ShellMenu = {

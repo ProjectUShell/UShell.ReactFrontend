@@ -4,9 +4,15 @@ import { PortfolioManager } from "./PortfolioManager";
 import { CommandDescription } from "ushell-portfoliodescription";
 
 export class WidgetHost implements IWidgetHost {
+  
+  getDataSourceForEntity(entityName: string, storeName?: string | undefined): Promise<IDataSource> {
+    throw new Error("Method not implemented.");
+  }
+
   populateChangedState(changedState: UsecaseState): void {
     throw new Error("Method not implemented.");
   }
+
   subscribeEvent(name: string, subscriber: (args: object) => void): void {
     throw new Error("Method not implemented.");
   }

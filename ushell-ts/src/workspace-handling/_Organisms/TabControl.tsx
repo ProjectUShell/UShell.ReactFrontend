@@ -44,7 +44,7 @@ const TabControl: React.FC<{
           </div>
         ))}
       </div>
-      <div className="h-full bg-backgroundone dark:bg-backgroundonedark">
+      <div className="h-full bg-backgroundone dark:bg-backgroundonedark flex flex-col">
         {tabItems[activeTabIndex]?.title}
         {tabItems[activeTabIndex]?.renderMethod &&
           tabItems[activeTabIndex]?.renderMethod!()}

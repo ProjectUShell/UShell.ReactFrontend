@@ -35,10 +35,16 @@
   ],
   "workspaces": [
     {
-      "workspaceKey": "Hello World",      
+      "workspaceKey": "Hello World",
       "iconName": "test-icon",
       "defaultStaticUseCaseKeys": ["{M}sms-institute-list"],
       "isSidebar": false
+    },
+    {
+      "workspaceKey": "Demo",
+      "iconName": "test-icon",
+      "isSidebar": false,
+      "workspaceTitle": "Demo"
     },
     {
       "workspaceKey": "Employees",
@@ -49,6 +55,13 @@
     }
   ],
   "usecases": [
+    {
+      "usecaseKey": "guifadDemo",
+      "widgetClass": "guifadFuse",
+      "title": "Guifad Demo",
+      "singletonActionkey": "{UseCaseKey}",
+      "unitOfWorkDefaults": { "fuseUrl": "https://localhost:7204/api/" }
+    },
     {
       "useCaseKey": "home",
       "component": "TeresasKomponente"
@@ -105,6 +118,15 @@
   ],
   "commands": [
     {
+      "uniqueCommandKey": "showGuifadDemo",
+      "label": "Guifad Demo",
+      "commandType": "activate-workspace",
+      "targetWorkspacePath": "Business\\Transactions",
+      "targetWorkspaceKey": "Demo",
+      "menuFolder": "Demo",
+      "iconKey": "fa-solid fa-heart"
+    },
+    {
       "uniqueCommandKey": "{M}sms-sxxxxxxxxxxxx",
       "label": "submit",
       "semantic": "primray|secondary|success|info|warning|help|danger",
@@ -156,6 +178,7 @@
     }
   ],
   "staticUsecaseAssignments": [
-    { "usecaseKey": "EmployeeList", "targetWorkspaceKey": "Employees" }
+    { "usecaseKey": "EmployeeList", "targetWorkspaceKey": "Employees" },
+    { "usecaseKey": "guifadDemo", "targetWorkspaceKey": "Demo" }
   ]
 }
