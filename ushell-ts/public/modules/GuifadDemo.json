@@ -1,0 +1,72 @@
+{
+  "moduleUid": "1B6CB9E8-4D5C-8481-4990-DA95321A818F",
+  "moduleTitle": "GuifadDemo",
+  "moduleScopingKey": "cte-",
+  "dataSchema": {
+    "Entities": [],
+    "Relations": []
+  },
+  "dataSources": [],
+  "displayModels": [],
+  "workspaces": [
+    {
+      "workspaceKey": "ValidationOverview",
+      "iconName": "test-icon",
+      "defaultStaticUseCaseKeys": ["ValidationOverview"],
+      "isSidebar": false
+    },
+    {
+      "workspaceKey": "Reports",
+      "iconName": "test-icon",
+      "defaultStaticUseCaseKeys": ["Reports"],
+      "isSidebar": false
+    }
+  ],
+  "usecases": [
+    {
+      "usecaseKey": "ValidationOverview",
+      "widgetClass": "guifadFuse",
+      "title": "Guifad Demo",
+      "singletonActionkey": "{UseCaseKey}",
+      "unitOfWorkDefaults": { "fuseUrl": "https://localhost:7204/api/" }
+    },
+    {
+      "usecaseKey": "Reports",
+      "widgetClass": "guifadFuse",
+      "title": "Reports",
+      "singletonActionkey": "{UseCaseKey}",
+      "unitOfWorkDefaults": { "fuseUrl": "https://localhost:7204/api/" }
+    }
+  ],
+  "useCaseExtensionRules": [],
+  "commands": [
+    {
+      "uniqueCommandKey": "showValidationOverview",
+      "label": "Validation Overview",
+      "commandType": "activate-workspace",
+      "targetWorkspacePath": "Business\\Transactions",
+      "targetWorkspaceKey": "ValidationOverview",
+      "iconKey": "fa-solid fa-heart"
+    },    
+    {
+      "uniqueCommandKey": "shoReports",
+      "label": "Reports",
+      "commandType": "activate-workspace",
+      "targetWorkspacePath": "Business\\Transactions",
+      "targetWorkspaceKey": "Reports",
+      "menuFolder": "Data",
+      "iconKey": "fa-solid fa-heart"
+    }
+  ],
+  "handlers": [],
+  "staticUsecaseAssignments": [
+    {
+      "usecaseKey": "ValidationOverview",
+      "targetWorkspaceKey": "ValidationOverview"
+    },
+    {
+      "usecaseKey": "Reports",
+      "targetWorkspaceKey": "Reports"
+    }
+  ]
+}

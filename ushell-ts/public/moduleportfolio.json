@@ -1,152 +1,19 @@
 {
-  "homeUseCaseKey": "DataDisplayDemo",
-  "title": "Teresas Antiquitäten",
-  "moduleDescriptions": [
-    {
-      "moduleUid": "DataManager",
-      "moduleTitle": "DataManager",
-      "workspaces": [
-        {
-          "workspaceKey": "Transactions",
-          "workspaceTitle": "Transactions",
-          "defaultStaticUseCaseKeys": ["TransactionList"]
-        },
-        {
-          "workspaceKey": "Products",
-          "workspaceTitle": "Products",
-          "defaultStaticUseCaseKeys": ["ProductList"]
-        },
-        {
-          "workspaceKey": "Employees",
-          "workspaceTitle": "Employees",
-          "defaultStaticUseCaseKeys": ["EmployeeList"]
-        },
-        {
-          "workspaceKey": "Payments",
-          "workspaceTitle": "Payments",
-          "defaultStaticUseCaseKeys": ["PaymentList"]
-        },
-        {
-          "workspaceKey": "Demo",
-          "workspaceTitle": "Demo",
-          "defaultStaticUseCaseKeys": ["DataDisplayDemo"]
-        }
-      ],
-      "useCases": [
-        {
-          "useCaseKey": "TransactionList",
-          "title": "All Transaction",
-          "module": "ushell_demo_app",
-          "component": "./TransactionList",
-          "url": "http://localhost:3002/remoteEntry.js"
-        },
-        {
-          "useCaseKey": "ProductList",
-          "title": "All Products",
-          "module": "ushell_demo_app",
-          "component": "./ProductList",
-          "url": "http://localhost:3002/remoteEntry.js"
-        },
-        {
-          "useCaseKey": "ProductDetails",
-          "title": "Product Details",
-          "module": "ushell_demo_app",
-          "component": "./ProductDetails",
-          "url": "http://localhost:3002/remoteEntry.js"
-        },
-        {
-          "useCaseKey": "PaymentList",
-          "title": "All Payments",
-          "module": "ushell_demo_app",
-          "component": "./PaymentList",
-          "url": "http://localhost:3001/remoteEntry.js"
-        },
-        {
-          "useCaseKey": "EmployeeList",
-          "title": "Employee List",
-          "module": "ushell_demo_app",
-          "component": "./EmployeeList",
-          "url": "http://localhost:3001/remoteEntry.js"
-        },
-        {
-          "useCaseKey": "EmployeeDetails",
-          "title": "Edit Employee",
-          "module": "ushell_demo_app",
-          "component": "./EmployeeDetails",
-          "url": "http://localhost:3001/remoteEntry.js"
-        },
-        {
-          "useCaseKey": "DataDisplayDemo",
-          "title": "Data Display Demo",
-          "component": "DataDisplay"
-        }
-      ],
-      "commands": [
-        {
-          "uniqueCommandKey": "ShowDashboard",
-          "label": "Dashboard",
-          "commandType": "start-standalone-useCase",
-          "targetWorkspacePath": "Demo\\DataDisplayDemo1",
-          "targetUseCaseKey": "DataDisplayDemo"
-        },
-        {
-          "uniqueCommandKey": "Transactions",
-          "label": "Transactions",
-          "commandType": "activate-workspace",
-          "targetWorkspacePath": "Business\\Transactions",
-          "targetWorkspaceKey": "Transactions",
-          "menuFolder": "Business",
-          "iconKey": "fa-solid fa-heart"
-        },
-        {
-          "uniqueCommandKey": "Products",
-          "label": "Products",
-          "commandType": "activate-workspace",
-          "targetWorkspacePath": "Business\\Products",
-          "targetWorkspaceKey": "Products",
-          "menuFolder": "Business"
-        },
-        {
-          "uniqueCommandKey": "EmployeeList",
-          "label": "Employees",
-          "commandType": "activate-workspace",
-          "targetWorkspacePath": "Employees\\EmployeeList",
-          "targetWorkspaceKey": "Employees",
-          "menuFolder": "Employees"
-        },
-        {
-          "uniqueCommandKey": "ShowEmployeeDetails",
-          "label": "Employee Details",
-          "commandType": "start-useCase",
-          "targetUseCaseKey": "EmployeeDetails",
-          "targetWorkspaceKey": "Employees",
-          "menuFolder": "Employees"
-        },
-        {
-          "uniqueCommandKey": "ShowProductDetails",
-          "label": "Product Details",
-          "commandType": "start-useCase",
-          "targetUseCaseKey": "ProductDetails",
-          "targetWorkspaceKey": "Products",
-          "menuFolder": "Business"
-        },
-        {
-          "uniqueCommandKey": "PaymentList",
-          "label": "Payments",
-          "commandType": "activate-workspace",
-          "targetWorkspacePath": "Employees\\Payments",
-          "targetWorkspaceKey": "Payments",
-          "menuFolder": "Employees"
-        },
-        {
-          "uniqueCommandKey": "ShowDataDislpayDemo",
-          "label": "Show Data Display Demo",
-          "commandType": "activate-workspace",
-          "targetWorkspacePath": "Demo\\DataDisplayDemo",
-          "targetWorkspaceKey": "Demo",
-          "menuFolder": "Demo"
-        }
-      ]
-    }
-  ]
+  "applicationTitle": "CT Expert - Study Cockpit",
+  "oAuthProxyUrl": "https://ct-expert.de/oauth/",
+  "oAuthProxyProfile": "github_lh4200",
+  "primaryUiTokenSourceUid": "4E888413-243B-22A9-4407-6AF84F43A12E",
+  "uShellLicenceKey":"bearer-mit-legal-contact+application-title-drin",
+  "authTokenSource": "frontend-generated-mode1",
+  "authTokenSourceParam": { "iss": "CTE-SPA", "exp":"100D", "sub":"%U"},
+  "authTokenIsPersistent": true,
+  "ciConfigUrl": "ct-expert.ci.json",
+  "legalContactMdUrl": "legal-contact.md",
+  "licenseAgreementMdUrl": "license-agreement.md",
+  "moduleDescriptionUrls": [
+    "./oob-modules/test.json",
+    "./oob-modules/test2.json"
+  ],
+  "intialRuntimeTags": ["!Prod"],
+  "landingWorkspaceName": "workspace-1"
 }

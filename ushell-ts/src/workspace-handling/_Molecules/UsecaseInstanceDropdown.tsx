@@ -14,9 +14,9 @@ const UsecaseInstanceDropdown: React.FC<{
     <div>
       <button className="relative" onClick={() => setIsOpen((o) => !o)}>
         <ClipboardIcon></ClipboardIcon>
-        <button className="absolute -right-1 -top-2 rounded-full w-4 h-4 bg-accent text-xs">
+        <p className="absolute -right-1 -top-2 rounded-full w-4 h-4 bg-accent text-xs">
           {openUsecaseStates.length}
-        </button>
+        </p>
       </button>
       {isOpen && (
         <Dropdown setIsOpen={setIsOpen}>

@@ -1,37 +1,45 @@
 import {
   ModuleDescription,
+  PortfolioDescription,
   UsecaseDescription,
 } from "ushell-portfoliodescription";
 
 import { WorkspaceManager } from "../workspace-handling/WorkspaceManager";
-import { PortfolioBasedWorkspaceManager } from "./PortfolioBasedWorkspaceManager";
 
 export class PortfolioManager {
-  constructor(private _WorkspaceManager: PortfolioBasedWorkspaceManager) {}
+  constructor(private _WorkspaceManager: WorkspaceManager) {}
 
   private static _Instance: PortfolioManager | null = null;
   static GetModule(): ModuleDescription {
     return this.GetInstance()._Module!;
   }
 
+  static GetPortfolio(): PortfolioDescription {
+    return this.GetInstance()._Portfolio!;
+  }
+
   private static GetInstance(): PortfolioManager {
     if (!this._Instance) {
-      this._Instance = new PortfolioManager(
-        new PortfolioBasedWorkspaceManager()
-      );
+      this._Instance = new PortfolioManager(new WorkspaceManager());
     }
     return this._Instance;
   }
 
   private _Module: ModuleDescription | null = null;
+  private _Portfolio: PortfolioDescription | null = null;
 
-  public static SetModule(module: ModuleDescription) {
+  public static SetModule(
+    portfolio: PortfolioDescription,
+    module: ModuleDescription
+  ) {
+    console.log("SetModule", portfolio)
     this._Instance = null;
-    this._Instance = new PortfolioManager(new PortfolioBasedWorkspaceManager());
+    this._Instance = new PortfolioManager(new WorkspaceManager());
     this._Instance._Module = module;
+    this._Instance._Portfolio = portfolio;
   }
 
-  public static GetWorkspaceManager(): PortfolioBasedWorkspaceManager {
-    return this._Instance!._WorkspaceManager;
+  public static GetWorkspaceManager(): WorkspaceManager {
+    return PortfolioManager.GetInstance()._WorkspaceManager;
   }
 }

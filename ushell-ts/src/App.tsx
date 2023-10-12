@@ -4,312 +4,64 @@ import * as ReactDOMClient from "react-dom/client";
 import "./App.css";
 // import ShellLayout from "./shell-layout/_Templates/ShellLayout";
 import { GuifadFuse, ShellLayout } from "ushell-common-components";
-import SettingsDropdown from "./shell-layout/_Molecules/SettingsDropdown";
-import RadioGroup from "./shell-layout/_Atoms/RadioGroup";
-import { MenuItemType, ShellMenu } from "./shell-layout/ShellMenu";
+import { ShellMenu } from "./shell-layout/ShellMenu";
 import HomeIcon from "./shell-layout/_Icons/HomeIcon";
 import {
   createBrowserRouter,
   Outlet,
   RouterProvider,
-  Routes,
-  Route,
-  Router,
-  redirect,
   useNavigate,
-  createRoutesFromElements,
+  useParams,
+  useSearchParams,
 } from "react-router-dom";
-import { activateItem } from "./shell-layout/ShellMenuState";
 
 // import { UShellLayout } from "ushell-common-components";
 import FolderIcon from "./shell-layout/_Icons/FolderIcon";
-import { WorkspaceManager } from "./workspace-handling/WorkspaceManager";
 import Workspace from "./workspace-handling/_Templates/Workspace";
-import { UsecaseState } from "ushell-modulebase/lib/usecaseState";
-import { PortfolioBasedWorkspaceManager } from "./portfolio-handling/PortfolioBasedWorkspaceManager";
-import { ModuleDescription } from "ushell-portfoliodescription";
 import { PortfolioManager } from "./portfolio-handling/PortfolioManager";
 import { PortfolioBasedMenuService } from "./portfolio-handling/PortfolioBasedMenuService";
 import { RemoteWidgetDescription } from "./federation/RemoteWidgetDescription";
 import { IWidget } from "ushell-modulebase";
 import FederatedComponentProxy from "./federation/_Molecules/FederatedComponentProxy";
 import UsecaseInstanceDropdown from "./workspace-handling/_Molecules/UsecaseInstanceDropdown";
-import { loadModuleDescription } from "./portfolio-handling/PortfolioLoader";
+import { ModuleDescription } from "ushell-portfoliodescription";
+import { PortfolioLoader } from "./portfolio-handling/PortfolioLoader";
 
-const demoModule: ModuleDescription = {
-  moduleUid: "1",
-  moduleTitle: "Demo",
-  moduleScopingKey: "1",
-  datasources: [],
-  workspaces: [
-    {
-      workspaceKey: "Employees",
-      workspaceTitle: "Employees",
-      isSidebar: false,
-    },
-    {
-      workspaceKey: "Products",
-      workspaceTitle: "Products",
-      isSidebar: false,
-    },
-  ],
-  usecases: [
-    {
-      usecaseKey: "EmployeeList",
-      title: "Employee List",
-      singletonActionkey: "1",
-      iconName: "",
-      widgetClass: "{test}",
-      unitOfWorkDefaults: {},
-    },
-    {
-      usecaseKey: "EmployeeDetails",
-      title: "Employee Details {employeeId}",
-      singletonActionkey: "2",
-      iconName: "",
-      widgetClass:
-        '{"scope": "ushell_demo_app", "module": "./EmployeeDetails", "url": "http://localhost:3001/remoteEntry.js"}',
-      unitOfWorkDefaults: { employeeId: 0 },
-    },
-    {
-      usecaseKey: "ProductList",
-      title: "Product List",
-      singletonActionkey: "3",
-      iconName: "",
-      widgetClass: "{test}",
-      unitOfWorkDefaults: {},
-    },
-    {
-      usecaseKey: "ProductDetails",
-      title: "Product Details",
-      singletonActionkey: "4",
-      iconName: "",
-      widgetClass: "{test}",
-      unitOfWorkDefaults: {},
-    },
-  ],
-  commands: [
-    {
-      uniqueCommandKey: "ShowEmplyees",
-      label: "Employees",
-      semantic: "primary",
-      iconKey: "testIcon",
-      targetWorkspacePath: "Employees",
-      targetWorkspaceKey: "Employees",
-      menuFolder: "Employees",
-      commandType: "activate-workspace",
-    },
-    {
-      uniqueCommandKey: "ShowEmployeeDetails",
-      label: "New Employee",
-      semantic: "primary",
-      iconKey: "testIcon",
-      targetWorkspacePath: "Employees",
-      targetWorkspaceKey: "Employees",
-      targetUsecaseKey: "EmployeeDetails",
-      menuFolder: "Employees",
-      commandType: "start-usecase",
-      initUnitOfWork: {
-        mapDynamic: [{ use: "commandArgs://employeeId", for: "employeeId" }],
-      },
-    },
-    {
-      uniqueCommandKey: "ShowProducts",
-      label: "Products",
-      semantic: "primary",
-      iconKey: "testIcon",
-      targetWorkspacePath: "Products",
-      targetWorkspaceKey: "Products",
-      menuFolder: "Products",
-      commandType: "activate-workspace",
-    },
-    {
-      uniqueCommandKey: "ShowProductDetails",
-      label: "Edit Product",
-      semantic: "primary",
-      iconKey: "testIcon",
-      targetWorkspacePath: "Products",
-      targetWorkspaceKey: "Products",
-      targetUsecaseKey: "ProductDetails",
-      menuFolder: "",
-      commandType: "start-usecase",
-    },
-  ],
-  staticUsecaseAssignments: [
-    {
-      targetWorkspaceKey: "Employees",
-      usecaseKey: "EmployeeList",
-    },
-  ],
-};
-
-PortfolioManager.SetModule(demoModule);
-
-function parseWidgetClass(
-  widgetClass: string,
-  input: IWidget
-): RemoteWidgetDescription | null {
-  try {
-    let result: RemoteWidgetDescription | undefined = JSON.parse(widgetClass);
-    if (result) {
-      result.inputData = input;
-      return result;
-    }
-  } catch (error) {
-    // console.log("error parsing widget class", error)
-    return null;
-  }
-  return {
-    scope: "ushell_demo_app",
-    module: "./EmployeeList",
-    url: "http://localhost:3001/remoteEntry.js",
-    inputData: input,
-  };
-}
+const plm: any = document.querySelector('meta[name="portfolioLocation"]');
+const portfolioLocation: string = plm ? plm.content : "";
 
 const App = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const portfolio: string | null = searchParams.get("portfolio");
 
+  // states
   const [menu, setMenu] = useState<ShellMenu | null>(null);
 
+  // effects
   useEffect(() => {
-    loadModuleDescription().then((md) => {
-      PortfolioManager.SetModule(md);
-      setMenu(PortfolioBasedMenuService.buildMenuFromModule());
-    });
-  }, []);
-
-  PortfolioManager.GetWorkspaceManager().navigateMethod = navigate;
-  PortfolioManager.GetWorkspaceManager().renderWidgetMethod = (
-    widgetClass: string,
-    input: IWidget
-  ) => {
-    const remoteWidgetDesc: RemoteWidgetDescription | null = parseWidgetClass(
-      widgetClass,
-      input
+    console.log("App booting portfolio", portfolio);
+    PortfolioLoader.loadModuleDescription(portfolioLocation, portfolio).then(
+      (p) => {
+        console.log("md in App", p);
+        PortfolioManager.SetModule(p.portfolio, p.module);
+        setMenu(PortfolioBasedMenuService.buildMenuFromModule());
+      }
     );
-    if (remoteWidgetDesc) {
-      return (
-        <FederatedComponentProxy
-          scope={remoteWidgetDesc.scope}
-          module={remoteWidgetDesc.module}
-          url={remoteWidgetDesc.url}
-          inputData={remoteWidgetDesc.inputData}
-        ></FederatedComponentProxy>
-      );
-    }
-    if (widgetClass == "guifadFuse") {
-      const uow: any = input.state.unitOfWork;
-      const fuseUrl: string = uow.fuseUrl;
-      console.log("fuseUrl", fuseUrl);
-      return (
-        <GuifadFuse
-          fuseUrl={uow.fuseUrl}
-          rootEntityName="Employee"
-        ></GuifadFuse>
-      );
-    }
-    return <div>Invalid Widget Class</div>;
-  };
+  }, [portfolio]);
 
-  const demoMenu: ShellMenu = {
-    items: [
-      {
-        type: "Command",
-        label: "Home",
-        icon: <HomeIcon />,
-        id: "1",
-      },
-      {
-        type: "Group",
-        label: "Gruppe 1",
-        id: "2",
-        children: [
-          {
-            type: "Command",
-            label: "Test",
-            id: "3",
-            icon: <FolderIcon />,
-            command: () => {
-              navigate("/test");
-            },
-          },
-          {
-            type: "Command",
-            label: "GItem 2",
-            id: "4",
-            icon: <FolderIcon />,
-          },
-        ],
-      },
-      {
-        type: "Folder",
-        label: "Employees",
-        id: "5",
-        children: [
-          {
-            type: "Command",
-            label: "List of Employees",
-            id: "6",
-            icon: <FolderIcon />,
-            command: (e) => {
-              PortfolioManager.GetWorkspaceManager().activateWorkspace("1");
-            },
-          },
-          {
-            type: "Command",
-            label: "Item 2",
-            id: "7",
-            icon: <FolderIcon />,
-          },
-        ],
-      },
-      {
-        type: "Folder",
-        label: "Folder 2",
-        id: "8",
-        children: [
-          {
-            type: "Command",
-            label: "Item 3",
-            id: "9",
-            icon: <FolderIcon />,
-          },
-          {
-            type: "Command",
-            label: "Item 4",
-            id: "10",
-            icon: <FolderIcon />,
-          },
-          {
-            type: "Folder",
-            label: "Subfolder 2",
-            id: "11",
-            children: [
-              {
-                type: "Command",
-                label: "Item 3",
-                id: "12",
-                icon: <FolderIcon />,
-              },
-              {
-                type: "Command",
-                label: "Item 4",
-                id: "13",
-                icon: <FolderIcon />,
-              },
-            ],
-          },
-        ],
-      },
-    ],
+  // init managers
+  PortfolioManager.GetWorkspaceManager().navigateMethod = (url: string) => {
+    const url1: string = portfolio ? `${url}?portfolio=${portfolio}` : url;
+    navigate(url1);
   };
-
-  const demoMenu2: ShellMenu = PortfolioBasedMenuService.buildMenuFromModule();
 
   if (!menu) {
     return <div>Shell is loading...</div>;
   }
+
+  console.log("menu", menu);
+  console.log("portfolio", portfolio);
 
   return (
     <ShellLayout
@@ -321,14 +73,9 @@ const App = () => {
         ></UsecaseInstanceDropdown>,
       ]}
     >
-      <Outlet />
+      <Workspace></Workspace>
+      {/* <Outlet /> */}
     </ShellLayout>
-    // <FederatedComponentProxy
-    //   scope="ushell_demo_app"
-    //   module="./Test"
-    //   url="http://localhost:3001/remoteEntry.js"
-    //   inputData={{ inputData: "asd" }}
-    // ></FederatedComponentProxy>
   );
 };
 
@@ -339,20 +86,16 @@ const router = createBrowserRouter([
 
     children: [
       {
+        path: "",
+        element: <Workspace></Workspace>,
+      },
+      {
         path: ":workspaceKey",
-        element: (
-          <Workspace
-            workspaceManager={PortfolioManager.GetWorkspaceManager()}
-          ></Workspace>
-        ),
+        element: <App></App>,
       },
       {
         path: ":workspaceKey/:usecaseId",
-        element: (
-          <Workspace
-            workspaceManager={PortfolioManager.GetWorkspaceManager()}
-          ></Workspace>
-        ),
+        element: <App></App>,
       },
     ],
   },

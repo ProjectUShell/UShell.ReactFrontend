@@ -4,25 +4,49 @@ import { useParams } from "react-router-dom";
 import { UsecaseState } from "ushell-modulebase";
 import { TabItem } from "../TabItem";
 import TabControl from "../_Organisms/TabControl";
+import { PortfolioManager } from "../../portfolio-handling/PortfolioManager";
+import { WidgetHost } from "../../portfolio-handling/WidgetHost";
 
-const Workspace: React.FC<{
-  workspaceManager: WorkspaceManager;
-}> = ({ workspaceManager }) => {
+const Workspace: React.FC<{}> = ({}) => {
+  console.log("render Workspace");
+
   const { workspaceKey, usecaseId } = useParams();
 
   if (!workspaceKey) {
-    return <div>Workspace without key</div>;
+    const homeWorkspaceKey: string =
+      PortfolioManager.GetPortfolio().landingWorkspaceName;
+    console.log("homeWorkspaceKey", homeWorkspaceKey);
+    console.log(
+      "PortfolioManager.GetPortfolio()",
+      PortfolioManager.GetPortfolio()
+    );
+    const usecaseStates: UsecaseState[] =
+      PortfolioManager.GetWorkspaceManager().getUsecaseStates(homeWorkspaceKey);
+    const staticUsecaseStates: UsecaseState[] = usecaseStates.filter(
+      (ucs) => ucs.fixed
+    );
+    console.log("staticUsecaseStates", staticUsecaseStates);
+    let activeUsecaseState: UsecaseState;
+    if (staticUsecaseStates.length == 0) {
+      return <div>Empty Workspace</div>;
+    } else {
+      activeUsecaseState = staticUsecaseStates[0];
+    }
+    return PortfolioManager.GetWorkspaceManager().renderUsecase(
+      activeUsecaseState,
+      { state: activeUsecaseState, widgetHost: new WidgetHost() }
+    );
   }
 
   const usecaseStates: UsecaseState[] =
-    workspaceManager.getUsecaseStates(workspaceKey);
+    PortfolioManager.GetWorkspaceManager().getUsecaseStates(workspaceKey);
 
   let activeUsecaseState: UsecaseState | undefined = usecaseStates.find(
     (ucs) => ucs.usecaseInstanceUid == usecaseId
   ); //TODO_KRN how to determine which usecase is active? => save in wsm
 
   // TODO Idee: usecaseKey-singletonActionKey (oder instanceUid) als key im localstorage für einzelne usecaseStates
-  console.log("workspaceManager", workspaceManager);
+  // console.log("workspaceManager", workspaceManager);
 
   if (!activeUsecaseState) {
     const staticUsecaseStates: UsecaseState[] = usecaseStates.filter(
@@ -34,19 +58,30 @@ const Workspace: React.FC<{
       activeUsecaseState = staticUsecaseStates[0];
     }
   }
-
-  const tabItems: TabItem[] = workspaceManager.getTabItems(usecaseStates);
+  if (usecaseStates.length == 1) {
+    return PortfolioManager.GetWorkspaceManager().renderUsecase(
+      activeUsecaseState,
+      { state: activeUsecaseState, widgetHost: new WidgetHost() }
+    );
+  }
+  const tabItems: TabItem[] =
+    PortfolioManager.GetWorkspaceManager().getTabItems(usecaseStates);
   const activeIndex: number = tabItems.findIndex(
     (ti) => ti.id == activeUsecaseState!.usecaseInstanceUid
   );
+
   return (
     <div className="w-full flex">
       {/* Workspace: {workspaceKey}, UseCase: {activeUsecaseState.title} */}
       <TabControl
         tabItems={tabItems}
         initialActiveTabIndex={activeIndex}
-        onTabClose={(ti: TabItem) => workspaceManager.terminateUsecase(ti.tag)}
-        onTabChange={(ti: TabItem) => workspaceManager.enterUsecase(ti.tag)}
+        onTabClose={(ti: TabItem) =>
+          PortfolioManager.GetWorkspaceManager().terminateUsecase(ti.tag)
+        }
+        onTabChange={(ti: TabItem) =>
+          PortfolioManager.GetWorkspaceManager().enterUsecase(ti.tag)
+        }
       ></TabControl>
     </div>
   );

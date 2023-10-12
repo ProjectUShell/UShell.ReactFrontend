@@ -1,0 +1,33 @@
+{
+  "moduleUid": "1B6CB9E8-4D5C-8481-4990-DA95321A818F",
+  "moduleTitle": "Test1",
+  "moduleScopingKey": "cte-",
+  "dataSchema": {
+    "Entities": [],
+    "Relations": []
+  },
+  "dataSources": [],
+  "displayModels": [],
+  "workspaces": [
+    {
+      "workspaceKey": "PortfolioSelector",
+      "iconName": "test-icon",
+      "isSidebar": false
+    }
+  ],
+  "usecases": [
+    {
+      "usecaseKey": "PortfolioSelector",
+      "widgetClass": "portfolioChooser",
+      "title": "Portfolio Chooser",
+      "singletonActionkey": "portfolioChooser",
+      "unitOfWorkDefaults": { "url": "https://localhost:7204/profile/" }
+    }
+  ],
+  "useCaseExtensionRules": [],
+  "commands": [],
+  "handlers": [],
+  "staticUsecaseAssignments": [
+    { "usecaseKey": "PortfolioSelector", "targetWorkspaceKey": "PortfolioSelector" }
+  ]
+}

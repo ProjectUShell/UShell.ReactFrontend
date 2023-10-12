@@ -1,0 +1,45 @@
+{
+  "moduleUid": "1B6CB9E8-4D5C-8481-4990-DA95321A818F",
+  "moduleTitle": "Test1",
+  "moduleScopingKey": "cte-",
+  "dataSchema": {
+    "Entities": [],
+    "Relations": []
+  },
+  "dataSources": [],
+  "displayModels": [],
+  "workspaces": [
+    {
+      "workspaceKey": "ValidationOverview",
+      "iconName": "test-icon",
+      "defaultStaticUseCaseKeys": ["ValidationOverview"],
+      "isSidebar": false
+    }
+  ],
+  "usecases": [
+    {
+      "usecaseKey": "ValidationOverview",
+      "title": "Validation Overview",
+      "widgetClass": "{\"scope\": \"ushell_demo_app\", \"module\": \"./ValidationOverview\", \"url\": \"http://localhost:3001/remoteEntry.js\"}",
+      "unitOfWorkDefaults": { "backendApiUrl": "https://localhost:7204/api/" }
+    }
+  ],
+  "useCaseExtensionRules": [],
+  "commands": [
+    {
+      "uniqueCommandKey": "showValidationOverview",
+      "label": "Validation Overview",
+      "commandType": "activate-workspace",
+      "targetWorkspacePath": "Business\\Transactions",
+      "targetWorkspaceKey": "ValidationOverview",
+      "iconKey": "fa-solid fa-heart"
+    }
+  ],
+  "handlers": [],
+  "staticUsecaseAssignments": [
+    {
+      "usecaseKey": "ValidationOverview",
+      "targetWorkspaceKey": "ValidationOverview"
+    }
+  ]
+}

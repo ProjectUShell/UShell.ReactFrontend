@@ -1,11 +1,17 @@
 import { IDataSource, IWidgetHost, UsecaseState } from "ushell-modulebase";
-import { PortfolioBasedWorkspaceManager } from "./PortfolioBasedWorkspaceManager";
 import { PortfolioManager } from "./PortfolioManager";
 import { CommandDescription } from "ushell-portfoliodescription";
 
 export class WidgetHost implements IWidgetHost {
-  
-  getDataSourceForEntity(entityName: string, storeName?: string | undefined): Promise<IDataSource> {
+  getApplicationScope() {
+    console.log("get application scope", PortfolioManager.GetPortfolio().applicationScope)
+    return PortfolioManager.GetPortfolio().applicationScope;
+  }
+
+  getDataSourceForEntity(
+    entityName: string,
+    storeName?: string | undefined
+  ): Promise<IDataSource> {
     throw new Error("Method not implemented.");
   }
 
@@ -17,7 +23,11 @@ export class WidgetHost implements IWidgetHost {
     throw new Error("Method not implemented.");
   }
   fireEvent(name: string, args: object): void {
-    const command: CommandDescription | undefined = PortfolioManager.GetModule().commands.find((c) => c.uniqueCommandKey == name);
+    console.log("fire event");
+    const command: CommandDescription | undefined =
+      PortfolioManager.GetModule().commands.find(
+        (c) => c.uniqueCommandKey == name
+      );
     if (!command) {
       console.error("No command with given name", name);
       return;

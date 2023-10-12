@@ -4,8 +4,6 @@ import {
 } from "ushell-portfoliodescription";
 import { MenuItem, ShellMenu } from "../shell-layout/ShellMenu";
 import { PortfolioManager } from "./PortfolioManager";
-import { ShellMenuState } from "../shell-layout/ShellMenuState";
-import { PortfolioBasedWorkspaceManager } from "./PortfolioBasedWorkspaceManager";
 
 export class PortfolioBasedMenuService {
   public static buildMenuFromModule(): ShellMenu {
