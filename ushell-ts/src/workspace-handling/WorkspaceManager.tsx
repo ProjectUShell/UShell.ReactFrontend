@@ -358,10 +358,11 @@ export class WorkspaceManager {
       );
     }
     if (widgetClass == "portfolioChooser") {
-      const uow: any = input.state.unitOfWork;
+      const portfolioLocation: string = PortfolioManager.GetPortfolioLocation()
+      console.log("portfolioLocation", portfolioLocation)
       return (
         <PortfolioSelector
-          url={uow.url}
+          url={portfolioLocation}
           onPortfolioSelected={(portfolioUrl: string) =>
             this.navigateSafe(`?portfolio=${portfolioUrl}`)
           }

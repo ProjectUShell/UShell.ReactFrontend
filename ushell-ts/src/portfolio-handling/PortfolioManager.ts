@@ -10,8 +10,19 @@ export class PortfolioManager {
   constructor(private _WorkspaceManager: WorkspaceManager) {}
 
   private static _Instance: PortfolioManager | null = null;
+
+  private static _PortfolioLocation: string = "";
+
   static GetModule(): ModuleDescription {
     return this.GetInstance()._Module!;
+  }
+
+  static GetPortfolioLocation(): string {
+    return PortfolioManager._PortfolioLocation;
+  }
+
+  static SetPortfolioLocation(portfolioLocation: string) {
+    PortfolioManager._PortfolioLocation = portfolioLocation;
   }
 
   static GetPortfolio(): PortfolioDescription {
@@ -32,7 +43,7 @@ export class PortfolioManager {
     portfolio: PortfolioDescription,
     module: ModuleDescription
   ) {
-    console.log("SetModule", portfolio)
+    console.log("SetModule", portfolio);
     this._Instance = null;
     this._Instance = new PortfolioManager(new WorkspaceManager());
     this._Instance._Module = module;

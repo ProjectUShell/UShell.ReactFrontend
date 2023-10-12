@@ -33,7 +33,8 @@ export class PortfolioLoader {
     module: ModuleDescription;
   }> {
     const url1: string =
-      this.combineUrl(portfolioLocation, portfolioName) + ".json";
+      this.combineUrl(portfolioLocation, `portfolio/${portfolioName}`) +
+      ".json";
 
     return fetch(url1, {
       method: "GET",
@@ -80,6 +81,9 @@ export class PortfolioLoader {
 
   private static combineUrl(base: string, ex: string) {
     if (base && base !== "") {
+      if (base.endsWith("/")) {
+        return base + ex;
+      }
       return base + "/" + ex;
     }
     return ex;

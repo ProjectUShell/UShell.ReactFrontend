@@ -13,8 +13,11 @@ export class PortfolioConnector {
   }
 
   static async getPortfolioIndex(url: string): Promise<any> {
-    return this.post(url + `PortfolioIndex`)
+    const url1: string = url.endsWith("/")
+      ? url + `PortfolioIndex.json`
+      : url + "/" + `PortfolioIndex.json`;
+    return this.post(url1)
       .then((r) => r)
-      .catch((e) => null)
+      .catch((e) => null);
   }
 }

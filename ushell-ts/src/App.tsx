@@ -38,6 +38,10 @@ const App = () => {
   // states
   const [menu, setMenu] = useState<ShellMenu | null>(null);
 
+  useEffect(() => {
+    PortfolioManager.SetPortfolioLocation(portfolioLocation);
+  }, [portfolioLocation]);
+
   // effects
   useEffect(() => {
     console.log("App booting portfolio", portfolio);

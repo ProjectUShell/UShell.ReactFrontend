@@ -1,0 +1,16 @@
+{
+  "applicationTitle": "Admin Demo",
+  "oAuthProxyUrl": "https://ct-expert.de/oauth/",
+  "oAuthProxyProfile": "github_lh4200",
+  "primaryUiTokenSourceUid": "4E888413-243B-22A9-4407-6AF84F43A12E",
+  "uShellLicenceKey": "bearer-mit-legal-contact+application-title-drin",
+  "authTokenSource": "frontend-generated-mode1",
+  "authTokenSourceParam": { "iss": "CTE-SPA", "exp": "100D", "sub": "%U" },
+  "authTokenIsPersistent": true,
+  "ciConfigUrl": "ct-expert.ci.json",
+  "legalContactMdUrl": "legal-contact.md",
+  "licenseAgreementMdUrl": "license-agreement.md",
+  "moduleDescriptionUrls": ["./portfoliochooser.json"],
+  "intialRuntimeTags": ["!Prod"],
+  "landingWorkspaceName": "PortfolioSelector"
+}
