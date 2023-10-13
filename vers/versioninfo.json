@@ -1,0 +1,13 @@
+{
+  "currentVersion": "3.1.2",
+  "currentVersionWithSuffix": "3.1.2",
+  "releaseType": "official",
+  "previousVersion": "3.1.1",
+  "changeGrade": "patch",
+  "currentMajor": 3,
+  "currentMinor": 1,
+  "currentPatch": 2,
+  "versionDateInfo": "2023-10-13",
+  "versionTimeInfo": "10:31:44",
+  "versionNotes": "- new revision without significant changes\n"
+}
