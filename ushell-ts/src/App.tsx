@@ -30,6 +30,25 @@ import { PortfolioLoader } from "./portfolio-handling/PortfolioLoader";
 const plm: any = document.querySelector('meta[name="portfolioLocation"]');
 const portfolioLocation: string = plm ? plm.content : "";
 
+const pickBasePath = () => {
+  let baseHref = (document.getElementsByTagName("base")[0] || { href: "/" })
+    .href;
+
+  //Because of some strange magic, the browser automatically prepends the
+  //hostname to the base-href. Also when reading the base-tag directly
+  //from the html-head! So we need to remove the host to get the plain
+  //configured value (a directory-url, relative to the root of the webserver)
+  baseHref = baseHref.replace("://", "");
+  let pos = baseHref.indexOf("/");
+  if (pos < 0) {
+    baseHref = "/";
+  } else {
+    baseHref = baseHref.substring(pos);
+  }
+
+  return baseHref;
+};
+
 const App = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -83,27 +102,30 @@ const App = () => {
   );
 };
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <App />,
 
-    children: [
-      {
-        path: "",
-        element: <Workspace></Workspace>,
-      },
-      {
-        path: ":workspaceKey",
-        element: <App></App>,
-      },
-      {
-        path: ":workspaceKey/:usecaseId",
-        element: <App></App>,
-      },
-    ],
-  },
-]);
+      children: [
+        {
+          path: "",
+          element: <Workspace></Workspace>,
+        },
+        {
+          path: ":workspaceKey",
+          element: <App></App>,
+        },
+        {
+          path: ":workspaceKey/:usecaseId",
+          element: <App></App>,
+        },
+      ],
+    },
+  ],
+  { basename: pickBasePath() }
+);
 
 const container: any = document.getElementById("root");
 const root = ReactDOMClient.createRoot(container);

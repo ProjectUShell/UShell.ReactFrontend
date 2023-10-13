@@ -21,7 +21,12 @@
       "usecaseKey": "ValidationOverview",
       "title": "Validation Overview",
       "widgetClass": "{\"scope\": \"ushell_demo_app\", \"module\": \"./ValidationOverview\", \"url\": \"http://localhost:3001/remoteEntry.js\"}",
-      "unitOfWorkDefaults": { "backendApiUrl": "https://localhost:7204/api/" }
+      "unitOfWorkDefaults": {
+        "backendApiUrl": "https://localhost:7204/api/",
+        "mapDynamic": [
+          { "use": "applicationScope://profileId", "for": "profileId" }
+        ]
+      }
     }
   ],
   "useCaseExtensionRules": [],
