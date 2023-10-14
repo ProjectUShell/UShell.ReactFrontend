@@ -27,9 +27,6 @@ import UsecaseInstanceDropdown from "./workspace-handling/_Molecules/UsecaseInst
 import { ModuleDescription } from "ushell-portfoliodescription";
 import { PortfolioLoader } from "./portfolio-handling/PortfolioLoader";
 
-const plm: any = document.querySelector('meta[name="portfolioLocation"]');
-const portfolioLocation: string = plm ? plm.content : "";
-
 const pickBasePath = () => {
   let baseHref = (document.getElementsByTagName("base")[0] || { href: "/" })
     .href;
@@ -48,6 +45,9 @@ const pickBasePath = () => {
 
   return baseHref;
 };
+
+const plm: any = document.querySelector('meta[name="portfolioLocation"]');
+const portfolioLocation: string = plm ? plm.content : pickBasePath();
 
 const App = () => {
   const navigate = useNavigate();
