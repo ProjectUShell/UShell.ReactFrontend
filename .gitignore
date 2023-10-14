@@ -247,3 +247,4 @@ ModelManifest.xml
 /(Vendor)/NuGet/
 ushell/public/moduleportfolio.json
 .vscode/settings.json
+ushell-ts/dist/

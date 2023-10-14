@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { PortfolioConnector } from "../PortfolioConnector";
 import { PortfolioEntry } from "../PortfolioEntry";
 import { PortfolioDescription } from "ushell-portfoliodescription";
-import Dropdown from "ushell-common-components/dist/cjs/_Atoms/Dropdown";
 import DropdownSelect from "ushell-common-components/dist/cjs/_Atoms/DropdownSelect";
 
 const PortfolioSelector: React.FC<{
