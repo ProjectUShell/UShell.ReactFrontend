@@ -20,7 +20,7 @@
     {
       "usecaseKey": "ValidationOverview",
       "title": "Validation Overview",
-      "widgetClass": "{\"scope\": \"ushell_demo_app\", \"module\": \"./ValidationOverview\", \"url\": \"http://localhost:3001/remoteEntry.js\"}",
+      "widgetClass": "{\"scope\": \"ushell_demo_app\", \"module\": \"./ValidationOverview\", \"url\": \"https://ushell.org/ushell-demomodule/remoteEntry.js\"}",
       "unitOfWorkDefaults": {
         "backendApiUrl": "https://localhost:7204/api/",
         "mapDynamic": [
