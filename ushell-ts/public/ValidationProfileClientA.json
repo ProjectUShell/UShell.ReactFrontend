@@ -15,7 +15,7 @@
   "legalContactMdUrl": "legal-contact.md",
   "licenseAgreementMdUrl": "license-agreement.md",
   "moduleDescriptionUrls": [
-    "./modules/ValidationModule.json"
+    "./ValidationModule.json"
   ],
   "intialRuntimeTags": [ "!Prod" ],
   "landingWorkspaceName": "ValidationOverview",

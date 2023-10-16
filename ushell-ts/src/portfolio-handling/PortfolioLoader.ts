@@ -33,7 +33,7 @@ export class PortfolioLoader {
     module: ModuleDescription;
   }> {
     const url1: string =
-      this.combineUrl(portfolioLocation, `portfolio/${portfolioName}`) +
+      this.combineUrl(portfolioLocation, `${portfolioName}`) +
       ".json";
 
     return fetch(url1, {
