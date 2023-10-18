@@ -12,7 +12,7 @@ const UsecaseInstanceDropdown: React.FC<{
     workspaceManager.getDynamicUsecaseStates();
   return (
     <div>
-      <button className="relative" onClick={() => setIsOpen((o) => !o)}>
+      <button className="relative align-middle" onClick={() => setIsOpen((o) => !o)}>
         <ClipboardIcon></ClipboardIcon>
         <p className="absolute -right-1 -top-2 rounded-full w-4 h-4 bg-accent text-xs">
           {openUsecaseStates.length}

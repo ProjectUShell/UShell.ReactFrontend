@@ -28,6 +28,9 @@
   "commands": [],
   "handlers": [],
   "staticUsecaseAssignments": [
-    { "usecaseKey": "PortfolioSelector", "targetWorkspaceKey": "PortfolioSelector" }
+    {
+      "usecaseKey": "PortfolioSelector",
+      "targetWorkspaceKey": "PortfolioSelector"
+    }
   ]
 }

@@ -26,6 +26,7 @@ import FederatedComponentProxy from "./federation/_Molecules/FederatedComponentP
 import UsecaseInstanceDropdown from "./workspace-handling/_Molecules/UsecaseInstanceDropdown";
 import { ModuleDescription } from "ushell-portfoliodescription";
 import { PortfolioLoader } from "./portfolio-handling/PortfolioLoader";
+import PowerIcon from "./shell-layout/_Atoms/PowerIcon";
 
 const pickBasePath = () => {
   let baseHref = (document.getElementsByTagName("base")[0] || { href: "/" })
@@ -75,7 +76,12 @@ const App = () => {
 
   // init managers
   PortfolioManager.GetWorkspaceManager().navigateMethod = (url: string) => {
+    if (url == "//") {
+      navigate("/");
+    }
+    console.log("navigating", portfolio);
     const url1: string = portfolio ? `${url}?portfolio=${portfolio}` : url;
+    console.log("navigating", url1);
     navigate(url1);
   };
 
@@ -88,13 +94,18 @@ const App = () => {
 
   return (
     <ShellLayout
-      title="UShell"
+      title={
+        <img
+          src={"ushell-whitebg.png"}
+          style={{ height: "30px" }}
+          alt="fireSpot"
+          onClick={() =>
+            PortfolioManager.GetWorkspaceManager().navigateSafe("/")
+          }
+          className="cursor-pointer"
+        />
+      }
       shellMenu={menu}
-      topBarElements={[
-        <UsecaseInstanceDropdown
-          workspaceManager={PortfolioManager.GetWorkspaceManager()}
-        ></UsecaseInstanceDropdown>,
-      ]}
     >
       <Workspace></Workspace>
       {/* <Outlet /> */}
