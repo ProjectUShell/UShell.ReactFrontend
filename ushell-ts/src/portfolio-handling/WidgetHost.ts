@@ -4,7 +4,6 @@ import { CommandDescription } from "ushell-portfoliodescription";
 
 export class WidgetHost implements IWidgetHost {
   getApplicationScope() {
-    console.log("get application scope", PortfolioManager.GetPortfolio().applicationScope)
     return PortfolioManager.GetPortfolio().applicationScope;
   }
 
@@ -23,7 +22,6 @@ export class WidgetHost implements IWidgetHost {
     throw new Error("Method not implemented.");
   }
   fireEvent(name: string, args: object): void {
-    console.log("fire event");
     const command: CommandDescription | undefined =
       PortfolioManager.GetModule().commands.find(
         (c) => c.uniqueCommandKey == name

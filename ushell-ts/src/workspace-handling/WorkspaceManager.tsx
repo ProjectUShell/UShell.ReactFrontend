@@ -185,7 +185,6 @@ export class WorkspaceManager {
     if (uowInitializationData) {
       ArgumentMapper.copyRecursive(uowInitializationData, uow);
     }
-    console.log("uow", uow);
     return {
       usecaseInstanceUid: uuidv4(),
       usecaseKey: useCase.usecaseKey,
@@ -217,10 +216,6 @@ export class WorkspaceManager {
       PortfolioManager.GetModule().staticUsecaseAssignments.filter(
         (sua) => sua.targetWorkspaceKey == workspaceKey
       );
-    console.log(
-      "PortfolioManager.GetModule().staticUsecaseAssignments.",
-      PortfolioManager.GetModule().staticUsecaseAssignments
-    );
 
     const unsavedStaticUsecaseAssignments: StaticUsecaseAssignment[] =
       staticUsecaseAssignments.filter(
@@ -351,7 +346,6 @@ export class WorkspaceManager {
   }
 
   renderWidget(widgetClass: string, input: IWidget) {
-    console.log("renderWidget", widgetClass)
     const remoteWidgetDesc: RemoteWidgetDescription | null =
       this.parseWidgetClass(widgetClass, input);
     if (remoteWidgetDesc) {
@@ -366,7 +360,6 @@ export class WorkspaceManager {
     }
     if (widgetClass == "portfolioChooser") {
       const portfolioLocation: string = PortfolioManager.GetPortfolioLocation()
-      console.log("portfolioLocation", portfolioLocation)
       return (
         <PortfolioSelector
           url={portfolioLocation}
@@ -379,7 +372,6 @@ export class WorkspaceManager {
     if (widgetClass == "guifadFuse") {
       const uow: any = input.state.unitOfWork;
       const fuseUrl: string = uow.fuseUrl;
-      console.log("fuseUrl", fuseUrl);
       return (
         <GuifadFuse
           fuseUrl={uow.fuseUrl}
@@ -394,7 +386,6 @@ export class WorkspaceManager {
     widgetClass: string,
     input: IWidget
   ): RemoteWidgetDescription | null {
-    console.log("parseWidgetClass", widgetClass)
     try {
       let result: RemoteWidgetDescription | undefined = JSON.parse(widgetClass);
       if (result) {

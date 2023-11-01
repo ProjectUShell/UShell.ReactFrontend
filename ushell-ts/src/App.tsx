@@ -3,30 +3,20 @@ import * as ReactDOMClient from "react-dom/client";
 
 import "./App.css";
 // import ShellLayout from "./shell-layout/_Templates/ShellLayout";
-import { GuifadFuse, ShellLayout } from "ushell-common-components";
+import { ShellLayout } from "ushell-common-components";
 import { ShellMenu } from "./shell-layout/ShellMenu";
-import HomeIcon from "./shell-layout/_Icons/HomeIcon";
 import {
   createBrowserRouter,
-  Outlet,
   RouterProvider,
   useNavigate,
-  useParams,
   useSearchParams,
 } from "react-router-dom";
 
 // import { UShellLayout } from "ushell-common-components";
-import FolderIcon from "./shell-layout/_Icons/FolderIcon";
 import Workspace from "./workspace-handling/_Templates/Workspace";
 import { PortfolioManager } from "./portfolio-handling/PortfolioManager";
 import { PortfolioBasedMenuService } from "./portfolio-handling/PortfolioBasedMenuService";
-import { RemoteWidgetDescription } from "./federation/RemoteWidgetDescription";
-import { IWidget } from "ushell-modulebase";
-import FederatedComponentProxy from "./federation/_Molecules/FederatedComponentProxy";
-import UsecaseInstanceDropdown from "./workspace-handling/_Molecules/UsecaseInstanceDropdown";
-import { ModuleDescription } from "ushell-portfoliodescription";
 import { PortfolioLoader } from "./portfolio-handling/PortfolioLoader";
-import PowerIcon from "./shell-layout/_Atoms/PowerIcon";
 
 const pickBasePath = () => {
   let baseHref = (document.getElementsByTagName("base")[0] || { href: "/" })
@@ -48,9 +38,11 @@ const pickBasePath = () => {
 };
 
 const plm: any = document.querySelector('meta[name="portfolioLocation"]');
-const portfolioLocation: string = plm ? plm.content : pickBasePath();
+const portfolioLocation: string = plm
+  ? plm.content
+  : pickBasePath() + "portfolio";
 
-console.log("portfolioLocation", portfolioLocation)
+console.log("portfolioLocation", portfolioLocation);
 
 const App = () => {
   const navigate = useNavigate();
@@ -69,9 +61,8 @@ const App = () => {
     console.log("App booting portfolio", portfolio);
     PortfolioLoader.loadModuleDescription(portfolioLocation, portfolio).then(
       (p) => {
-        console.log("md in App", p);
         PortfolioManager.SetModule(p.portfolio, p.module);
-        setMenu(PortfolioBasedMenuService.buildMenuFromModule()); //TODO create PortfolioBasedMenuService with parameters 
+        setMenu(PortfolioBasedMenuService.buildMenuFromModule()); //TODO create PortfolioBasedMenuService with parameters
         // in common components for use in UShell Modules
       }
     );
@@ -81,19 +72,15 @@ const App = () => {
   PortfolioManager.GetWorkspaceManager().navigateMethod = (url: string) => {
     if (url == "//") {
       navigate("/");
+      return;
     }
-    console.log("navigating", portfolio);
     const url1: string = portfolio ? `${url}?portfolio=${portfolio}` : url;
-    console.log("navigating", url1);
     navigate(url1);
   };
 
   if (!menu) {
     return <div>Shell is loading...</div>;
   }
-
-  console.log("menu", menu);
-  console.log("portfolio", portfolio);
 
   return (
     <ShellLayout

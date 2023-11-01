@@ -1,23 +1,21 @@
 {
   "applicationTitle": "Validation App Client B",
-  "oAuthProxyUrl": "https://ct-expert.de/oauth/",
+  "oAuthProxyUrl": "https://xxx.de/oauth/",
   "oAuthProxyProfile": "github_lh4200",
   "primaryUiTokenSourceUid": "4E888413-243B-22A9-4407-6AF84F43A12E",
   "uShellLicenceKey": "bearer-mit-legal-contact+application-title-drin",
   "authTokenSource": "frontend-generated-mode1",
   "authTokenSourceParam": {
-    "iss": "CTE-SPA",
+    "iss": "XXX-SPA",
     "exp": "100D",
     "sub": "%U"
   },
   "authTokenIsPersistent": true,
-  "ciConfigUrl": "ct-expert.ci.json",
+  "ciConfigUrl": "xxx.ci.json",
   "legalContactMdUrl": "legal-contact.md",
   "licenseAgreementMdUrl": "license-agreement.md",
-  "moduleDescriptionUrls": [
-    "./modules/ValidationModule.json"
-  ],
-  "intialRuntimeTags": [ "!Prod" ],
+  "moduleDescriptionUrls": ["./modules/ValidationModule.json"],
+  "intialRuntimeTags": ["!Prod"],
   "landingWorkspaceName": "ValidationOverview",
   "applicationScope": { "profileId": "ClientB" }
 }

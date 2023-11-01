@@ -19,8 +19,6 @@ export class PortfolioBasedMenuService {
       (command: CommandDescription, e: any) =>
         PortfolioManager.GetWorkspaceManager().executeCommand(command, e)
     );
-    console.log("PortfolioBasedMenuService module", module);
-    console.log("PortfolioBasedMenuService result1", result1);
     if (!result1.topBarItems) {
       result1.topBarItems = []
     }

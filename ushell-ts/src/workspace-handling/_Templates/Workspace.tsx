@@ -8,24 +8,17 @@ import { PortfolioManager } from "../../portfolio-handling/PortfolioManager";
 import { WidgetHost } from "../../portfolio-handling/WidgetHost";
 
 const Workspace: React.FC<{}> = ({}) => {
-  console.log("render Workspace");
-
   const { workspaceKey, usecaseId } = useParams();
 
   if (!workspaceKey) {
     const homeWorkspaceKey: string =
       PortfolioManager.GetPortfolio().landingWorkspaceName;
-    console.log("homeWorkspaceKey", homeWorkspaceKey);
-    console.log(
-      "PortfolioManager.GetPortfolio()",
-      PortfolioManager.GetPortfolio()
-    );
+
     const usecaseStates: UsecaseState[] =
       PortfolioManager.GetWorkspaceManager().getUsecaseStates(homeWorkspaceKey);
     const staticUsecaseStates: UsecaseState[] = usecaseStates.filter(
       (ucs) => ucs.fixed
     );
-    console.log("staticUsecaseStates", staticUsecaseStates);
     let activeUsecaseState: UsecaseState;
     if (staticUsecaseStates.length == 0) {
       return <div>Empty Workspace</div>;

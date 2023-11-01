@@ -60,8 +60,6 @@ const PortfolioSelector: React.FC<{
     });
     return result;
   }
-  console.log("tags", tags);
-  console.log("selectedByTag", selectedByTag);
 
   return (
     <div className="m-auto bg-backgroundfour dark:bg-backgroundfourdark p-2 rounded-md">

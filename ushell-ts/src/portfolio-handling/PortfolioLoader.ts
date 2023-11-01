@@ -7,7 +7,7 @@ export class PortfolioLoader {
   private static _DefaultPortfolioModule: ModuleDescription | null = null;
   private static _DefaultPortfolio: PortfolioDescription | null = null;
 
-  private static GetDefaultPortfolio(): Promise<{
+  private static GetDefaultPortfolio(portfolioLocation: string): Promise<{
     portfolio: PortfolioDescription;
     module: ModuleDescription;
   }> {
@@ -22,7 +22,7 @@ export class PortfolioLoader {
         });
       });
     }
-    return PortfolioLoader.loadFromUrl("", "default.portfolio");
+    return PortfolioLoader.loadFromUrl(portfolioLocation, "default.portfolio");
   }
 
   private static loadFromUrl(
@@ -44,7 +44,6 @@ export class PortfolioLoader {
       },
     })
       .then(function (response) {
-        console.log("response", response);
         return response.json();
       })
       .then(function (portfolio) {
@@ -74,7 +73,7 @@ export class PortfolioLoader {
     portfolioName: string | null
   ): Promise<{ portfolio: PortfolioDescription; module: ModuleDescription }> {
     if (!portfolioName) {
-      return PortfolioLoader.GetDefaultPortfolio();
+      return PortfolioLoader.GetDefaultPortfolio(portfolioLocation);
     }
     return this.loadFromUrl(portfolioLocation, portfolioName);
   }
@@ -94,11 +93,6 @@ export class PortfolioLoader {
     result: ModuleDescription,
     index: number
   ): Promise<ModuleDescription> {
-    console.log("portfolio", portfolio);
-    console.log(
-      "portfolio.moduleDescriptionUrls",
-      portfolio.moduleDescriptionUrls
-    );
     const urls = portfolio.moduleDescriptionUrls;
     return fetch(`${urls[index]}`, {
       headers: {
@@ -110,7 +104,6 @@ export class PortfolioLoader {
         return response.json();
       })
       .then((md: ModuleDescription) => {
-        console.log("md", md);
         // füge die moduleDescription in das porfolio ein
         md.commands?.forEach((c) => result.commands.push(c));
         md.usecases?.forEach((c) => result.usecases.push(c));

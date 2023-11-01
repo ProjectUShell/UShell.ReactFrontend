@@ -43,7 +43,6 @@ export class PortfolioManager {
     portfolio: PortfolioDescription,
     module: ModuleDescription
   ) {
-    console.log("SetModule", portfolio);
     this._Instance = null;
     this._Instance = new PortfolioManager(new WorkspaceManager());
     this._Instance._Module = module;
