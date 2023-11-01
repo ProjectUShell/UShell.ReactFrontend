@@ -38,6 +38,12 @@
       "targetWorkspacePath": "Business\\Transactions",
       "targetWorkspaceKey": "ValidationOverview",
       "iconKey": "fa-solid fa-heart"
+    },
+    {
+      "menuFolder": "TopBar",
+      "iconKey": "Power",
+      "commandType": "navigate",
+      "routerLink": "/"
     }
   ],
   "handlers": [],

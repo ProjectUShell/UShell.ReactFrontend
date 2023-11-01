@@ -164,7 +164,8 @@ export class WorkspaceManager {
   private _UsecaseStatesByWorkspaceId: { [key: string]: UsecaseState[] } = {};
 
   private getLocaleStorageKey(workspaceKey: string): string {
-    return `workspace:${workspaceKey}`;
+    const portfolioIdentifier: string = PortfolioManager.GetPortfolio().applicationTitle;
+    return `${portfolioIdentifier}|${workspaceKey}`;
   }
 
   private initializeUsecase(
@@ -304,6 +305,12 @@ export class WorkspaceManager {
         );
         return;
       }
+      case "navigate": {
+        console.warn("navigating")
+        this.navigateSafe("//")
+        return;
+      }
+      
     }
     throw "invalid command type";
   }
