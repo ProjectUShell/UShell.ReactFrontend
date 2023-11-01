@@ -49,6 +49,8 @@ const pickBasePath = () => {
 const plm: any = document.querySelector('meta[name="portfolioLocation"]');
 const portfolioLocation: string = plm ? plm.content : pickBasePath();
 
+console.log("portfolioLocation", portfolioLocation)
+
 const App = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -68,7 +70,8 @@ const App = () => {
       (p) => {
         console.log("md in App", p);
         PortfolioManager.SetModule(p.portfolio, p.module);
-        setMenu(PortfolioBasedMenuService.buildMenuFromModule());
+        setMenu(PortfolioBasedMenuService.buildMenuFromModule()); //TODO create PortfolioBasedMenuService with parameters 
+        // in common components for use in UShell Modules
       }
     );
   }, [portfolio]);

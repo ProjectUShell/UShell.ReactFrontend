@@ -8,5 +8,10 @@
     "label": "Validation App Client B",
     "portfolioUrl": "ValidationProfileClientB",
     "tags": { "Tenant": "Client B", "Environment": "Test", "System": "Sim" }
+  },
+  {
+    "label": "Common Components Showcase",
+    "portfolioUrl": "CommonComponentsShowcase",
+    "tags": { "Tenant": "UShell" }
   }
 ]
