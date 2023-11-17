@@ -8,7 +8,7 @@ export function useAuthToken(tokenSourceUid: string) {
 
     if (tokenSourceUid && tokenSourceUid != "00000000-0000-0000-0000-000000000000") {
                 
-        var token = TokenService.getToken('token_' + tokenSourceUid.toLowerCase())
+        var token = TokenService.getToken(tokenSourceUid)
 
         if (!token) {
             isTokenValid = false;
@@ -18,7 +18,7 @@ export function useAuthToken(tokenSourceUid: string) {
 
             return isTokenValid;
         }
-
+/*
         let payload = TokenService.tryGetJwtPayload(token);
         if (payload && payload.exp) {
             if (TokenService.isExpired(payload.exp)) {
@@ -29,7 +29,7 @@ export function useAuthToken(tokenSourceUid: string) {
 
                 return isTokenValid;
             }
-        }
+        }*/
     }
 
     isTokenValid = true;

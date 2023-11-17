@@ -9,13 +9,19 @@ interface IProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<IProtectedRouteProps> = ({ primaryUiTokenSourceUid, redirectPath }) => {
-  const isAuthenticated: boolean = useAuthToken(primaryUiTokenSourceUid);
 
+  
+
+
+
+  const isAuthenticated: boolean = useAuthToken(primaryUiTokenSourceUid);
   if (!isAuthenticated) {
+    //return <div>NOT ALLOWED</div>
     console.error("Protected route -> Auth error!");
     return <Navigate to={redirectPath} replace />
   }
 
+  //return <div>ALLOWED</div>
   return <Outlet/>
 };
 

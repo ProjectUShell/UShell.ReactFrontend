@@ -10,6 +10,8 @@ import { MenuBuilder } from "./MenuBuilder";
 import { ShellMenu } from "ushell-common-components/dist/cjs/components/shell-layout/ShellMenu";
 import UsecaseInstanceDropdown from "../workspace-handling/_Molecules/UsecaseInstanceDropdown";
 import ClipboardIcon from "../shell-layout/_Icons/ClipboardIcon";
+import { TokenService } from "../authentication/TokenService";
+import { useAuthToken } from "../authentication/useAuthToken";
 
 export class PortfolioBasedMenuService {
   public static buildMenuFromModule(): ShellMenu {
@@ -30,6 +32,24 @@ export class PortfolioBasedMenuService {
       ),
       id: "UsecaseInstanceDropdown",
     });
+
+    const primaryUiTokenSourceUid = PortfolioManager.GetPortfolio().primaryUiTokenSourceUid;
+    if(primaryUiTokenSourceUid && primaryUiTokenSourceUid !="00000000-0000-0000-0000-000000000000"){
+        if(useAuthToken(primaryUiTokenSourceUid)){
+          result1.topBarItems.unshift({
+            icon: (
+              <button
+                onClick={()=>{
+                  TokenService.deleteToken(PortfolioManager.GetPortfolio().primaryUiTokenSourceUid);
+                  PortfolioManager.GetWorkspaceManager().navigateSafe("/login");
+                }}
+              >[X]</button>
+            ),
+            id: "Logoff",
+          });
+      
+        }
+    }
     return result1;
     const commands: CommandDescription[] = module.commands;
     const result: ShellMenu = new ShellMenu();
