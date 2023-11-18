@@ -1,8 +1,6 @@
 {
   "applicationTitle": "Admin Demo",
-  "oAuthProxyUrl": "https://ct-expert.de/oauth/",
   "oAuthProxyProfile": "github_lh4200",
-  "primaryUiTokenSourceUid": "4E888413-243B-22A9-4407-6AF84F43A12E",
   "uShellLicenceKey": "bearer-mit-legal-contact+application-title-drin",
   "authTokenSource": "frontend-generated-mode1",
   "authTokenSourceParam": { "iss": "XXX-SPA", "exp": "100D", "sub": "%U" },
@@ -12,23 +10,5 @@
   "licenseAgreementMdUrl": "license-agreement.md",
   "moduleDescriptionUrls": ["modules/portfoliochooser.json"],
   "intialRuntimeTags": ["!Prod"],
-  "landingWorkspaceName": "PortfolioSelector",
-  "authTokenConfigs": {
-    "4E888413-243B-22A9-4407-6AF84F43A12E": {
-      "clientId": "776141787389-1iv3vc50uoamnfe8bkffjq3auii344i4.apps.googleusercontent.com",
-      "authEndpointUrl": "https://accounts.google.com/o/oauth2/auth",
-      "localLogonNameToLower": "Google",
-      "claims": {
-        "stuff": "https://www.googleapis.com/auth/drive.metadata.readonly"
-      }
-    },
-    "4E888413-243B-22A9-4407-6AF84F43A12F": {
-      "clientId": "orscf",
-      "authEndpointUrl": "https://ct-expert.de/oauth/",
-      "localLogonNameToLower": "ct-expert",
-      "additionalAuthArgs": {
-        "state": "orscf@orscf"
-      }
-    }
-  }
+  "landingWorkspaceName": "PortfolioSelector"
 }
