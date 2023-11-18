@@ -33,8 +33,7 @@ export class PortfolioLoader {
     module: ModuleDescription;
   }> {
     const url1: string =
-      this.combineUrl(portfolioLocation, `${portfolioName}`) +
-      ".json";
+      this.combineUrl(portfolioLocation, `${portfolioName}`) + ".json";
 
     return fetch(url1, {
       method: "GET",
@@ -58,7 +57,8 @@ export class PortfolioLoader {
         return PortfolioLoader.fillModuleDescriptions(
           actualPortfolio,
           result,
-          0
+          0,
+          portfolioLocation
         ).then((md) => {
           return {
             portfolio: actualPortfolio,
@@ -91,9 +91,14 @@ export class PortfolioLoader {
   static fillModuleDescriptions(
     portfolio: PortfolioDescription,
     result: ModuleDescription,
-    index: number
+    index: number,
+    portfolioLocation: string
   ): Promise<ModuleDescription> {
     const urls = portfolio.moduleDescriptionUrls;
+    const finalPath: string = PortfolioLoader.isPathAbsolute(urls[index])
+      ? urls[index]
+      : this.getFullModuleUrl(portfolioLocation, urls[index]);
+    console.log("finalPath", finalPath);
     return fetch(`${urls[index]}`, {
       headers: {
         "Content-Type": "application/json",
@@ -117,11 +122,26 @@ export class PortfolioLoader {
           return PortfolioLoader.fillModuleDescriptions(
             portfolio,
             result,
-            index + 1
+            index + 1,
+            portfolioLocation
           );
         } else {
           return result;
         }
       });
+  }
+  static getFullModuleUrl(
+    portfolioLocation: string,
+    moduleUrl: string
+  ): string {
+    let basPath: string = portfolioLocation;
+    if (basPath.endsWith("/portfolio")) {
+      basPath = basPath.substring(0, basPath.indexOf("/portfolio"));
+    }
+    return this.combineUrl(basPath, moduleUrl);
+  }
+
+  static isPathAbsolute(path: string): boolean {
+    return path.indexOf("://") > 0 || path.indexOf("//") === 0;
   }
 }

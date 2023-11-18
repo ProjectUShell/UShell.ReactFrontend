@@ -11,7 +11,6 @@ import { ShellMenu } from "ushell-common-components/dist/cjs/components/shell-la
 import UsecaseInstanceDropdown from "../workspace-handling/_Molecules/UsecaseInstanceDropdown";
 import ClipboardIcon from "../shell-layout/_Icons/ClipboardIcon";
 import { TokenService } from "../authentication/TokenService";
-import { useAuthToken } from "../authentication/useAuthToken";
 
 export class PortfolioBasedMenuService {
   public static buildMenuFromModule(): ShellMenu {
@@ -22,7 +21,7 @@ export class PortfolioBasedMenuService {
         PortfolioManager.GetWorkspaceManager().executeCommand(command, e)
     );
     if (!result1.topBarItems) {
-      result1.topBarItems = []
+      result1.topBarItems = [];
     }
     result1.topBarItems.unshift({
       icon: (
@@ -33,22 +32,31 @@ export class PortfolioBasedMenuService {
       id: "UsecaseInstanceDropdown",
     });
 
-    const primaryUiTokenSourceUid = PortfolioManager.GetPortfolio().primaryUiTokenSourceUid;
-    if(primaryUiTokenSourceUid && primaryUiTokenSourceUid !="00000000-0000-0000-0000-000000000000"){
-        if(useAuthToken(primaryUiTokenSourceUid)){
-          result1.topBarItems.unshift({
-            icon: (
+    const primaryUiTokenSourceUid =
+      PortfolioManager.GetPortfolio().primaryUiTokenSourceUid;
+    if (
+      primaryUiTokenSourceUid &&
+      primaryUiTokenSourceUid != "00000000-0000-0000-0000-000000000000"
+    ) {
+      result1.topBarItems.unshift({
+        icon: (
+          <div>
+            {TokenService.isAuthenticated(primaryUiTokenSourceUid) && (
               <button
-                onClick={()=>{
-                  TokenService.deleteToken(PortfolioManager.GetPortfolio().primaryUiTokenSourceUid);
-                  PortfolioManager.GetWorkspaceManager().navigateSafe("/login");
+                onClick={() => {
+                  TokenService.deleteToken(
+                    PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
+                  );
+                  PortfolioManager.GetWorkspaceManager().navigateSafe("/");
                 }}
-              >[X]</button>
-            ),
-            id: "Logoff",
-          });
-      
-        }
+              >
+                [X]
+              </button>
+            )}
+          </div>
+        ),
+        id: "Logoff",
+      });
     }
     return result1;
     const commands: CommandDescription[] = module.commands;

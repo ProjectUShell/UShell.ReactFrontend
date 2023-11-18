@@ -1,4 +1,5 @@
 import {
+  AuthTokenConfig,
   ModuleDescription,
   PortfolioDescription,
   UsecaseDescription,
@@ -27,6 +28,13 @@ export class PortfolioManager {
 
   static GetPortfolio(): PortfolioDescription {
     return this.GetInstance()._Portfolio!;
+  }
+
+  static tryGetAuthTokenConfig(tokenSourceUid: string): AuthTokenConfig | null {
+    if (!this.GetPortfolio().authTokenConfigs) {
+      return null
+    }
+    return this.GetPortfolio().authTokenConfigs![tokenSourceUid]
   }
 
   private static GetInstance(): PortfolioManager {

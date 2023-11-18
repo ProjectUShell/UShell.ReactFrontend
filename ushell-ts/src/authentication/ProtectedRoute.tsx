@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
-import { useAuthToken } from "./useAuthToken";
+// import { isAuthenticated } from "./useAuthToken";
 
 interface IProtectedRouteProps {
   primaryUiTokenSourceUid: string
@@ -14,12 +14,12 @@ const ProtectedRoute: React.FC<IProtectedRouteProps> = ({ primaryUiTokenSourceUi
 
 
 
-  const isAuthenticated: boolean = useAuthToken(primaryUiTokenSourceUid);
-  if (!isAuthenticated) {
-    //return <div>NOT ALLOWED</div>
-    console.error("Protected route -> Auth error!");
-    return <Navigate to={redirectPath} replace />
-  }
+  // const isAuthenticated: boolean = isAuthenticated(primaryUiTokenSourceUid);
+  // if (!isAuthenticated) {
+  //   //return <div>NOT ALLOWED</div>
+  //   console.error("Protected route -> Auth error!");
+  //   return <Navigate to={redirectPath} replace />
+  // }
 
   //return <div>ALLOWED</div>
   return <Outlet/>
