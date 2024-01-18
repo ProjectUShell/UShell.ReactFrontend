@@ -9,6 +9,8 @@ import {
 } from "ushell-portfoliodescription";
 import PowerIcon from "ushell-common-components/dist/cjs/_Atoms/PowerIcon";
 import ListIcon from "ushell-common-components/dist/cjs/_Icons/ListIcon";
+import { TokenService } from "../authentication/TokenService";
+import { PortfolioManager } from "./PortfolioManager";
 
 export class MenuBuilder {
   public static buildMenuFromModuleUrl(
@@ -48,7 +50,8 @@ export class MenuBuilder {
   ): ShellMenu {
     const commands: CommandDescription[] = module.commands;
     const result: ShellMenu = new ShellMenu();
-    commands.forEach((command: CommandDescription) => {
+    const isAuthenticated: boolean = TokenService.isUiAuthenticated();
+    commands.filter((c) => isAuthenticated || !PortfolioManager.commandRequiresAuthentication(c)).forEach((command: CommandDescription) => {
       if (command.menuFolder == "TopBar") {
         const icon: ReactElement = this.getIcon(
           command.iconKey ? command.iconKey : ""

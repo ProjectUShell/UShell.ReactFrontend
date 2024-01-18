@@ -10,14 +10,53 @@
     "exp": "100D",
     "sub": "%U"
   },
+  "authenticatedAccess": {
+    "primaryUiTokenSources": [
+      "4E888413-243B-22A9-4407-6AF84F43A12E",
+      "4E888413-243B-22A9-4407-6AF84F43A12F",
+      "4E888413-243B-22A9-4407-6AF84F43A12G"
+    ],
+    "runtimeTagsFromTokenScope": {}
+  },
+  "anonymousAccess": {
+    "authIndependentCommands": [],
+    "authIndependentUsecases": [],
+    "authIndependentWorkspaces": [],
+    "runtimeTagsIfAnonymous": []
+  },
   "authTokenIsPersistent": true,
   "ciConfigUrl": "xxx.ci.json",
   "legalContactMdUrl": "legal-contact.md",
   "licenseAgreementMdUrl": "license-agreement.md",
-  "moduleDescriptionUrls": [
-    "./modules/ValidationModule.json"
-  ],
-  "intialRuntimeTags": [ "!Prod" ],
+  "moduleDescriptionUrls": ["./modules/ValidationModule.json"],
+  "intialRuntimeTags": ["!Prod"],
   "landingWorkspaceName": "ValidationOverview",
-  "applicationScope": { "profileId": "ClientA" }
+  "applicationScope": { "profileId": "ClientA" },
+  "authTokenConfigs": {
+    "4E888413-243B-22A9-4407-6AF84F43A12E": {
+      "clientId": "776141787389-1iv3vc50uoamnfe8bkffjq3auii344i4.apps.googleusercontent.com",
+      "authEndpointUrl": "https://accounts.google.com/o/oauth2/auth",
+      "localLogonNameToLower": "Google",
+      "claims": {
+        "stuff": "https://www.googleapis.com/auth/drive.metadata.readonly"
+      },
+      "authEndpointRejectsIframe": true
+    },
+    "4E888413-243B-22A9-4407-6AF84F43A12F": {
+      "clientId": "orscf",
+      "authEndpointUrl": "https://ct-expert.de/oauth/",
+      "localLogonNameToLower": "ct-expert",
+      "additionalAuthArgs": {
+        "state": "orscf@orscf"
+      }
+    },
+    "4E888413-243B-22A9-4407-6AF84F43A12G": {
+      "clientId": "1c295a48ec933ccdf6b7",
+      "authEndpointUrl": "https://ushell.org/oauth/",      
+      "localLogonNameToLower": "ushell",
+      "additionalAuthArgs": {},
+      "retrieveEndpointUrl": "https://ushell.org/oauth/",
+      "authEndpointRejectsIframe": true
+    }
+  }
 }

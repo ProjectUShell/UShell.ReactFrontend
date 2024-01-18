@@ -17,6 +17,7 @@
   ],
   "usecases": [
     {
+      "iconName": "authorize",
       "usecaseKey": "PortfolioSelector",
       "widgetClass": "portfolioChooser",
       "title": "Portfolio Chooser",

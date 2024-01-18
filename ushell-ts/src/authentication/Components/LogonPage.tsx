@@ -12,32 +12,56 @@ import { AuthTokenConfig } from "ushell-portfoliodescription";
 import EmbeddedLoginButton from "./EmbeddedLoginButton";
 import PopupLogin from "./PopupLogin";
 import PopupLoginButton from "./PopupLoginButton";
+import SettingsDropdown from "../../shell-layout/_Molecules/SettingsDropdown";
+import {
+  ColorMode,
+  LayoutMode,
+  saveShellSettings,
+} from "../../shell-layout/ShellSettings";
+import TopBar from "ushell-common-components/dist/cjs/components/shell-layout/_Organisms/TopBar";
+import { ShellLayout } from "ushell-common-components";
+import { ShellMenu } from "ushell-common-components/dist/esm/components/shell-layout/ShellMenu";
+import LoginButton from "./LoginButton";
+import IFrameLogin from "./IFrameLogin";
+import IFrameLoginButton from "./IFrameLoginButton";
 
-const LogonPage = () => {
+const LogonPage: React.FC<{
+  tokenSourceUid: string;
+  portfolio: string | null;
+}> = ({ tokenSourceUid, portfolio }) => {
+  const tokenConfig: AuthTokenConfig | null =
+    PortfolioManager.tryGetAuthTokenConfig(tokenSourceUid);
+  if (!tokenConfig) {
+    return <div>No Token Config</div>;
+  }
+
+  const shellMenu: ShellMenu = new ShellMenu();
+  shellMenu.items = [];
+
   return (
-    <div className="w-screen h-screen flex">
-      <div className="m-auto bg-backgroundtwo p-2 rounded-md flex flex-col gap-1">
-        <div className="p-1 hover:bg-backgroundthree">
-          <h1>Embedded</h1>
-          <EmbeddedLoginButton
-            tokenSourceUid={
-              PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
-            }
-            redirectUri="http://localhost:3000"
-          ></EmbeddedLoginButton>
-        </div>
-        <div className="p-1 hover:bg-backgroundthree">
-          <h1>PopUp</h1>
-          <PopupLoginButton
-            tokenSourceUid={
-              PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
-            }
-            redirectUri="http://localhost:3000"
-          ></PopupLoginButton>
-        </div>
-      </div>
+    <div className="m-auto bg-backgroundone dark:bg-backgroundonedark p-8 rounded-lg flex flex-col gap-2">
+      {PortfolioManager.GetPortfolio().authenticatedAccess.primaryUiTokenSources.map(
+        (ts) =>
+          PortfolioManager.tryGetAuthTokenConfig(ts)!
+            .authEndpointRejectsIframe ? (
+            <PopupLoginButton
+              key={ts}
+              tokenConfig={PortfolioManager.tryGetAuthTokenConfig(ts)!}
+              tokenSourceUid={ts}
+              redirectUri="http://localhost:3000"
+              portfolio={portfolio}
+            ></PopupLoginButton>
+          ) : (
+            <IFrameLoginButton
+              key={ts}
+              tokenConfig={PortfolioManager.tryGetAuthTokenConfig(ts)!}
+              tokenSourceUid={ts}
+              redirectUri="http://localhost:3000"
+              portfolio={portfolio}
+            ></IFrameLoginButton>
+          )
+      )}
     </div>
   );
 };
-
 export default LogonPage;

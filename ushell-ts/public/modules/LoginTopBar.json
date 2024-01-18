@@ -1,0 +1,43 @@
+{
+  "moduleUid": "1B6CB9E8-4D5C-8481-4990-DA95321A818G",
+  "moduleTitle": "Login TopBar",
+  "moduleScopingKey": "xxx-",
+  "dataSchema": {
+    "Entities": [],
+    "Relations": []
+  },
+  "dataSources": [],
+  "displayModels": [],
+  "workspaces": [
+    {
+      "workspaceKey": "Login",
+      "iconName": "test-icon",
+      "isSidebar": false
+    }
+  ],
+  "usecases": [
+    {
+      "usecaseKey": "Login",
+      "widgetClass": "Login",
+      "title": "Login",
+      "singletonActionkey": "Login",
+      "unitOfWorkDefaults": {}
+    }
+  ],
+  "useCaseExtensionRules": [],
+  "commands": [
+    {
+      "menuFolder": "TopBar",
+      "iconKey": "Login",
+      "commandType": "activate-workspace",
+      "targetWorkspaceKey": "Login"
+    }
+  ],
+  "handlers": [],
+  "staticUsecaseAssignments": [
+    {
+      "usecaseKey": "Login",
+      "targetWorkspaceKey": "Login"
+    }
+  ]
+}

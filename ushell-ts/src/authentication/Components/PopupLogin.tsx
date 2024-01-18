@@ -1,29 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TokenService } from "../TokenService";
 import { AuthTokenConfig } from "ushell-portfoliodescription";
 import { PortfolioManager } from "../../portfolio-handling/PortfolioManager";
 import { useNavigate } from "react-router-dom";
 
 const PopupLogin: React.FC<{
+  tokenConfig: AuthTokenConfig;
   tokenSourceUid: string;
   redirectUri: string;
-}> = ({ tokenSourceUid, redirectUri }) => {
-  if (!PortfolioManager.GetPortfolio().authTokenConfigs) {
-    return <div>No Token Configs</div>;
-  }
-
-  const tokenConfig: AuthTokenConfig | null =
-    PortfolioManager.tryGetAuthTokenConfig(
-      PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
-    );
-  if (!tokenConfig) {
-    return <div>No Token Config</div>;
-  }
-
+  portfolio: string | null;
+}> = ({ tokenSourceUid, redirectUri, tokenConfig, portfolio }) => {
   const oauthUrl: string | null = TokenService.buildOAuthUrl(
     tokenConfig,
     redirectUri,
-    tokenSourceUid
+    tokenSourceUid,
+    portfolio,
+    true
   );
   console.log("oauthUrl", oauthUrl);
 
@@ -32,21 +24,48 @@ const PopupLogin: React.FC<{
   }
 
   const navigate = useNavigate();
+  const [checkInterval, setCheckInterval] = useState<any>(null);
   const [done, setDone] = useState(false);
 
-  if (done) {
-    navigate("/");
-    return <div>Redirecting</div>
-  }
+  useEffect(() => {
+    setCheckInterval(
+      setInterval(() => {
+        if (TokenService.isAuthenticated(tokenSourceUid)) {
+          setDone(true);
+        }
+        console.log("stuff");
+      }, 1000)
+    );
+  }, []);
 
-  const popup = window.open(oauthUrl!, "popup", "popup=true");
-  const checkPopup = setInterval(() => {
-    if (TokenService.isAuthenticated(tokenSourceUid)) {
-      popup?.close();
-      setDone(true);
+  useEffect(() => {
+    if (done) {
+      console.log("clearing interval");
+      clearInterval(checkInterval);
+      if (portfolio) {
+        navigate("/?portfolio=" + portfolio);
+      } else {
+        navigate("/");
+      }
     }
-    if (!popup || !popup.closed) return;
-  }, 1000);
+  }, [done]);
+
+  if (done) {
+    return <div>redirecting...</div>;
+  }
+  const popup = window.open(
+    oauthUrl!,
+    "popup",
+    "popup=true,height=320,scrollbars=1"
+  );
+
+  const desiredX: number = window.screenX;
+  const desiredY: number = window.screenY;
+  const desiredWidth: number = window.innerWidth - 20;
+  const desiredHeight: number = window.innerHeight - 20;
+  console.log("window pos", { x: desiredX, y: desiredY });
+  popup?.resizeTo(desiredWidth, desiredHeight);
+  popup?.moveTo(desiredX + 20, desiredY + 20);
 
   return <div>Logging in...</div>;
 };

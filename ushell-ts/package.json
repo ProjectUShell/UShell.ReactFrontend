@@ -36,7 +36,7 @@
     "react-router-dom": "^6.10.0",
     "style-loader": "^3.3.2",
     "ushell-common-components": "^1.2.5",
-    "ushell-portfoliodescription": "^0.2.0",
+    "ushell-portfoliodescription": "^0.2.9",
     "uuid": "^9.0.0"
   }
 }

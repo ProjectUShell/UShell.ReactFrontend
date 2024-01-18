@@ -21,7 +21,10 @@ import { PortfolioBasedMenuService } from "./portfolio-handling/PortfolioBasedMe
 import { PortfolioLoader } from "./portfolio-handling/PortfolioLoader";
 import ProtectedRoute from "./authentication/ProtectedRoute";
 import { WorkspaceManager } from "./workspace-handling/WorkspaceManager";
-import { TokenService } from "./authentication/TokenService";
+import {
+  TokenResolveResult,
+  TokenService,
+} from "./authentication/TokenService";
 import LogonPage from "./authentication/Components/LogonPage";
 import { AuthTokenInfo } from "./authentication/AuthTokenInfo";
 
@@ -55,6 +58,10 @@ const App = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const headless: string | null = searchParams.get("headless");
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const authTokenInfo: AuthTokenInfo = TokenService.tryGetAuthTokenInfo(
     location,
     searchParams
@@ -78,9 +85,13 @@ const App = () => {
     PortfolioManager.SetPortfolioLocation(portfolioLocation);
   }, [portfolioLocation]);
 
+  const [closing, setClosing] = useState(false);
+
+  console.log("render app", window.location.href);
   // effects
   useEffect(() => {
     console.log("App booting portfolio", portfolio);
+    console.log("SearchParams", window.location.href);
     PortfolioLoader.loadModuleDescription(portfolioLocation, portfolio).then(
       (p) => {
         PortfolioManager.SetModule(p.portfolio, p.module);
@@ -88,11 +99,23 @@ const App = () => {
           authTokenInfo,
           searchParams,
           setSearchParams
-        );
-        setMenu(PortfolioBasedMenuService.buildMenuFromModule()); //TODO create PortfolioBasedMenuService with parameters
+        ).then((result: TokenResolveResult) => {
+          if (!result.noParams && result.wasPopup) {
+            setClosing(true);
+            window.close();
+          }
+          if (!result.noParams && !result.success) {
+            throw "Unauthorized";
+          }
+          setMenu(PortfolioBasedMenuService.buildMenuFromModule()); //TODO create PortfolioBasedMenuService with parameters
+        });
       }
     );
   }, [portfolio]);
+
+  if (closing) {
+    return <div>closing...</div>;
+  }
 
   // init managers
   PortfolioManager.GetWorkspaceManager().navigateMethod = (url: string) => {
@@ -107,32 +130,39 @@ const App = () => {
   if (!PortfolioManager.GetPortfolio()) {
     return <div>Loading...</div>;
   }
-  if (
-    !TokenService.isAuthenticated(
-      PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
-    )
-  ) {
-    console.log(
-      "Protected route -> navigate to laogin!",
-      PortfolioManager.GetPortfolio()
-    );
-    // TokenService.performPopupOAuthLogin(
-    //   PortfolioManager.GetPortfolio().primaryUiTokenSourceUid,
-    //   "http://localhost:3000",
-    //   () => {
-    //     console.log("rerender");
-    //     setRenderTrigger((r) => r + 1);
-    //   }
-    // );
-    // return <div>Logging in...</div>;
-    return <LogonPage></LogonPage>;
-    // PortfolioManager.GetWorkspaceManager().navigateSafe("/login");
-  }
+
+  console.log("checking auth");
+  // if (
+  //   !TokenService.isAuthenticated(
+  //     PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
+  //   )
+  // ) {
+  //   console.log(
+  //     "Protected route -> navigate to laogin!",
+  //     PortfolioManager.GetPortfolio()
+  //   );
+
+  //   return (
+  //     <LogonPage
+  //       tokenSourceUid={PortfolioManager.GetPortfolio().primaryUiTokenSourceUid}
+  //       portfolio={portfolio}
+  //     ></LogonPage>
+  //   );
+  //   // PortfolioManager.GetWorkspaceManager().navigateSafe("/login");
+  // }
 
   if (!menu) {
     return <div>Shell is loading...</div>;
   }
 
+  if (isAuthenticated !== TokenService.isUiAuthenticated()) {
+    setIsAuthenticated(TokenService.isUiAuthenticated());
+    setMenu(PortfolioBasedMenuService.buildMenuFromModule());
+  }
+
+  if (headless) {
+    return <Workspace></Workspace>;
+  }
   return (
     <ShellLayout
       title={

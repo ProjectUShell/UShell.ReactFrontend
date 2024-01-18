@@ -1,0 +1,70 @@
+{
+  "moduleUid": "1B6CB9E8-4D5C-8481-4990-DA95321A818H",
+  "moduleTitle": "Auth Demo 1",
+  "moduleScopingKey": "xxx-",
+  "dataSchema": {
+    "Entities": [],
+    "Relations": []
+  },
+  "dataSources": [],
+  "displayModels": [],
+  "workspaces": [
+    {
+      "workspaceKey": "Protected",
+      "iconName": "test-icon",
+      "isSidebar": false
+    },
+    {
+      "workspaceKey": "Unprotected",
+      "iconName": "test-icon",
+      "isSidebar": false
+    }
+  ],
+  "usecases": [
+    {
+      "usecaseKey": "SensitiveData",
+      "widgetClass": "Demo",
+      "title": "Sensitive Data",
+      "iconName": "authorize",
+      "singletonActionkey": "SensitiveData",
+      "unitOfWorkDefaults": { "clientName": "secret" }
+    },
+    {
+      "usecaseKey": "PublicData",
+      "widgetClass": "Demo",
+      "title": "Public Data",
+      "iconName": "",
+      "singletonActionkey": "PublicData",
+      "unitOfWorkDefaults": { "publicInfo": "known" }
+    }
+  ],
+  "useCaseExtensionRules": [],
+  "commands": [
+    {
+      "uniqueCommandKey": "showProtected",
+      "label": "Protected",
+      "menuFolder": "Protected",
+      "iconKey": "Login",
+      "commandType": "activate-workspace",
+      "targetWorkspaceKey": "Protected"
+    },
+    {
+      "uniqueCommandKey": "showPublic",
+      "label": "Public",
+      "menuFolder": "Public",
+      "iconKey": "Login",
+      "commandType": "activate-workspace",
+      "targetWorkspaceKey": "Unprotected"
+    }
+  ],
+  "handlers": [],
+  "staticUsecaseAssignments": [
+    {
+      "usecaseKey": "SensitiveData",
+      "targetWorkspaceKey": "Protected"
+    }, {
+      "usecaseKey": "PublicData",
+      "targetWorkspaceKey": "Unprotected"
+    }
+  ]
+}

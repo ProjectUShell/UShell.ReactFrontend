@@ -15,6 +15,10 @@ import { GuifadFuse } from "ushell-common-components";
 import { RemoteWidgetDescription } from "../federation/RemoteWidgetDescription";
 import FederatedComponentProxy from "../federation/_Molecules/FederatedComponentProxy";
 import PortfolioSelector from "../portfolio-handling/_Organisms/PortfolioSelector";
+import { TokenService } from "../authentication/TokenService";
+import LogonPage from "../authentication/Components/LogonPage";
+import { PortfolioLoader } from "../portfolio-handling/PortfolioLoader";
+import { Demo } from "../demo/Demo";
 
 export class WorkspaceManager {
   startUsecase(workspaceKey: string, usecaseKey: string, uowData: any): void {
@@ -164,7 +168,8 @@ export class WorkspaceManager {
   private _UsecaseStatesByWorkspaceId: { [key: string]: UsecaseState[] } = {};
 
   private getLocaleStorageKey(workspaceKey: string): string {
-    const portfolioIdentifier: string = PortfolioManager.GetPortfolio().applicationTitle;
+    const portfolioIdentifier: string =
+      PortfolioManager.GetPortfolio().applicationTitle;
     return `${portfolioIdentifier}|${workspaceKey}`;
   }
 
@@ -301,11 +306,10 @@ export class WorkspaceManager {
         return;
       }
       case "navigate": {
-        console.warn("navigating")
-        this.navigateSafe("//")
+        console.warn("navigating");
+        this.navigateSafe("//");
         return;
       }
-      
     }
     throw "invalid command type";
   }
@@ -342,6 +346,29 @@ export class WorkspaceManager {
       return <div>No Usecase Description</div>;
     }
 
+    if (
+      !PortfolioManager.GetPortfolio().anonymouseAccess?.authIndependentUsecases?.find( //TODO wildcards
+        (uc) => uc == usecase.usecaseKey
+      )
+    ) {
+      if (
+        !TokenService.isUiAuthenticated()
+      ) {
+        console.log(
+          "Protected route -> navigate to laogin!",
+          PortfolioManager.GetPortfolio()
+        );
+
+        return (
+          <LogonPage
+            tokenSourceUid={
+              PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
+            }
+            portfolio={PortfolioLoader.GetPortfolioUrl()}
+          ></LogonPage>
+        );
+      }
+    }
     return this.renderWidget(usecase.widgetClass, input);
   }
 
@@ -359,7 +386,7 @@ export class WorkspaceManager {
       );
     }
     if (widgetClass == "portfolioChooser") {
-      const portfolioLocation: string = PortfolioManager.GetPortfolioLocation()
+      const portfolioLocation: string = PortfolioManager.GetPortfolioLocation();
       return (
         <PortfolioSelector
           url={portfolioLocation}
@@ -378,6 +405,19 @@ export class WorkspaceManager {
           rootEntityName="Employee"
         ></GuifadFuse>
       );
+    }
+    if (widgetClass.toLowerCase() == "login") {
+      return (
+        <LogonPage
+          tokenSourceUid={
+            PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
+          }
+          portfolio={PortfolioLoader.GetPortfolioUrl()}
+        ></LogonPage>
+      );
+    }
+    if (widgetClass.toLocaleLowerCase() == "demo") {
+      return <Demo widget={input}></Demo>;
     }
     return <div>Invalid Widget Class</div>;
   }

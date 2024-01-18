@@ -2,20 +2,25 @@ import { AuthTokenConfig } from "ushell-portfoliodescription";
 import { PortfolioManager } from "../portfolio-handling/PortfolioManager";
 import { AuthTokenInfo, AuthTokenInfo2 } from "./AuthTokenInfo";
 
+export class TokenResolveResult {
+  public noParams: boolean = true;
+  public success: boolean = false;
+  public wasPopup: boolean = false;
+}
+
 export class TokenService {
   static performPopupOAuthLogin(
     tokenSourceUid: string,
     redirectUri: string,
-    onClose: () => void
+    onClose: () => void,
+    portfolio: string | null
   ): void {
     if (!PortfolioManager.GetPortfolio().authTokenConfigs) {
       return;
     }
 
     const tokenConfig: AuthTokenConfig | null =
-      PortfolioManager.tryGetAuthTokenConfig(
-        PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
-      );
+      PortfolioManager.tryGetAuthTokenConfig(tokenSourceUid);
     if (!tokenConfig) {
       return;
     }
@@ -23,7 +28,9 @@ export class TokenService {
     const oauthUrl: string | null = TokenService.buildOAuthUrl(
       tokenConfig,
       redirectUri,
-      tokenSourceUid
+      tokenSourceUid,
+      portfolio,
+      true
     );
     if (!oauthUrl) {
       return;
@@ -39,13 +46,15 @@ export class TokenService {
         return;
       }
     }, 1000);
-    clearInterval(checkPopup)
+    clearInterval(checkPopup);
   }
 
   static buildOAuthUrl(
     tokenConfig: AuthTokenConfig,
     redirectUri: string,
-    tokenSourceUid: string
+    tokenSourceUid: string,
+    portfolio: string | null,
+    popup: boolean
   ): string | null {
     if (!tokenConfig.authEndpointUrl) {
       return null;
@@ -53,7 +62,9 @@ export class TokenService {
     const params: any = this.buildParams(
       tokenConfig,
       redirectUri,
-      tokenSourceUid
+      tokenSourceUid,
+      portfolio,
+      popup
     );
     let result: string = tokenConfig.authEndpointUrl + "?";
     for (const [key, value] of Object.entries(params)) {
@@ -129,12 +140,20 @@ export class TokenService {
     if (result.stateFromUrlQuery) {
       //var b = Buffer.from(stateFromUrlQuery, 'base64')
       //var decodedState: string = b.toString();
-      var decodedState: string = atob(result.stateFromUrlQuery);
+      var decodedState: string = "{}";
+      try {
+        decodedState = atob(result.stateFromUrlQuery);
+      } catch (error) {}
       console.log(
         "Reiceived State via Url (seems to come from OAuth redirect): ",
-        decodedState
+        { decoded: decodedState, raw: result.stateFromUrlQuery }
       );
-      receivedOAuthState = JSON.parse(decodedState);
+      try {
+        receivedOAuthState = JSON.parse(result.stateFromUrlQuery);
+      } catch {}
+      if (!receivedOAuthState.tokenSourceUid) {
+        receivedOAuthState = JSON.parse(decodedState);
+      }
     }
     return {
       codeFromUrlQuery: result.codeFromUrlQuery,
@@ -164,6 +183,65 @@ export class TokenService {
       stateFromUrlQuery: params["state"],
       tokenFromUrlQuery: params["access_token"],
     };
+  }
+
+  public static getUiAuthenticatedInfo(): {
+    primaryUiTokenSourceUid: string | null;
+    isAuthenticated: Boolean;
+  } {
+    if (
+      !PortfolioManager.GetPortfolio().authenticatedAccess
+        ?.primaryUiTokenSources
+    ) {
+      return { primaryUiTokenSourceUid: null, isAuthenticated: true };
+    }
+    if (
+      PortfolioManager.GetPortfolio().authenticatedAccess.primaryUiTokenSources
+        .length == 0
+    ) {
+      return { primaryUiTokenSourceUid: null, isAuthenticated: true };
+    }
+    let result: {
+      primaryUiTokenSourceUid: string | null;
+      isAuthenticated: Boolean;
+    } = {
+      primaryUiTokenSourceUid:
+        PortfolioManager.GetPortfolio().authenticatedAccess
+          .primaryUiTokenSources[0],
+      isAuthenticated: false,
+    };
+    PortfolioManager.GetPortfolio().authenticatedAccess.primaryUiTokenSources.forEach(
+      (ts) => {
+        if (TokenService.isAuthenticated(ts)) {
+          result = { primaryUiTokenSourceUid: ts, isAuthenticated: true };
+        }
+      }
+    );
+    return result;
+  }
+
+  public static isUiAuthenticated(): boolean {
+    if (
+      !PortfolioManager.GetPortfolio().authenticatedAccess
+        ?.primaryUiTokenSources
+    ) {
+      return true;
+    }
+    if (
+      PortfolioManager.GetPortfolio().authenticatedAccess.primaryUiTokenSources
+        .length == 0
+    ) {
+      return true;
+    }
+    let result: boolean = false;
+    PortfolioManager.GetPortfolio().authenticatedAccess.primaryUiTokenSources.forEach(
+      (ts) => {
+        if (TokenService.isAuthenticated(ts)) {
+          result = true;
+        }
+      }
+    );
+    return result;
   }
 
   public static isAuthenticated(tokenSourceUid: string): boolean {
@@ -211,15 +289,16 @@ export class TokenService {
     );
   }
 
-  public static resolveAuthTokenInfo(
+  public static async resolveAuthTokenInfo(
     authTokenInfo: AuthTokenInfo,
     searchParams: URLSearchParams,
     setSearchParams: (sp: URLSearchParams) => void
-  ) {
-    const primaryUiTokenSourceUid =
-      PortfolioManager.GetPortfolio().primaryUiTokenSourceUid;
+  ): Promise<TokenResolveResult> {
+    const result: TokenResolveResult = new TokenResolveResult();
 
     if (authTokenInfo.codeFromUrlQuery || authTokenInfo.tokenFromUrlQuery) {
+      result.noParams = false;
+
       console.log(
         "Code: ",
         authTokenInfo.codeFromUrlQuery,
@@ -230,21 +309,28 @@ export class TokenService {
       );
 
       var token = authTokenInfo.tokenFromUrlQuery;
-      if (authTokenInfo.codeFromUrlQuery) {
-        //TODO: ausprogrammieren
-        token = "abgeholterToken";
+
+      let tokenSourceUid: string =
+        authTokenInfo.stateFromUrlQuery.tokenSourceUid;
+      if (!token) {
+        token = await this.getTokenFromCode(
+          authTokenInfo.codeFromUrlQuery,
+          tokenSourceUid
+        );
       }
-      if (authTokenInfo.stateFromUrlQuery.tokenSourceUid && token) {
+      result.wasPopup = authTokenInfo.stateFromUrlQuery.popup;
+      if (token) {
+        result.success = true;
         console.log(
-          "importing token '" +
-            token +
-            "' for source " +
-            authTokenInfo.stateFromUrlQuery.tokenSourceUid
+          "importing token '" + token + "' for source " + tokenSourceUid
         );
-        TokenService.setToken(
-          authTokenInfo.stateFromUrlQuery.tokenSourceUid,
-          token
-        );
+        TokenService.setToken(tokenSourceUid, token);
+      } else {
+        result.success = false;
+        console.error("could not get token from OAuth response", {
+          tokenInfo: authTokenInfo,
+          searchParams: searchParams,
+        });
       }
 
       searchParams.delete("state");
@@ -252,13 +338,52 @@ export class TokenService {
       searchParams.delete("token");
 
       setSearchParams(searchParams);
+      return result;
     }
+
+    result.noParams = true;
+    return result;
+  }
+  static async getTokenFromCode(
+    codeFromUrlQuery: string | null,
+    tokenSourceUid: string
+  ): Promise<string | null> {
+    console.log("getting token from code 1", tokenSourceUid);
+    if (!codeFromUrlQuery) {
+      return null;
+    }
+    const tokenConfig: AuthTokenConfig | null =
+      PortfolioManager.tryGetAuthTokenConfig(tokenSourceUid);
+    if (!tokenConfig) {
+      return null;
+    }
+    let retrieveUrl: string =
+      tokenConfig.retrieveEndpointUrl + `?code=${codeFromUrlQuery}`;
+    if (tokenConfig.additionalAuthArgs) {
+      for (const [key, value] of Object.entries(
+        tokenConfig.additionalAuthArgs!
+      )) {
+        retrieveUrl += `&${key}=${value}`;
+      }
+    }
+    retrieveUrl += `&client_id=${tokenConfig.clientId}`
+    try {
+      console.log("getting token from code 2", retrieveUrl);
+      const response = await fetch(retrieveUrl);
+      const tokenInfo: any = await response.json();
+      return tokenInfo.access_token;
+    } catch (error) {
+      console.error(error);
+    }
+
+    return "token_todo";
   }
 
   static performEmbeddedOauthLogin(
     tokenConfig: AuthTokenConfig,
     redirectUri: string,
-    tokenSourceUid: string
+    tokenSourceUid: string,
+    portfolio: string | null
   ) {
     var oauth2Endpoint = tokenConfig.authEndpointUrl;
 
@@ -271,7 +396,9 @@ export class TokenService {
     var params: any = TokenService.buildParams(
       tokenConfig,
       redirectUri,
-      tokenSourceUid
+      tokenSourceUid,
+      portfolio,
+      false
     );
 
     // Add form parameters as hidden input values.
@@ -291,7 +418,9 @@ export class TokenService {
   private static buildParams(
     tokenConfig: AuthTokenConfig,
     redirectUri: string,
-    tokenSourceUid: string
+    tokenSourceUid: string,
+    portfolio: string | null,
+    popup: boolean = false
   ) {
     let scope: string = "";
     if (tokenConfig.claims) {
@@ -303,18 +432,17 @@ export class TokenService {
     var params: any = {
       client_id: tokenConfig.clientId,
       redirect_uri: redirectUri,
-      //   scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
       scope: scope,
       response_type: "token",
-      state: btoa(JSON.stringify({ tokenSourceUid: tokenSourceUid })),
+      state: btoa(
+        JSON.stringify({
+          tokenSourceUid: tokenSourceUid,
+          portfolio: portfolio,
+          popup: popup,
+        })
+      ),
     };
-    if (!tokenConfig.clientId) {
-      params = {
-        redirect_uri: redirectUri,
-        //   scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
-        state: btoa(JSON.stringify({ tokenSourceUid: tokenSourceUid })),
-      };
-    }
+
     if (tokenConfig.additionalAuthArgs) {
       for (const [key, value] of Object.entries(
         tokenConfig.additionalAuthArgs

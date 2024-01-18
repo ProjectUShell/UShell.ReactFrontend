@@ -11,6 +11,7 @@ import { ShellMenu } from "ushell-common-components/dist/cjs/components/shell-la
 import UsecaseInstanceDropdown from "../workspace-handling/_Molecules/UsecaseInstanceDropdown";
 import ClipboardIcon from "../shell-layout/_Icons/ClipboardIcon";
 import { TokenService } from "../authentication/TokenService";
+import ArrowRightStartOn from "../authentication/Components/ArrowRightStartOn";
 
 export class PortfolioBasedMenuService {
   public static buildMenuFromModule(): ShellMenu {
@@ -32,27 +33,22 @@ export class PortfolioBasedMenuService {
       id: "UsecaseInstanceDropdown",
     });
 
-    const primaryUiTokenSourceUid =
-      PortfolioManager.GetPortfolio().primaryUiTokenSourceUid;
-    if (
-      primaryUiTokenSourceUid &&
-      primaryUiTokenSourceUid != "00000000-0000-0000-0000-000000000000"
-    ) {
+    const authInfo: {
+      primaryUiTokenSourceUid: string | null;
+      isAuthenticated: Boolean;
+    } = TokenService.getUiAuthenticatedInfo();
+    if (authInfo.primaryUiTokenSourceUid && authInfo.isAuthenticated) {
       result1.topBarItems.unshift({
         icon: (
           <div>
-            {TokenService.isAuthenticated(primaryUiTokenSourceUid) && (
-              <button
-                onClick={() => {
-                  TokenService.deleteToken(
-                    PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
-                  );
-                  PortfolioManager.GetWorkspaceManager().navigateSafe("/");
-                }}
-              >
-                [X]
-              </button>
-            )}
+            <button className="relative align-middle"
+              onClick={() => {
+                TokenService.deleteToken(authInfo.primaryUiTokenSourceUid!);
+                PortfolioManager.GetWorkspaceManager().navigateSafe("/");
+              }}
+            >
+              <ArrowRightStartOn></ArrowRightStartOn>
+            </button>
           </div>
         ),
         id: "Logoff",

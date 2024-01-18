@@ -4,28 +4,18 @@ import { AuthTokenConfig } from "ushell-portfoliodescription";
 import { TokenService } from "../TokenService";
 
 const EmbeddedLogin: React.FC<{
+  tokenConfig: AuthTokenConfig;
   tokenSourceUid: string;
   redirectUri: string;
-}> = ({ tokenSourceUid, redirectUri }) => {
-  if (!PortfolioManager.GetPortfolio().authTokenConfigs) {
-    return <div>No Token Configs</div>;
-  }
-
-  const tokenConfig: AuthTokenConfig | null =
-    PortfolioManager.tryGetAuthTokenConfig(
-      PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
-    );
-  if (!tokenConfig) {
-    return <div>No Token Config</div>;
-  }
+  portfolio: string | null
+}> = ({ tokenSourceUid, redirectUri, tokenConfig, portfolio }) => {
   TokenService.performEmbeddedOauthLogin(
     tokenConfig,
     redirectUri,
-    tokenSourceUid
-  )
-  return (
-    <div>Logging in...</div>
+    tokenSourceUid,
+    portfolio
   );
+  return <div>Logging in...</div>;
 };
 
 export default EmbeddedLogin;

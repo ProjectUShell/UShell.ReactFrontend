@@ -7,6 +7,8 @@ export class PortfolioLoader {
   private static _DefaultPortfolioModule: ModuleDescription | null = null;
   private static _DefaultPortfolio: PortfolioDescription | null = null;
 
+  private static _PortfolioUrl: string | null = null;
+
   private static GetDefaultPortfolio(portfolioLocation: string): Promise<{
     portfolio: PortfolioDescription;
     module: ModuleDescription;
@@ -25,6 +27,10 @@ export class PortfolioLoader {
     return PortfolioLoader.loadFromUrl(portfolioLocation, "default.portfolio");
   }
 
+  public static GetPortfolioUrl(): string | null {
+    return this._PortfolioUrl;
+  }
+
   private static loadFromUrl(
     portfolioLocation: string,
     portfolioName: string
@@ -32,6 +38,7 @@ export class PortfolioLoader {
     portfolio: PortfolioDescription;
     module: ModuleDescription;
   }> {
+    this._PortfolioUrl = portfolioName;
     const url1: string =
       this.combineUrl(portfolioLocation, `${portfolioName}`) + ".json";
 
