@@ -229,7 +229,6 @@ export class WorkspaceManager {
             (l) => l.usecaseKey == sua.usecaseKey
           ) == undefined
       );
-
     const usecaseStatesFromUnsavedStaticUsecaseAssignments: UsecaseState[] =
       unsavedStaticUsecaseAssignments.map((sua) => {
         const useCase: UsecaseDescription | undefined =
@@ -347,13 +346,12 @@ export class WorkspaceManager {
     }
 
     if (
-      !PortfolioManager.GetPortfolio().anonymouseAccess?.authIndependentUsecases?.find( //TODO wildcards
+      !PortfolioManager.GetPortfolio().anonymouseAccess?.authIndependentUsecases?.find(
+        //TODO wildcards
         (uc) => uc == usecase.usecaseKey
       )
     ) {
-      if (
-        !TokenService.isUiAuthenticated()
-      ) {
+      if (!TokenService.isUiAuthenticated()) {
         console.log(
           "Protected route -> navigate to laogin!",
           PortfolioManager.GetPortfolio()
@@ -369,6 +367,7 @@ export class WorkspaceManager {
         );
       }
     }
+    console.log("input", input);
     return this.renderWidget(usecase.widgetClass, input);
   }
 
@@ -399,10 +398,11 @@ export class WorkspaceManager {
     if (widgetClass == "guifadFuse") {
       const uow: any = input.state.unitOfWork;
       const fuseUrl: string = uow.fuseUrl;
+      console.log("uow.rootEntityName", uow);
       return (
         <GuifadFuse
           fuseUrl={uow.fuseUrl}
-          rootEntityName="Employee"
+          rootEntityName={uow.rootEntityName}
         ></GuifadFuse>
       );
     }

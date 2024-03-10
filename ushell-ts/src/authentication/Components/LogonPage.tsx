@@ -1,39 +1,19 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {  } from "react";
 
-import { Button, Card, Collapse } from "antd";
-import { useNavigate } from "react-router-dom";
-
-const { Panel } = Collapse;
-
-import LogonOverlay from "./LogonOverlay";
-import EmbeddedLogin from "./EmbeddedLogin";
 import { PortfolioManager } from "../../portfolio-handling/PortfolioManager";
-import { AuthTokenConfig } from "ushell-portfoliodescription";
-import EmbeddedLoginButton from "./EmbeddedLoginButton";
-import PopupLogin from "./PopupLogin";
 import PopupLoginButton from "./PopupLoginButton";
-import SettingsDropdown from "../../shell-layout/_Molecules/SettingsDropdown";
-import {
-  ColorMode,
-  LayoutMode,
-  saveShellSettings,
-} from "../../shell-layout/ShellSettings";
-import TopBar from "ushell-common-components/dist/cjs/components/shell-layout/_Organisms/TopBar";
-import { ShellLayout } from "ushell-common-components";
 import { ShellMenu } from "ushell-common-components/dist/esm/components/shell-layout/ShellMenu";
-import LoginButton from "./LoginButton";
-import IFrameLogin from "./IFrameLogin";
 import IFrameLoginButton from "./IFrameLoginButton";
 
 const LogonPage: React.FC<{
   tokenSourceUid: string;
   portfolio: string | null;
 }> = ({ tokenSourceUid, portfolio }) => {
-  const tokenConfig: AuthTokenConfig | null =
-    PortfolioManager.tryGetAuthTokenConfig(tokenSourceUid);
-  if (!tokenConfig) {
-    return <div>No Token Config</div>;
-  }
+  // const tokenConfig: AuthTokenConfig | null =
+  //   PortfolioManager.tryGetAuthTokenConfig(tokenSourceUid);
+  // if (!tokenConfig) {
+  //   return <div>No Token Config {tokenSourceUid}</div>;
+  // }
 
   const shellMenu: ShellMenu = new ShellMenu();
   shellMenu.items = [];

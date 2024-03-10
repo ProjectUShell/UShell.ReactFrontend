@@ -1,15 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
-import { Button, Card, Collapse } from "antd";
 import { useNavigate } from "react-router-dom";
-
-const { Panel } = Collapse;
-
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
 
 /*
 import useAuthToken from "../../hooks/useAuthToken";
@@ -29,10 +20,7 @@ import {
 } from "../../services/TokenService";
 */
 
-import { PortfolioLoader } from "../../portfolio-handling/PortfolioLoader";
-
 // import "./SignIn.css";
-import { TokenService } from "../TokenService";
 
 const delay = 500;
 
@@ -187,7 +175,7 @@ const LogonOverlay: React.FC<{ tokenSourceUid: string }> = ({
   const popup = window.open(hackUrl2, "popup", "popup=true");
   const checkPopup = setInterval(() => {
     if (popup?.window.location.href.includes("localhost")) {
-      console.log("logon", popup?.window.location.href)
+      console.log("logon", popup?.window.location.href);
       popup.close();
     }
     if (!popup || !popup.closed) return;

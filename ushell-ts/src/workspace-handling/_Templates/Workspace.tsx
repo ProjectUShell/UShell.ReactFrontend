@@ -21,7 +21,8 @@ const Workspace: React.FC<{}> = ({}) => {
     );
     let activeUsecaseState: UsecaseState;
     if (staticUsecaseStates.length == 0) {
-      return <div>Empty Workspace</div>;
+      console.log(PortfolioManager.GetModule())
+      return <div>no usecases</div>;
     } else {
       activeUsecaseState = staticUsecaseStates[0];
     }
@@ -39,7 +40,7 @@ const Workspace: React.FC<{}> = ({}) => {
   ); //TODO_KRN how to determine which usecase is active? => save in wsm
 
   // TODO Idee: usecaseKey-singletonActionKey (oder instanceUid) als key im localstorage für einzelne usecaseStates
-  // console.log("workspaceManager", workspaceManager);
+  console.log("workspaceKey", workspaceKey);
 
   if (!activeUsecaseState) {
     const staticUsecaseStates: UsecaseState[] = usecaseStates.filter(

@@ -131,26 +131,6 @@ const App = () => {
     return <div>Loading...</div>;
   }
 
-  console.log("checking auth");
-  // if (
-  //   !TokenService.isAuthenticated(
-  //     PortfolioManager.GetPortfolio().primaryUiTokenSourceUid
-  //   )
-  // ) {
-  //   console.log(
-  //     "Protected route -> navigate to laogin!",
-  //     PortfolioManager.GetPortfolio()
-  //   );
-
-  //   return (
-  //     <LogonPage
-  //       tokenSourceUid={PortfolioManager.GetPortfolio().primaryUiTokenSourceUid}
-  //       portfolio={portfolio}
-  //     ></LogonPage>
-  //   );
-  //   // PortfolioManager.GetWorkspaceManager().navigateSafe("/login");
-  // }
-
   if (!menu) {
     return <div>Shell is loading...</div>;
   }
