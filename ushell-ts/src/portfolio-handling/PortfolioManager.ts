@@ -40,21 +40,42 @@ export class PortfolioManager {
   }
 
   static commandRequiresAuthentication(command: CommandDescription): boolean {
-    if (!this.GetPortfolio().anonymouseAccess) { return true;}
-    if (!this.GetPortfolio().anonymouseAccess.authIndependentCommands) { return true;}
-    return !(this.GetPortfolio().anonymouseAccess.authIndependentCommands.find((c) => c == command.uniqueCommandKey))
+    console.log("commandRequiresAuthentication", command);
+    if (!this.GetPortfolio().anonymouseAccess) {
+      return true;
+    }
+    if (!this.GetPortfolio().anonymouseAccess.authIndependentCommands) {
+      return true;
+    }
+    return !this.GetPortfolio().anonymouseAccess.authIndependentCommands.find(
+      (c) => c == command.uniqueCommandKey
+    );
   }
 
   static usecaseRequiresAuthentication(usecase: UsecaseDescription): boolean {
-    if (!this.GetPortfolio().anonymouseAccess) { return true;}
-    if (!this.GetPortfolio().anonymouseAccess.authIndependentCommands) { return true;}
-    return !(this.GetPortfolio().anonymouseAccess.authIndependentUsecases.find((uc) => uc == usecase.usecaseKey))
+    if (!this.GetPortfolio().anonymouseAccess) {
+      return true;
+    }
+    if (!this.GetPortfolio().anonymouseAccess.authIndependentCommands) {
+      return true;
+    }
+    return !this.GetPortfolio().anonymouseAccess.authIndependentUsecases.find(
+      (uc) => uc == usecase.usecaseKey
+    );
   }
 
-  static workspaceRequiresAuthentication(workspace: WorkspaceDescription): boolean {
-    if (!this.GetPortfolio().anonymouseAccess) { return true;}
-    if (!this.GetPortfolio().anonymouseAccess.authIndependentCommands) { return true;}
-    return !(this.GetPortfolio().anonymouseAccess.authIndependentWorkspaces.find((ws) => ws == workspace.workspaceKey))
+  static workspaceRequiresAuthentication(
+    workspace: WorkspaceDescription
+  ): boolean {
+    if (!this.GetPortfolio().anonymouseAccess) {
+      return true;
+    }
+    if (!this.GetPortfolio().anonymouseAccess.authIndependentCommands) {
+      return true;
+    }
+    return !this.GetPortfolio().anonymouseAccess.authIndependentWorkspaces.find(
+      (ws) => ws == workspace.workspaceKey
+    );
   }
 
   private static GetInstance(): PortfolioManager {

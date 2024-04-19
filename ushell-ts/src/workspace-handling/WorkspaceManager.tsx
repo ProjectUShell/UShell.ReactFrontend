@@ -11,7 +11,7 @@ import {
 import { WidgetHost } from "../portfolio-handling/WidgetHost";
 import { ArgumentMapper } from "../portfolio-handling/ArgumentMapper";
 import { PortfolioManager } from "../portfolio-handling/PortfolioManager";
-import { GuifadFuse } from "ushell-common-components";
+import { Guifad, GuifadFuse } from "ushell-common-components";
 import { RemoteWidgetDescription } from "../federation/RemoteWidgetDescription";
 import FederatedComponentProxy from "../federation/_Molecules/FederatedComponentProxy";
 import PortfolioSelector from "../portfolio-handling/_Organisms/PortfolioSelector";
@@ -19,6 +19,13 @@ import { TokenService } from "../authentication/TokenService";
 import LogonPage from "../authentication/Components/LogonPage";
 import { PortfolioLoader } from "../portfolio-handling/PortfolioLoader";
 import { Demo } from "../demo/Demo";
+import { DatasourceManager } from "../datasource-handling/DatasourceManager";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
+const queryClient = new QueryClient();
 
 export class WorkspaceManager {
   startUsecase(workspaceKey: string, usecaseKey: string, uowData: any): void {
@@ -395,6 +402,18 @@ export class WorkspaceManager {
         ></PortfolioSelector>
       );
     }
+    const uow: any = input.state.unitOfWork;
+    console.log("uow", uow);
+    if (widgetClass == "guifad") {
+      return (
+        <QueryClientProvider client={queryClient}>
+          <Guifad
+            rootEntityName={uow.entityName}
+            dataSourceManager={DatasourceManager.Instance()}
+          ></Guifad>
+        </QueryClientProvider>
+      );
+    }
     if (widgetClass == "guifadFuse") {
       const uow: any = input.state.unitOfWork;
       const fuseUrl: string = uow.fuseUrl;
@@ -403,6 +422,7 @@ export class WorkspaceManager {
         <GuifadFuse
           fuseUrl={uow.fuseUrl}
           rootEntityName={uow.rootEntityName}
+          routePattern={uow.routePattern ? uow.routePattern : "body"}
         ></GuifadFuse>
       );
     }

@@ -27,6 +27,7 @@ import {
 } from "./authentication/TokenService";
 import LogonPage from "./authentication/Components/LogonPage";
 import { AuthTokenInfo } from "./authentication/AuthTokenInfo";
+import { DatasourceManager } from "./datasource-handling/DatasourceManager";
 
 const pickBasePath = () => {
   let baseHref = (document.getElementsByTagName("base")[0] || { href: "/" })
@@ -87,28 +88,31 @@ const App = () => {
 
   const [closing, setClosing] = useState(false);
 
-  console.log("render app", window.location.href);
   // effects
   useEffect(() => {
     console.log("App booting portfolio", portfolio);
-    console.log("SearchParams", window.location.href);
     PortfolioLoader.loadModuleDescription(portfolioLocation, portfolio).then(
       (p) => {
         PortfolioManager.SetModule(p.portfolio, p.module);
-        TokenService.resolveAuthTokenInfo(
-          authTokenInfo,
-          searchParams,
-          setSearchParams
-        ).then((result: TokenResolveResult) => {
-          if (!result.noParams && result.wasPopup) {
-            setClosing(true);
-            window.close();
-          }
-          if (!result.noParams && !result.success) {
-            throw "Unauthorized";
-          }
-          setMenu(PortfolioBasedMenuService.buildMenuFromModule()); //TODO create PortfolioBasedMenuService with parameters
-        });
+        DatasourceManager.Instance()
+          .init()
+          .then(() => {
+            console.log("resolveAuthTokenInfo")
+            TokenService.resolveAuthTokenInfo(
+              authTokenInfo,
+              searchParams,
+              setSearchParams
+            ).then((result: TokenResolveResult) => {
+              if (!result.noParams && result.wasPopup) {
+                setClosing(true);
+                window.close();
+              }
+              if (!result.noParams && !result.success) {
+                throw "Unauthorized";
+              }
+              setMenu(PortfolioBasedMenuService.buildMenuFromModule()); //TODO create PortfolioBasedMenuService with parameters
+            });
+          });
       }
     );
   }, [portfolio]);

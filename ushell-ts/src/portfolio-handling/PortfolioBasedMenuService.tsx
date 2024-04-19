@@ -16,6 +16,7 @@ import ArrowRightStartOn from "../authentication/Components/ArrowRightStartOn";
 export class PortfolioBasedMenuService {
   public static buildMenuFromModule(): ShellMenu {
     const module: ModuleDescription = PortfolioManager.GetModule();
+    console.log("build menu", module)
     const result1: ShellMenu = MenuBuilder.buildMenuFromModule(
       module,
       (command: CommandDescription, e: any) =>

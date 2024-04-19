@@ -105,7 +105,6 @@ export class PortfolioLoader {
     const finalPath: string = PortfolioLoader.isPathAbsolute(urls[index])
       ? urls[index]
       : this.getFullModuleUrl(portfolioLocation, urls[index]);
-    console.log("finalPath", finalPath);
     return fetch(`${urls[index]}`, {
       headers: {
         "Content-Type": "application/json",
@@ -117,9 +116,11 @@ export class PortfolioLoader {
       })
       .then((md: ModuleDescription) => {
         // füge die moduleDescription in das porfolio ein
+        console.log("loading ModuleDescription", md)
         md.commands?.forEach((c) => result.commands.push(c));
         md.usecases?.forEach((c) => result.usecases.push(c));
         md.workspaces?.forEach((c) => result.workspaces.push(c));
+        md.datastores?.forEach((ds) => result.datastores.push(ds));
         md.staticUsecaseAssignments?.forEach((c) =>
           result.staticUsecaseAssignments.push(c)
         );
