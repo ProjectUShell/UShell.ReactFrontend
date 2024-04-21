@@ -45,51 +45,92 @@ const PortfolioSelector: React.FC<{
     setSelectedByTag(selectedByTag1);
   }
 
-  function getFilteredEntries(): PortfolioEntry[] {
+  function getFilteredEntries(highestTagIndex: number): PortfolioEntry[] {
     const result: PortfolioEntry[] = [];
     portfolioEntries.forEach((pe) => {
       let match: boolean = true;
-      Object.keys(pe.tags).forEach((tn: string) => {
-        if (selectedByTag[tn] != pe.tags[tn]) {
+      Object.keys(pe.tags).forEach((tn: string, i) => {
+        if (
+          highestTagIndex >= 0 &&
+          i <= highestTagIndex &&
+          selectedByTag[tn] != pe.tags[tn]
+        ) {
           match = false;
         }
       });
       if (match) {
-        result.push(pe)
+        result.push(pe);
       }
     });
     return result;
   }
 
+  function getTagOptions(
+    tagKey: string,
+    index: number
+  ): { label: string; value: any }[] {
+    console.log("tagKey", tagKey);
+    if (index == 0) {
+      return tags[tagKey].map((tv: string) => {
+        return { label: tv, value: tv };
+      });
+    }
+    const matchingEntries: PortfolioEntry[] = getFilteredEntries(index - 1);
+    const matchingTags: { [tagName: string]: string[] } = {};
+    matchingEntries.forEach((pe: PortfolioEntry) => {
+      Object.keys(pe.tags).forEach((tn: string) => {
+        if (Object.keys(matchingTags).find((tk) => tk == tn) == undefined) {
+          matchingTags[tn] = [];
+        }
+        if (matchingTags[tn].find((t) => t == pe.tags[tn]) == undefined) {
+          matchingTags[tn].push(pe.tags[tn]);
+        }
+      });
+    });
+    console.log("matchingTags", {
+      matchingTags: matchingTags,
+      tagKey: tagKey,
+      matchingEntries: matchingEntries,
+      selectedByTag: selectedByTag,
+    });
+    if (!(tagKey in matchingTags)) return [];
+    return matchingTags[tagKey].map((tv: string) => {
+      return { label: tv, value: tv };
+    });
+  }
+
   return (
-    <div className="m-auto bg-backgroundfour dark:bg-backgroundfourdark p-2 rounded-md">
-      <h1 className="text-lg border-b">Select a portfolio</h1>
-      {Object.keys(tags).map((t) => (
-        <div key={t} className="p-1">
-          <label>{t}</label>
-          <DropdownSelect
-            options={tags[t].map((tv: string) => {
-              return { label: tv, value: tv };
-            })}
-            initialOption={{ label: selectedByTag[t], value: selectedByTag[t] }}
-            onOptionSet={(o: any) => {
-              console.log("option set", o);
-              updateSelected(t, o.value);
-            }}
-          ></DropdownSelect>
-        </div>
-      ))}
-      <div className="p-2">
-        {getFilteredEntries().map((pe) => (
-          <div
-            key={pe.portfolioUrl}
-            className="m-1 hover:bg-backgroundthree hover:dark:bg-backgroundthreedark p-2 rounded-md"
-          >
-            <button onClick={(e) => onPortfolioSelected(pe.portfolioUrl)}>
-              {pe.label}
-            </button>
+    <div className="flex h-screen w-screen  overflow-auto m-auto">
+      <div className="flex flex-col m-auto bg-backgroundfour dark:bg-backgroundfourdark p-2 rounded-md">
+        <h1 className="text-lg border-b">Select a portfolio</h1>
+        {Object.keys(tags).map((t, i) => (
+          <div key={t} className="p-1 m-auto">
+            <label>{t}</label>
+            <DropdownSelect
+              options={getTagOptions(t, i)}
+              initialOption={{
+                label: selectedByTag[t],
+                value: selectedByTag[t],
+              }}
+              onOptionSet={(o: any) => {
+                console.log("option set", o);
+                updateSelected(t, o.value);
+              }}
+            ></DropdownSelect>
           </div>
         ))}
+        <div className="p-2">
+          {getFilteredEntries(Object.keys(tags).length).map((pe) => (
+            <div
+              key={pe.portfolioUrl}
+              className="m-1 hover:bg-backgroundthree hover:dark:bg-backgroundthreedark p-2 rounded-md"
+            >
+              <button onClick={(e) => onPortfolioSelected(pe.portfolioUrl)}>
+                {pe.label}
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
