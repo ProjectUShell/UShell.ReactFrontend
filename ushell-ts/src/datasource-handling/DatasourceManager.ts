@@ -7,6 +7,7 @@ import { IDataSource, IDataSourceManager, IDataStore } from "ushell-modulebase";
 import { PortfolioManager } from "../portfolio-handling/PortfolioManager";
 import { DatastoreDescription } from "ushell-portfoliodescription";
 import { FuseDataStore } from "ushell-common-components";
+import { TokenService } from "../authentication/TokenService";
 
 export class DatasourceManager implements IDataSourceManager {
   private static _Instance: DatasourceManager | null = null;
@@ -39,6 +40,10 @@ export class DatasourceManager implements IDataSourceManager {
           this._Stores.push(dataStore);
         }
       });
+      FuseDataStore.getTokenMethod = (tokenSourceUid: string) => {
+        console.log("getTokenMethod", {tokenSourceUid: tokenSourceUid, tokenService: TokenService})
+        return TokenService.getToken(tokenSourceUid)!;
+      };
       this.initDataStores(0).then(() => {
         console.log("finish init", this._SchemaRoot);
         return resolve();
@@ -95,7 +100,8 @@ export class DatasourceManager implements IDataSourceManager {
         return new FuseDataStore(
           ds.providerArguments["url"],
           ds.providerArguments["routePattern"],
-          ds.providerArguments["entitySchemaUrl"]
+          ds.providerArguments["entitySchemaUrl"],
+          ds.providerArguments["tokenSourceUid"]
         );
     }
     return null;

@@ -85,6 +85,11 @@ export class TokenService {
   }
 
   public static getToken(tokenSourceUid: string): string | null {
+    const result = localStorage.getItem(
+      TokenService.generateLocalStorageKey(tokenSourceUid)
+    );
+    console.log("getToken", result)
+    return result
     return localStorage.getItem(
       TokenService.generateLocalStorageKey(tokenSourceUid)
     );

@@ -12,7 +12,7 @@ const EmbeddedLogin: React.FC<{
 }> = ({ tokenSourceUid, redirectUri, tokenConfig, portfolio }) => {
   return (
     <LoginButton
-      text={`Embedded Login with ${tokenConfig.localLogonNameToLower}`}
+      text={`Embedded Login with ${tokenConfig.localLogonNameInputLabel}`}
       onClick={() =>
         TokenService.performEmbeddedOauthLogin(
           tokenConfig,

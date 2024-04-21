@@ -97,7 +97,7 @@ const App = () => {
         DatasourceManager.Instance()
           .init()
           .then(() => {
-            console.log("resolveAuthTokenInfo")
+            console.log("resolveAuthTokenInfo");
             TokenService.resolveAuthTokenInfo(
               authTokenInfo,
               searchParams,

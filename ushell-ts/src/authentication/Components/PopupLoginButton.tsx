@@ -28,7 +28,7 @@ const PopupLoginButton: React.FC<{
   return (
     <LoginButton
       onClick={() => setShowPopup(true)}
-      text={`Login with ${tokenConfig.localLogonNameToLower}`}
+      text={`Login with ${tokenConfig.localLogonNameInputLabel}`}
     ></LoginButton>
   );
 };
