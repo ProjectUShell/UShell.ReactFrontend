@@ -453,14 +453,10 @@ export class WorkspaceManager {
         return result;
       }
     } catch (error) {
-      // console.log("error parsing widget class", error)
+      console.error("error parsing widget class", error);
       return null;
     }
-    return {
-      scope: "ushell_demo_app",
-      module: "./EmployeeList",
-      url: "http://localhost:3001/remoteEntry.js",
-      inputData: input,
-    };
+    console.error("Invalid widget class", widgetClass);
+    return null;
   }
 }

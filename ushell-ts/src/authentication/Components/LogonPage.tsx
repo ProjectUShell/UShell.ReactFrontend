@@ -1,9 +1,10 @@
-import React, {  } from "react";
+import React from "react";
 
 import { PortfolioManager } from "../../portfolio-handling/PortfolioManager";
 import PopupLoginButton from "./PopupLoginButton";
 import { ShellMenu } from "ushell-common-components/dist/esm/components/shell-layout/ShellMenu";
 import IFrameLoginButton from "./IFrameLoginButton";
+import { pickBasePath } from "../../App";
 
 const LogonPage: React.FC<{
   tokenSourceUid: string;
@@ -28,7 +29,7 @@ const LogonPage: React.FC<{
               key={ts}
               tokenConfig={PortfolioManager.tryGetAuthTokenConfig(ts)!}
               tokenSourceUid={ts}
-              redirectUri="http://localhost:3000"
+              redirectUri={pickBasePath()}
               portfolio={portfolio}
             ></PopupLoginButton>
           ) : (
@@ -36,7 +37,7 @@ const LogonPage: React.FC<{
               key={ts}
               tokenConfig={PortfolioManager.tryGetAuthTokenConfig(ts)!}
               tokenSourceUid={ts}
-              redirectUri="http://localhost:3000"
+              redirectUri={pickBasePath()}
               portfolio={portfolio}
             ></IFrameLoginButton>
           )

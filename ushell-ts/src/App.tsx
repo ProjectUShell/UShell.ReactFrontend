@@ -29,7 +29,7 @@ import LogonPage from "./authentication/Components/LogonPage";
 import { AuthTokenInfo } from "./authentication/AuthTokenInfo";
 import { DatasourceManager } from "./datasource-handling/DatasourceManager";
 
-const pickBasePath = () => {
+export const pickBasePath = () => {
   let baseHref = (document.getElementsByTagName("base")[0] || { href: "/" })
     .href;
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
+import { pickBasePath } from "../../App";
 
 /*
 import useAuthToken from "../../hooks/useAuthToken";
@@ -88,7 +89,7 @@ const LogonOverlay: React.FC<{ tokenSourceUid: string }> = ({
 
   const prepareSignIn = () => {
     // TODO: get dynamically -> useLocation hook?
-    var localRootUri = "http://localhost:3000/#/"; //window.location.href;
+    var localRootUri = pickBasePath();
 
     // cut any query-parameter
     let idx = localRootUri.indexOf("?");
