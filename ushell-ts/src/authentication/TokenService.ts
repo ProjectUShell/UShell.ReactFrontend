@@ -88,8 +88,8 @@ export class TokenService {
     const result = localStorage.getItem(
       TokenService.generateLocalStorageKey(tokenSourceUid)
     );
-    console.log("getToken", result)
-    return result
+    console.log("getToken", result);
+    return result;
     return localStorage.getItem(
       TokenService.generateLocalStorageKey(tokenSourceUid)
     );
@@ -371,10 +371,14 @@ export class TokenService {
         retrieveUrl += `&${key}=${value}`;
       }
     }
-    retrieveUrl += `&client_id=${tokenConfig.clientId}`
+    retrieveUrl += `&client_id=${tokenConfig.clientId}`;
     try {
       console.log("getting token from code 2", retrieveUrl);
-      const response = await fetch(retrieveUrl);
+      const response = await fetch(retrieveUrl, {
+        method: "Get",
+        credentials: "include",
+        mode: "cors",
+      });
       const tokenInfo: any = await response.json();
       return tokenInfo.access_token;
     } catch (error) {
@@ -430,7 +434,7 @@ export class TokenService {
     let scope: string = "";
     if (tokenConfig.claims) {
       for (const [key, value] of Object.entries(tokenConfig.claims)) {
-        scope += value;
+        scope += `${key}:${value}`;
       }
     }
 

@@ -127,8 +127,12 @@ const App = () => {
       navigate("/");
       return;
     }
-    const url1: string = portfolio ? `${url}?portfolio=${portfolio}` : url;
-    navigate(url1);
+    if (url.includes("?portfolio")) {
+      navigate(url);
+    } else {
+      const url1: string = portfolio ? `${url}?portfolio=${portfolio}` : url;
+      navigate(url1);
+    }
   };
 
   if (!PortfolioManager.GetPortfolio()) {

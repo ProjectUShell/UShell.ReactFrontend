@@ -28,7 +28,7 @@ const IFrameLoginButton: React.FC<{
       )}
       <LoginButton
         onClick={() => setShowIFrame(true)}        
-        text={`Login with ${tokenConfig.localLogonNameToLower}`}
+        text={`Login with ${tokenConfig.localLogonNameInputLabel}`}
       ></LoginButton>
     </>
   );

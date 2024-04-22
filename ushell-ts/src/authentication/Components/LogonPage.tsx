@@ -16,6 +16,8 @@ const LogonPage: React.FC<{
   //   return <div>No Token Config {tokenSourceUid}</div>;
   // }
 
+  const redirectUri: string = window.location.origin;
+
   const shellMenu: ShellMenu = new ShellMenu();
   shellMenu.items = [];
 
@@ -29,7 +31,7 @@ const LogonPage: React.FC<{
               key={ts}
               tokenConfig={PortfolioManager.tryGetAuthTokenConfig(ts)!}
               tokenSourceUid={ts}
-              redirectUri={pickBasePath()}
+              redirectUri={redirectUri}
               portfolio={portfolio}
             ></PopupLoginButton>
           ) : (
@@ -37,7 +39,7 @@ const LogonPage: React.FC<{
               key={ts}
               tokenConfig={PortfolioManager.tryGetAuthTokenConfig(ts)!}
               tokenSourceUid={ts}
-              redirectUri={pickBasePath()}
+              redirectUri={redirectUri}
               portfolio={portfolio}
             ></IFrameLoginButton>
           )
