@@ -105,7 +105,7 @@ export class PortfolioLoader {
     const finalPath: string = PortfolioLoader.isPathAbsolute(urls[index])
       ? urls[index]
       : this.getFullModuleUrl(portfolioLocation, urls[index]);
-    return fetch(`${urls[index]}`, {
+    return fetch(finalPath, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
