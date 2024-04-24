@@ -149,7 +149,11 @@ const App = () => {
   }
 
   if (headless) {
-    return <Workspace></Workspace>;
+    return (
+      <div className="h-screen w-screen flex flex-col overflow-hidden font-custom antialiased bg-backgroundtwo dark:bg-backgroundtwodark text-textone dark:text-textonedark">
+        <Workspace></Workspace>
+      </div>
+    );
   }
   return (
     <ShellLayout
