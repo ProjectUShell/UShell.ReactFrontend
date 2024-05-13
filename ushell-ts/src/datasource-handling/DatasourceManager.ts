@@ -8,6 +8,7 @@ import { PortfolioManager } from "../portfolio-handling/PortfolioManager";
 import { DatastoreDescription } from "ushell-portfoliodescription";
 import { FuseDataStore } from "ushell-common-components";
 import { TokenService } from "../authentication/TokenService";
+import { ArgumentMapper } from "../portfolio-handling/ArgumentMapper";
 
 export class DatasourceManager implements IDataSourceManager {
   private static _Instance: DatasourceManager | null = null;
@@ -41,7 +42,10 @@ export class DatasourceManager implements IDataSourceManager {
         }
       });
       FuseDataStore.getTokenMethod = (tokenSourceUid: string) => {
-        console.log("getTokenMethod", {tokenSourceUid: tokenSourceUid, tokenService: TokenService})
+        console.log("getTokenMethod", {
+          tokenSourceUid: tokenSourceUid,
+          tokenService: TokenService,
+        });
         return TokenService.getToken(tokenSourceUid)!;
       };
       this.initDataStores(0).then(() => {
@@ -97,11 +101,22 @@ export class DatasourceManager implements IDataSourceManager {
   static tryCreateDataStore(ds: DatastoreDescription): IDataStore | null {
     switch (ds.providerClass) {
       case "fuse":
+        console.log(
+          "additionalBodyArgs",
+          ds.providerArguments["additionalBodyArgs"]
+        );
+        const additionalBodyArgs: any = ArgumentMapper.resolveDynamicMapping(
+          ds.providerArguments["additionalBodyArgs"],
+          {},
+          true
+        );
+        console.log("additionalBodyArgs", additionalBodyArgs);
         return new FuseDataStore(
           ds.providerArguments["url"],
           ds.providerArguments["routePattern"],
           ds.providerArguments["entitySchemaUrl"],
-          ds.providerArguments["tokenSourceUid"]
+          ds.providerArguments["tokenSourceUid"],
+          additionalBodyArgs
         );
     }
     return null;

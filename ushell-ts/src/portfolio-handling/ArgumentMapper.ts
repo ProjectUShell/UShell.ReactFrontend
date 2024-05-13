@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { PortfolioManager } from "./PortfolioManager";
 
 export class ArgumentMapper {
   public static resolveDynamicMapping(
@@ -82,7 +83,9 @@ export class ArgumentMapper {
           value = ArgumentMapper.pickValue(sourceUseCaseUow, sourcePath);
         }
       } else if (mappingEntry.use.startsWith("applicationScope://")) {
-        error = "this channel is under construction!";
+        const applicationScope: any =
+          PortfolioManager.GetPortfolio().applicationScope;
+        value = ArgumentMapper.pickValue(applicationScope, sourcePath);
       } else if (mappingEntry.use.startsWith("userInput://")) {
         error = "this channel is under construction!";
       } else {
