@@ -116,7 +116,8 @@ export class DatasourceManager implements IDataSourceManager {
           ds.providerArguments["routePattern"],
           ds.providerArguments["entitySchemaUrl"],
           ds.providerArguments["tokenSourceUid"],
-          additionalBodyArgs
+          additionalBodyArgs,
+          ds.providerArguments["getSchemaMethod"]
         );
     }
     return null;

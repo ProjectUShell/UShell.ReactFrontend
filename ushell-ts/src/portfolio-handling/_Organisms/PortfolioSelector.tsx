@@ -101,7 +101,7 @@ const PortfolioSelector: React.FC<{
 
   return (
     <div className="flex h-screen w-screen  overflow-auto m-auto">
-      <div className="flex flex-col m-auto bg-backgroundfour dark:bg-backgroundfourdark p-2 rounded-md">
+      <div className="flex flex-col m-auto bg-bg6 dark:bg-bg5dark p-2 rounded-md">
         <h1 className="text-lg border-b">Select a portfolio</h1>
         {Object.keys(tags).map((t, i) => (
           <div key={t} className="p-1 m-auto">
@@ -123,7 +123,7 @@ const PortfolioSelector: React.FC<{
           {getFilteredEntries(Object.keys(tags).length).map((pe) => (
             <div
               key={pe.portfolioUrl}
-              className="m-1 hover:bg-backgroundthree hover:dark:bg-backgroundthreedark p-2 rounded-md"
+              className="m-1 hover:bg-bg8 dark:hover:bg-bg2dark p-2 rounded-md"
             >
               <button onClick={(e) => onPortfolioSelected(pe.portfolioUrl)}>
                 {pe.label}
