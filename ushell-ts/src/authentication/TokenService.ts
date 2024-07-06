@@ -95,6 +95,21 @@ export class TokenService {
     );
   }
 
+  public static getTokenAndContent(
+    tokenSourceUid: string
+  ): Promise<{ token: string; content: object } | null> {
+    const currentToken: string | null = TokenService.getToken(tokenSourceUid);
+    if (!currentToken) {
+      return new Promise((res) => res(null));
+    }
+    return new Promise<{ token: string; content: object }>((res) => {
+      return res({
+        token: currentToken,
+        content: this.tryGetJwtPayload(currentToken),
+      });
+    });
+  }
+
   public static deleteToken(tokenSourceUid: string): Boolean {
     localStorage.removeItem(
       TokenService.generateLocalStorageKey(tokenSourceUid)

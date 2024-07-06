@@ -1,6 +1,7 @@
 import { IDataSource, IWidgetHost, UsecaseState } from "ushell-modulebase";
 import { PortfolioManager } from "./PortfolioManager";
 import { CommandDescription } from "ushell-portfoliodescription";
+import { TokenService } from "../authentication/TokenService";
 
 export class WidgetHost implements IWidgetHost {
   getApplicationScope() {
@@ -21,6 +22,7 @@ export class WidgetHost implements IWidgetHost {
   subscribeEvent(name: string, subscriber: (args: object) => void): void {
     throw new Error("Method not implemented.");
   }
+
   fireEvent(name: string, args: object): void {
     const command: CommandDescription | undefined =
       PortfolioManager.GetModule().commands.find(
@@ -32,14 +34,17 @@ export class WidgetHost implements IWidgetHost {
     }
     PortfolioManager.GetWorkspaceManager().executeCommand(command, args);
   }
+
   getAccessToken(
     tokenSourceUid: string
   ): Promise<{ token: string; content: object } | null> {
-    throw new Error("Method not implemented.");
+    return TokenService.getTokenAndContent(tokenSourceUid);
   }
+
   getDataSource(dataSourceUid: string): Promise<IDataSource> {
     throw new Error("Method not implemented.");
   }
+
   get allignWidgetNavPanelLeft(): boolean {
     throw new Error("Method not implemented.");
   }
