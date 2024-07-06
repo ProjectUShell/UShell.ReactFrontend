@@ -25,6 +25,7 @@ import {
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
+import { EntitySchema } from "fusefx-modeldescription";
 const queryClient = new QueryClient();
 
 export class WorkspaceManager {
@@ -410,6 +411,7 @@ export class WorkspaceManager {
           <Guifad
             rootEntityName={uow.entityName}
             dataSourceManager={DatasourceManager.Instance()}
+            enterRecord={(r, es) => this.tryStartGuifad(r, es)}
           ></Guifad>
         </QueryClientProvider>
       );
@@ -458,5 +460,21 @@ export class WorkspaceManager {
     }
     console.error("Invalid widget class", widgetClass);
     return null;
+  }
+
+  tryStartGuifad(r: any, es: EntitySchema) {
+    console.log("try executing guifad command", r);
+    const usecase: UsecaseDescription | undefined =
+      PortfolioManager.GetModule().usecases.find(
+        (uc) => uc.usecaseKey == es.name
+      );
+    if (!usecase) return;
+    const command: CommandDescription | undefined =
+      PortfolioManager.GetModule().commands.find(
+        (c) => c.targetUsecaseKey == usecase.usecaseKey
+      );
+    if (!command) return;
+    console.log("executing guifad command", command);
+    this.executeCommand(command, r);
   }
 }

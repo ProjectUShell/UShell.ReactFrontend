@@ -21,7 +21,6 @@ const Workspace: React.FC<{}> = ({}) => {
     );
     let activeUsecaseState: UsecaseState;
     if (staticUsecaseStates.length == 0) {
-      console.log(PortfolioManager.GetModule())
       return <div>no usecases</div>;
     } else {
       activeUsecaseState = staticUsecaseStates[0];
@@ -65,7 +64,7 @@ const Workspace: React.FC<{}> = ({}) => {
   );
 
   return (
-    <div className="w-full flex">
+    <div className="w-full h-full flex">
       {/* Workspace: {workspaceKey}, UseCase: {activeUsecaseState.title} */}
       <TabControl
         tabItems={tabItems}

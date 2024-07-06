@@ -434,7 +434,11 @@ export class TokenService {
     let scope: string = "";
     if (tokenConfig.claims) {
       for (const [key, value] of Object.entries(tokenConfig.claims)) {
-        scope += `${key}:${value}`;
+        if (key == "_") {
+          scope += `${value}`;
+        } else {
+          scope += `${key}:${value}`;
+        }
       }
     }
 
