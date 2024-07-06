@@ -96,24 +96,28 @@ const App = () => {
     PortfolioLoader.loadModuleDescription(portfolioLocation, portfolio).then(
       (p) => {
         PortfolioManager.SetModule(p.portfolio, p.module);
-        DatasourceManager.Instance()
-          .init()
+
+        console.log("resolveAuthTokenInfo");
+        TokenService.resolveAuthTokenInfo(
+          authTokenInfo,
+          searchParams,
+          setSearchParams
+        )
+          .then((result: TokenResolveResult) => {
+            if (!result.noParams && result.wasPopup) {
+              setClosing(true);
+              window.close();
+            }
+            if (!result.noParams && !result.success) {
+              throw "Unauthorized";
+            }
+          })
           .then(() => {
-            console.log("resolveAuthTokenInfo");
-            TokenService.resolveAuthTokenInfo(
-              authTokenInfo,
-              searchParams,
-              setSearchParams
-            ).then((result: TokenResolveResult) => {
-              if (!result.noParams && result.wasPopup) {
-                setClosing(true);
-                window.close();
-              }
-              if (!result.noParams && !result.success) {
-                throw "Unauthorized";
-              }
-              setMenu(PortfolioBasedMenuService.buildMenuFromModule()); //TODO create PortfolioBasedMenuService with parameters
-            });
+            DatasourceManager.Instance()
+              .init()
+              .then(() => {
+                setMenu(PortfolioBasedMenuService.buildMenuFromModule());
+              });
           });
       }
     );

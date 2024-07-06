@@ -128,7 +128,9 @@ export class TokenService {
     searchParams: URLSearchParams
   ): AuthTokenInfo {
     const codeFromUrlQuery: string | null = searchParams.get("code");
-    const tokenFromUrlQuery: string | null = searchParams.get("token");
+    const tokenFromUrlQuery: string | null =
+      searchParams.get("token") || searchParams.get("access_token");
+
     const stateFromUrlQuery: string | null = searchParams.get("state");
     let result: AuthTokenInfo2 = null!;
     if (codeFromUrlQuery || tokenFromUrlQuery || stateFromUrlQuery) {

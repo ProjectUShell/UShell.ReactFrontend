@@ -58,11 +58,14 @@ export class DatasourceManager implements IDataSourceManager {
     if (i > this._Stores.length - 1) {
       return new Promise<void>((resolve) => resolve());
     }
-    return this._Stores[i].init().then(() => {
-      const ds: IDataStore = this._Stores[i];
-      this.appendEntitySchema(ds.getSchemaRoot());
-      return this.initDataStores(i + 1);
-    });
+    return this._Stores[i]
+      .init()
+      .then(() => {
+        const ds: IDataStore = this._Stores[i];
+        this.appendEntitySchema(ds.getSchemaRoot());
+        return this.initDataStores(i + 1);
+      })
+      .catch((e) => console.error("Exception in initDataStores: " + e));
   }
   appendEntitySchema(sr: SchemaRoot) {
     if (!this._SchemaRoot) {
