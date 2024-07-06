@@ -7,7 +7,7 @@ const LoginButton: React.FC<{ text: string; onClick: () => void }> = ({
   return (
     <button
       onClick={onClick}
-      className="p-4 px-16 rounded-md bg-backgroundfour hover:bg-backgroundthree dark:bg-backgroundfourdark dark:hover:bg-backgroundthreedark"
+      className="p-4 px-16 rounded-md bg-bg6 hover:bg-bg10 dark:bg-bg6dark dark:hover:bg-bg10dark"
     >
       {text}
     </button>

@@ -22,7 +22,7 @@ const LogonPage: React.FC<{
   shellMenu.items = [];
 
   return (
-    <div className="m-auto bg-backgroundone dark:bg-backgroundonedark p-8 rounded-lg flex flex-col gap-2">
+    <div className="m-auto bg-bg8 dark:bg-bg8dark p-8 rounded-lg flex flex-col gap-2">
       {PortfolioManager.GetPortfolio().authenticatedAccess.primaryUiTokenSources.map(
         (ts) =>
           PortfolioManager.tryGetAuthTokenConfig(ts)!
