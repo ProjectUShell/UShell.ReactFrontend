@@ -20,8 +20,11 @@ const LogonPage: React.FC<{
     const basePath = pickBasePath();
     if (basePath != "/") {
       let res = window.location.origin;
-      if (!res.endsWith("/")) {
+      if (!res.endsWith("/") && !basePath.startsWith("/")) {
         res = res + "/";
+      }
+      if (res.endsWith("/") && basePath.startsWith("/")) {
+        res = res.substring(0, res.length - 2);
       }
       return res + basePath;
     } else {
