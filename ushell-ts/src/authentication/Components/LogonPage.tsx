@@ -16,7 +16,20 @@ const LogonPage: React.FC<{
   //   return <div>No Token Config {tokenSourceUid}</div>;
   // }
 
-  const redirectUri: string = window.location.origin;
+  function getRedirectUri(): string {
+    const basePath = pickBasePath();
+    if (basePath != "/") {
+      let res = window.location.origin;
+      if (!res.endsWith("/")) {
+        res = res + "/";
+      }
+      return res + basePath;
+    } else {
+      return window.location.origin;
+    }
+  }
+
+  const redirectUri: string = getRedirectUri();
 
   const shellMenu: ShellMenu = new ShellMenu();
   shellMenu.items = [];
