@@ -104,23 +104,46 @@ export class DatasourceManager implements IDataSourceManager {
   static tryCreateDataStore(ds: DatastoreDescription): IDataStore | null {
     switch (ds.providerClass) {
       case "fuse":
-        console.log(
-          "additionalBodyArgs",
-          ds.providerArguments["additionalBodyArgs"]
-        );
         const additionalBodyArgs: any = ArgumentMapper.resolveDynamicMapping(
           ds.providerArguments["additionalBodyArgs"],
           {},
           true
         );
-        console.log("additionalBodyArgs", additionalBodyArgs);
+
+        const additionalHeaderArgs: any = ArgumentMapper.resolveDynamicMapping(
+          ds.providerArguments["additionalHeaderArgs"],
+          {},
+          true
+        );
+        for (let headerKey in additionalHeaderArgs) {
+          const originalValue =
+            ds.providerArguments["additionalHeaderArgs"][headerKey];
+          if (originalValue && "mapDynamic" in originalValue) {
+            console.log(
+              "additionalHeaderArgs before " + headerKey,
+              ds.providerArguments["additionalHeaderArgs"][headerKey]
+            );
+            additionalHeaderArgs[headerKey] =
+              ArgumentMapper.resolveDynamicMapping(
+                ds.providerArguments["additionalHeaderArgs"][headerKey],
+                {},
+                true
+              );
+            console.log(
+              "additionalHeaderArgs after " + headerKey,
+              additionalHeaderArgs[headerKey]
+            );
+          }
+        }
+        console.log("additionalHeaderArgs", additionalHeaderArgs);
         return new FuseDataStore(
           ds.providerArguments["url"],
           ds.providerArguments["routePattern"],
           ds.providerArguments["entitySchemaUrl"],
           ds.providerArguments["tokenSourceUid"],
           additionalBodyArgs,
-          ds.providerArguments["getSchemaMethod"]
+          ds.providerArguments["getSchemaMethod"],
+          additionalHeaderArgs
         );
     }
     return null;
