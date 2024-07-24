@@ -130,7 +130,11 @@ export class DatasourceManager implements IDataSourceManager {
         for (let headerKey in additionalHeaderArgs) {
           const originalValue =
             ds.providerArguments["additionalHeaderArgs"][headerKey];
-          if (originalValue && "mapDynamic" in originalValue) {
+          if (
+            originalValue &&
+            typeof originalValue === "object" &&
+            "mapDynamic" in originalValue
+          ) {
             console.log(
               "additionalHeaderArgs before " + headerKey,
               ds.providerArguments["additionalHeaderArgs"][headerKey]
