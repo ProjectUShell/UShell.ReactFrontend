@@ -8,6 +8,7 @@ import {
 } from "ushell-portfoliodescription";
 
 import { WorkspaceManager } from "../workspace-handling/WorkspaceManager";
+import { DatasourceManager } from "../datasource-handling/DatasourceManager";
 
 export class PortfolioManager {
   constructor(private _WorkspaceManager: WorkspaceManager) {}
@@ -78,7 +79,7 @@ export class PortfolioManager {
     );
   }
 
-  private static GetInstance(): PortfolioManager {
+  public static GetInstance(): PortfolioManager {
     if (!this._Instance) {
       this._Instance = new PortfolioManager(new WorkspaceManager());
     }
@@ -100,5 +101,21 @@ export class PortfolioManager {
 
   public static GetWorkspaceManager(): WorkspaceManager {
     return PortfolioManager.GetInstance()._WorkspaceManager;
+  }
+
+  public SetAppScope(values: { key: string; value: string }[]) {
+    if (!this._Portfolio) {
+      console.warn("Portfolio is null");
+      return;
+    }
+    console.log("setting app scope values", values);
+    if (!this._Portfolio.applicationScope) {
+      this._Portfolio.applicationScope = {};
+    }
+    values.forEach((v) => {
+      this._Portfolio!.applicationScope![v.key] = v.value;
+    });
+    console.log("after setting app scope", this._Portfolio!.applicationScope);
+    DatasourceManager.Instance().init();
   }
 }

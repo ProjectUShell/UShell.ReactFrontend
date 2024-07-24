@@ -31,6 +31,10 @@ import { DatasourceManager } from "./datasource-handling/DatasourceManager";
 import { ShellMenuState } from "ushell-common-components/dist/esm/components/shell-layout/ShellMenuState";
 import { loadShellMenuState } from "./shell-layout/ShellMenuState";
 
+const glob: any = globalThis;
+glob.globalWorkspaceManager = PortfolioManager.GetWorkspaceManager();
+glob.setAppScope = (x: any) => PortfolioManager.GetInstance().SetAppScope(x);
+
 export const pickBasePath = () => {
   let baseHref = (document.getElementsByTagName("base")[0] || { href: "/" })
     .href;

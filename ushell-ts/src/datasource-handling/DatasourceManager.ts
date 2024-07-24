@@ -32,6 +32,7 @@ export class DatasourceManager implements IDataSourceManager {
         "init DatasourceManager",
         PortfolioManager.GetModule().datastores
       );
+      this._Stores = [];
       PortfolioManager.GetModule().datastores?.forEach((ds) => {
         const dataStore: IDataStore | null =
           DatasourceManager.tryCreateDataStore(ds);

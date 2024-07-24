@@ -8,7 +8,7 @@ import { PortfolioManager } from "../../portfolio-handling/PortfolioManager";
 import { WidgetHost } from "../../portfolio-handling/WidgetHost";
 
 const Workspace: React.FC<{}> = ({}) => {
-  const { workspaceKey, usecaseId } = useParams();
+  const { workspaceKey, usecaseId, usecaseKey } = useParams();
 
   if (!workspaceKey) {
     const homeWorkspaceKey: string =
@@ -28,6 +28,14 @@ const Workspace: React.FC<{}> = ({}) => {
     return PortfolioManager.GetWorkspaceManager().renderUsecase(
       activeUsecaseState,
       { state: activeUsecaseState, widgetHost: new WidgetHost() }
+    );
+  }
+
+  if (workspaceKey && usecaseKey) {
+    PortfolioManager.GetWorkspaceManager().startUsecase(
+      workspaceKey,
+      usecaseKey,
+      {}
     );
   }
 
