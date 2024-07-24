@@ -97,15 +97,28 @@ export class PortfolioManager {
     this._Instance = new PortfolioManager(new WorkspaceManager());
     this._Instance._Module = module;
     this._Instance._Portfolio = portfolio;
+    if (!this._Instance!._Portfolio.applicationScope) {
+      this._Instance!._Portfolio.applicationScope = {};
+    }
+    PortfolioManager.externalAppScope?.forEach((v) => {
+      this._Instance!._Portfolio!.applicationScope![v.key] = v.value;
+    });
+    console.log(
+      "after setting externalAppScope",
+      this._Instance!._Portfolio!.applicationScope
+    );
   }
 
   public static GetWorkspaceManager(): WorkspaceManager {
     return PortfolioManager.GetInstance()._WorkspaceManager;
   }
 
+  private static externalAppScope: { key: string; value: string }[];
+
   public SetAppScope(values: { key: string; value: string }[]) {
     if (!this._Portfolio) {
-      console.warn("Portfolio is null");
+      PortfolioManager.externalAppScope = values;
+      console.log("setting externalAppScope", values);
       return;
     }
     console.log("setting app scope values", values);
