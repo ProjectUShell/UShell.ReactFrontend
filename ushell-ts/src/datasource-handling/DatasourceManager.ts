@@ -109,6 +109,18 @@ export class DatasourceManager implements IDataSourceManager {
           {},
           true
         );
+        if (
+          PortfolioManager.GetPortfolio().applicationScope &&
+          Object.keys(PortfolioManager.GetPortfolio().applicationScope!)
+            .length > 0
+        ) {
+          additionalBodyArgs["_"] = {};
+          for (let dimension in PortfolioManager.GetPortfolio()
+            .applicationScope) {
+            additionalBodyArgs["_"][dimension] =
+              PortfolioManager.GetPortfolio().applicationScope![dimension];
+          }
+        }
 
         const additionalHeaderArgs: any = ArgumentMapper.resolveDynamicMapping(
           ds.providerArguments["additionalHeaderArgs"],
