@@ -1,13 +1,13 @@
 {
-  "currentVersion": "3.1.43",
-  "currentVersionWithSuffix": "3.1.43",
+  "currentVersion": "3.1.44",
+  "currentVersionWithSuffix": "3.1.44",
   "releaseType": "official",
-  "previousVersion": "3.1.42",
+  "previousVersion": "3.1.43",
   "changeGrade": "patch",
   "currentMajor": 3,
   "currentMinor": 1,
-  "currentPatch": 43,
+  "currentPatch": 44,
   "versionDateInfo": "2024-07-24",
-  "versionTimeInfo": "17:14:28",
+  "versionTimeInfo": "17:58:23",
   "versionNotes": "- new revision without significant changes\n"
 }
