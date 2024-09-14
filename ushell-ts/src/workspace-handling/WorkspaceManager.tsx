@@ -354,7 +354,7 @@ export class WorkspaceManager {
     }
 
     if (
-      !PortfolioManager.GetPortfolio().anonymouseAccess?.authIndependentUsecases?.find(
+      !PortfolioManager.GetPortfolio().anonymousAccess?.authIndependentUsecases?.find(
         //TODO wildcards
         (uc) => uc == usecase.usecaseKey
       )

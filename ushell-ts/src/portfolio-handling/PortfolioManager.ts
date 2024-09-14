@@ -42,25 +42,25 @@ export class PortfolioManager {
 
   static commandRequiresAuthentication(command: CommandDescription): boolean {
     console.log("commandRequiresAuthentication", command);
-    if (!this.GetPortfolio().anonymouseAccess) {
+    if (!this.GetPortfolio().anonymousAccess) {
       return true;
     }
-    if (!this.GetPortfolio().anonymouseAccess.authIndependentCommands) {
+    if (!this.GetPortfolio().anonymousAccess.authIndependentCommands) {
       return true;
     }
-    return !this.GetPortfolio().anonymouseAccess.authIndependentCommands.find(
+    return !this.GetPortfolio().anonymousAccess.authIndependentCommands.find(
       (c) => c == command.uniqueCommandKey
     );
   }
 
   static usecaseRequiresAuthentication(usecase: UsecaseDescription): boolean {
-    if (!this.GetPortfolio().anonymouseAccess) {
+    if (!this.GetPortfolio().anonymousAccess) {
       return true;
     }
-    if (!this.GetPortfolio().anonymouseAccess.authIndependentCommands) {
+    if (!this.GetPortfolio().anonymousAccess.authIndependentCommands) {
       return true;
     }
-    return !this.GetPortfolio().anonymouseAccess.authIndependentUsecases.find(
+    return !this.GetPortfolio().anonymousAccess.authIndependentUsecases.find(
       (uc) => uc == usecase.usecaseKey
     );
   }
@@ -68,13 +68,13 @@ export class PortfolioManager {
   static workspaceRequiresAuthentication(
     workspace: WorkspaceDescription
   ): boolean {
-    if (!this.GetPortfolio().anonymouseAccess) {
+    if (!this.GetPortfolio().anonymousAccess) {
       return true;
     }
-    if (!this.GetPortfolio().anonymouseAccess.authIndependentCommands) {
+    if (!this.GetPortfolio().anonymousAccess.authIndependentCommands) {
       return true;
     }
-    return !this.GetPortfolio().anonymouseAccess.authIndependentWorkspaces.find(
+    return !this.GetPortfolio().anonymousAccess.authIndependentWorkspaces.find(
       (ws) => ws == workspace.workspaceKey
     );
   }
