@@ -41,11 +41,14 @@ const TabControl: React.FC<{
             className={`px-2 py-1 -rounded-b-sm flex justify-between border-x ${
               index == activeTabIndex
                 ? "bg-navigation dark:bg-navigationDark border-t-4 border-prim3 dark:border-prim6 border-x border-l-bg3dark"
-                : "bg-topbar dark:bg-topbarDark hover:bg-bg6 dark:hover:bg-bg1dark border-bg5 dark:border-bg3dark border-t border-b"
+                : "bg-topbar dark:bg-topbarDark hover:bg-bg2 dark:hover:bg-bg1dark border-bg5 dark:border-bg3dark border-t border-b"
             } cursor-default`}
           >
-            <button className="pl-2 pr-4" onClick={(e) => onTabChange(ti)}>
-              {ti.title}
+            <button
+              className="pl-2 pr-4 whitespace-nowrap"
+              onClick={(e) => onTabChange(ti)}
+            >
+              <p>{ti.title}</p>
             </button>
             {ti.canClose && (
               <button

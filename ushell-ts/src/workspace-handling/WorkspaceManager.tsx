@@ -76,6 +76,8 @@ export class WorkspaceManager {
       usecaseKey: usecaseKey,
     };
 
+    // if (usecase.)
+
     currentUsecaseStates.push(newUsecaseState);
     this.saveWorkspaceState(workspaceKey, currentUsecaseStates);
 
@@ -299,12 +301,15 @@ export class WorkspaceManager {
         return;
       }
       case "start-usecase": {
+        console.log("start-usecase c.initUnitOfWork", c.initUnitOfWork);
+        console.log("start-usecase input", input);
         const uowData: any = ArgumentMapper.resolveDynamicMapping(
           c.initUnitOfWork,
           {},
           false,
           input
         );
+        console.log("start-usecase uowData", uowData);
         PortfolioManager.GetWorkspaceManager().startUsecase(
           c.targetWorkspaceKey!,
           c.targetUsecaseKey!,
@@ -412,6 +417,7 @@ export class WorkspaceManager {
             rootEntityName={uow.entityName}
             dataSourceManager={DatasourceManager.Instance()}
             enterRecord={(r, es) => this.tryStartGuifad(r, es)}
+            record={uow?.record || undefined}
           ></Guifad>
         </QueryClientProvider>
       );
@@ -475,6 +481,6 @@ export class WorkspaceManager {
       );
     if (!command) return;
     console.log("executing guifad command", command);
-    this.executeCommand(command, r);
+    this.executeCommand(command, { record: r });
   }
 }

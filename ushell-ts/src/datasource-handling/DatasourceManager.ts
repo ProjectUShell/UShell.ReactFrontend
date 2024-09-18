@@ -179,7 +179,7 @@ export class DatasourceManager implements IDataSourceManager {
     return null;
   }
   getSchemaRoot(): SchemaRoot {
-    console.log("getSchemaRoot", this._Stores);
+    // console.log("getSchemaRoot", this._Stores);
     if (this._Stores.length == 0) return new SchemaRoot();
     return this._SchemaRoot!;
   }
