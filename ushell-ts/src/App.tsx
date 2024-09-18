@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 
 // import { UShellLayout } from "ushell-common-components";
+import { UsecaseState } from "ushell-modulebase";
 import Workspace from "./workspace-handling/_Templates/Workspace";
 import { PortfolioManager } from "./portfolio-handling/PortfolioManager";
 import { PortfolioBasedMenuService } from "./portfolio-handling/PortfolioBasedMenuService";
@@ -30,6 +31,7 @@ import { AuthTokenInfo } from "./authentication/AuthTokenInfo";
 import { DatasourceManager } from "./datasource-handling/DatasourceManager";
 import { ShellMenuState } from "ushell-common-components/dist/esm/components/shell-layout/ShellMenuState";
 import { loadShellMenuState } from "./shell-layout/ShellMenuState";
+import UsecaseModal from "./workspace-handling/_Templates/UsecaseModal";
 
 const glob: any = globalThis;
 glob.globalWorkspaceManager = PortfolioManager.GetWorkspaceManager();
@@ -86,8 +88,9 @@ const App = () => {
 
   // states
   const [menu, setMenu] = useState<ShellMenu | null>(null);
-  const [renderTrigger, setRenderTrigger] = useState(0);
 
+  const [modalUsecaseState, setModalUsecaseState] =
+    useState<UsecaseState | null>(null);
   useEffect(() => {
     PortfolioManager.SetPortfolioLocation(portfolioLocation);
   }, [portfolioLocation]);
@@ -145,6 +148,11 @@ const App = () => {
     }
   };
 
+  PortfolioManager.GetWorkspaceManager().activateModalMethod =
+    setModalUsecaseState;
+
+  PortfolioManager.GetWorkspaceManager().deactivateModalMethod = () =>
+    setModalUsecaseState(null);
   if (!PortfolioManager.GetPortfolio()) {
     return <div>Loading...</div>;
   }
@@ -182,6 +190,16 @@ const App = () => {
       shellMenuState={loadShellMenuState()}
     >
       <Workspace></Workspace>
+      {modalUsecaseState && (
+        <UsecaseModal
+          usecaseState={modalUsecaseState}
+          terminate={() => {
+            PortfolioManager.GetWorkspaceManager().terminateModal(
+              modalUsecaseState
+            );
+          }}
+        ></UsecaseModal>
+      )}
       {/* <Outlet /> */}
     </ShellLayout>
   );

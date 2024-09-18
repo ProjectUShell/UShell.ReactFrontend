@@ -51,14 +51,14 @@ export class MenuBuilder {
     const commands: CommandDescription[] = module.commands;
     const result: ShellMenu = new ShellMenu();
     const isAuthenticated: boolean = TokenService.isUiAuthenticated();
-    console.log("buildMenuFromModule", commands);
+    // console.log("buildMenuFromModule", commands);
     commands
       .filter(
         (c) =>
           isAuthenticated || !PortfolioManager.commandRequiresAuthentication(c)
       )
       .forEach((command: CommandDescription) => {
-        console.log("adding command", command)
+        // console.log("adding command", command);
         if (command.menuFolder == "TopBar") {
           const icon: ReactElement = this.getIcon(
             command.iconKey ? command.iconKey : ""

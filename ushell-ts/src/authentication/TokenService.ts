@@ -88,7 +88,7 @@ export class TokenService {
     const result = localStorage.getItem(
       TokenService.generateLocalStorageKey(tokenSourceUid)
     );
-    console.log("getToken", result);
+    // console.log("getToken", result);
     return result;
     return localStorage.getItem(
       TokenService.generateLocalStorageKey(tokenSourceUid)
@@ -370,7 +370,7 @@ export class TokenService {
     codeFromUrlQuery: string | null,
     tokenSourceUid: string
   ): Promise<string | null> {
-    console.log("getting token from code 1", tokenSourceUid);
+    // console.log("getting token from code 1", tokenSourceUid);
     if (!codeFromUrlQuery) {
       return null;
     }
@@ -390,7 +390,7 @@ export class TokenService {
     }
     retrieveUrl += `&client_id=${tokenConfig.clientId}`;
     try {
-      console.log("getting token from code 2", retrieveUrl);
+      // console.log("getting token from code 2", retrieveUrl);
       const response = await fetch(retrieveUrl, {
         method: "Get",
         credentials: "include",

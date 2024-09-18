@@ -26,6 +26,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { EntitySchema } from "fusefx-modeldescription";
+import DebugWidget from "../demo/DebugWidget";
 const queryClient = new QueryClient();
 
 export class WorkspaceManager {
@@ -61,9 +62,7 @@ export class WorkspaceManager {
           this.areEqual(ucs.unitOfWork, uowDefaults)
       );
     if (existingUsecaseState) {
-      this.navigateSafe(
-        `${workspaceKey}\\${existingUsecaseState.usecaseInstanceUid}`
-      );
+      this.enterUsecase(existingUsecaseState);
       return;
     }
 
@@ -81,10 +80,15 @@ export class WorkspaceManager {
     currentUsecaseStates.push(newUsecaseState);
     this.saveWorkspaceState(workspaceKey, currentUsecaseStates);
 
-    this.navigateSafe(`${workspaceKey}\\${newUsecaseState.usecaseInstanceUid}`);
+    this.enterUsecase(newUsecaseState);
   }
 
   navigateMethod: ((url: string) => void) | undefined = undefined;
+
+  activateModalMethod: ((usecaseState: UsecaseState) => void) | undefined =
+    undefined;
+
+  deactivateModalMethod: (() => void) | undefined = undefined;
 
   activateWorkspace(workspaceKey: string): void {
     this.navigateSafe(workspaceKey);
@@ -96,6 +100,23 @@ export class WorkspaceManager {
       return;
     }
     this.navigateMethod(url);
+  }
+
+  activateModal(usecasState: UsecaseState) {
+    if (!this.activateModalMethod) {
+      console.error("no activateModalMethod");
+      return;
+    }
+    this.activateModalMethod(usecasState);
+  }
+
+  terminateModal(usecasState: UsecaseState) {
+    this.terminateUsecase(usecasState, false);
+    if (!this.deactivateModalMethod) {
+      console.error("no deactivateModalMethod");
+      return;
+    }
+    this.deactivateModalMethod();
   }
 
   getTitleForUseCase(state: UsecaseState): string {
@@ -301,15 +322,15 @@ export class WorkspaceManager {
         return;
       }
       case "start-usecase": {
-        console.log("start-usecase c.initUnitOfWork", c.initUnitOfWork);
-        console.log("start-usecase input", input);
+        // console.log("start-usecase c.initUnitOfWork", c.initUnitOfWork);
+        // console.log("start-usecase input", input);
         const uowData: any = ArgumentMapper.resolveDynamicMapping(
           c.initUnitOfWork,
           {},
           false,
           input
         );
-        console.log("start-usecase uowData", uowData);
+        // console.log("start-usecase uowData", uowData);
         PortfolioManager.GetWorkspaceManager().startUsecase(
           c.targetWorkspaceKey!,
           c.targetUsecaseKey!,
@@ -327,6 +348,16 @@ export class WorkspaceManager {
   }
 
   enterUsecase(usecaseState: UsecaseState): void {
+    //HACK
+    //TODO do this correctly
+    const usecase: UsecaseDescription | undefined =
+      PortfolioManager.GetModule().usecases.find(
+        (uc) => uc.usecaseKey == usecaseState.usecaseKey
+      );
+    if (usecase && usecase.iconName == "modal") {
+      this.activateModal(usecaseState);
+      return;
+    }
     this.navigateSafe(
       `${usecaseState.parentWorkspaceKey}\\${usecaseState.usecaseInstanceUid}`
     );
@@ -336,7 +367,10 @@ export class WorkspaceManager {
     throw new Error("Method not implemented.");
   }
 
-  terminateUsecase(usecaseState: UsecaseState): void {
+  terminateUsecase(
+    usecaseState: UsecaseState,
+    navigateToParentWorkspace: boolean = true
+  ): void {
     const usecaseStates: UsecaseState[] = this.getUsecaseStates(
       usecaseState.parentWorkspaceKey
     );
@@ -346,7 +380,8 @@ export class WorkspaceManager {
     usecaseStates.splice(indexOfUsecaseState, 1);
     this.saveWorkspaceState(usecaseState.parentWorkspaceKey, usecaseStates);
 
-    this.navigateSafe(usecaseState.parentWorkspaceKey);
+    if (navigateToParentWorkspace)
+      this.navigateSafe(usecaseState.parentWorkspaceKey);
   }
 
   renderUsecase(usecaseState: UsecaseState, input: IWidget): JSX.Element {
@@ -409,7 +444,10 @@ export class WorkspaceManager {
       );
     }
     const uow: any = input.state.unitOfWork;
-    console.log("uow", uow);
+    // console.log("uow", uow);
+    if (widgetClass == "debug") {
+      return <DebugWidget widget={input}></DebugWidget>;
+    }
     if (widgetClass == "guifad") {
       return (
         <QueryClientProvider client={queryClient}>
@@ -425,7 +463,7 @@ export class WorkspaceManager {
     if (widgetClass == "guifadFuse") {
       const uow: any = input.state.unitOfWork;
       const fuseUrl: string = uow.fuseUrl;
-      console.log("uow.rootEntityName", uow);
+      // console.log("uow.rootEntityName", uow);
       return (
         <GuifadFuse
           fuseUrl={uow.fuseUrl}

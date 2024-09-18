@@ -9,11 +9,11 @@ export class ArgumentMapper {
     commandArgs?: object
   ): any {
     if (!argumentObject) {
-      console.log("no argumentObject");
+      // console.log("no argumentObject");
       return {};
     }
     if (!argumentObject["mapDynamic"]) {
-      console.log("no 'mapDynamic'");
+      // console.log("no 'mapDynamic'");
       if (forceClone) {
         let clone: object = {};
         ArgumentMapper.copyRecursive(argumentObject, clone);
@@ -33,25 +33,25 @@ export class ArgumentMapper {
 
     // return settingsGetter.pipe(map((allSettingsObjects)=>{
 
-    console.log(
-      "resolveDynamicMapping is using argumentObject:",
-      argumentObject
-    );
-    console.log(
-      "resolveDynamicMapping is using sourceUseCaseUow:",
-      sourceUseCaseUow
-    );
+    // console.log(
+    //   "resolveDynamicMapping is using argumentObject:",
+    //   argumentObject
+    // );
+    // console.log(
+    //   "resolveDynamicMapping is using sourceUseCaseUow:",
+    //   sourceUseCaseUow
+    // );
 
     let mappingEntries = argumentObject["mapDynamic"] as {
       use: string;
       for: string;
     }[];
-    console.log("mappingEntries", mappingEntries);
+    // console.log("mappingEntries", mappingEntries);
     let clone: object = {};
     this.copyRecursive(argumentObject, clone);
 
     for (var mappingEntry of mappingEntries) {
-      console.log("checking mappingEntry", mappingEntry);
+      // console.log("checking mappingEntry", mappingEntry);
       let value: any = null;
       let error: string | null = null;
       let sourcePath: string = mappingEntry.use.substring(
