@@ -101,7 +101,12 @@ export class PortfolioManager {
       this._Instance!._Portfolio.applicationScope = {};
     }
     PortfolioManager.externalAppScope?.forEach((v) => {
-      this._Instance!._Portfolio!.applicationScope![v.key] = v.value;
+      this._Instance!._Portfolio!.applicationScope![v.key] = {
+        value: v.value,
+        isVisible: false,
+        label: v.key,
+        switchScopeCommand: null,
+      };
     });
     console.log(
       "after setting externalAppScope",
@@ -126,7 +131,12 @@ export class PortfolioManager {
       this._Portfolio.applicationScope = {};
     }
     values.forEach((v) => {
-      this._Portfolio!.applicationScope![v.key] = v.value;
+      this._Portfolio!.applicationScope![v.key] = {
+        value: v.value,
+        isVisible: false,
+        label: v.key,
+        switchScopeCommand: null,
+      };
     });
     console.log("after setting app scope", this._Portfolio!.applicationScope);
     DatasourceManager.Instance().init();

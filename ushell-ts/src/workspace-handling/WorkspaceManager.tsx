@@ -313,6 +313,18 @@ export class WorkspaceManager {
     return usecaseStates;
   }
 
+  public executeCommandByKey(commandKey: string, input: any) {
+    const command: CommandDescription | undefined =
+      PortfolioManager.GetModule().commands.find(
+        (c) => c.uniqueCommandKey == commandKey
+      );
+    if (!command) {
+      console.error("No command with key", commandKey);
+      return;
+    }
+    this.executeCommand(command, input);
+  }
+
   public executeCommand(c: CommandDescription, input: any): void {
     switch (c.commandType) {
       case "activate-workspace": {

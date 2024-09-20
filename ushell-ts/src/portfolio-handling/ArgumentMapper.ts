@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { PortfolioManager } from "./PortfolioManager";
+import { ApplicationScopeEntry } from "ushell-portfoliodescription";
 
 export class ArgumentMapper {
   public static resolveDynamicMapping(
@@ -91,9 +92,15 @@ export class ArgumentMapper {
           value = ArgumentMapper.pickValue(sourceUseCaseUow, sourcePath);
         }
       } else if (mappingEntry.use.startsWith("applicationScope://")) {
+        // console.log("resolving applicationScope", sourcePath);
         const applicationScope: any =
           PortfolioManager.GetPortfolio().applicationScope;
-        value = ArgumentMapper.pickValue(applicationScope, sourcePath);
+        const applicationScopeEntry: ApplicationScopeEntry =
+          ArgumentMapper.pickValue(applicationScope, sourcePath);
+        // console.log("resolving applicationScopeEntry", applicationScopeEntry);
+
+        value = applicationScopeEntry.value;
+        // console.log("resolving applicationScopeEntry value", value);
       } else if (mappingEntry.use.startsWith("userInput://")) {
         error = "this channel is under construction!";
       } else {

@@ -119,7 +119,9 @@ export class DatasourceManager implements IDataSourceManager {
           for (let dimension in PortfolioManager.GetPortfolio()
             .applicationScope) {
             additionalBodyArgs["_"][dimension] =
-              PortfolioManager.GetPortfolio().applicationScope![dimension];
+              PortfolioManager.GetPortfolio().applicationScope![
+                dimension
+              ].value;
           }
         }
 
@@ -153,6 +155,7 @@ export class DatasourceManager implements IDataSourceManager {
           }
         }
         // console.log("additionalHeaderArgs", additionalHeaderArgs);
+        // console.log("additionalBodyArgs", additionalBodyArgs);
         return new FuseDataStore(
           ds.providerArguments["url"],
           ds.providerArguments["routePattern"],
