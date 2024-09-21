@@ -27,7 +27,16 @@ export class PortfolioBasedMenuService {
     if (!result1.topBarItems) {
       result1.topBarItems = [];
     }
-    result1.topBarItems.unshift({
+
+    PortfolioBasedMenuService.appendAuthItem(result1);
+    PortfolioBasedMenuService.appendUsecaseInstanceDropdown(result1);
+    PortfolioBasedMenuService.appendAppScopeItems(result1);
+
+    return result1;
+  }
+
+  private static appendUsecaseInstanceDropdown(result1: ShellMenu) {
+    result1.topBarItems?.unshift({
       icon: (
         <UsecaseInstanceDropdown
           workspaceManager={PortfolioManager.GetWorkspaceManager()}
@@ -35,13 +44,54 @@ export class PortfolioBasedMenuService {
       ),
       id: "UsecaseInstanceDropdown",
     });
+  }
 
+  private static appendAppScopeItems(result1: ShellMenu) {
+    const appScope: {
+      [dimension: string]: ApplicationScopeEntry;
+    } | null = PortfolioManager.GetPortfolio().applicationScope;
+    if (appScope) {
+      Object.keys(appScope).forEach((scopeKey: string) => {
+        const entry: ApplicationScopeEntry = appScope[scopeKey];
+        if (entry.isVisible) {
+          console.log("ApplicationScopeEntry visible");
+          result1.topBarItems?.unshift({
+            icon: (
+              <div className="flex gap-2">
+                {entry.switchScopeCommand ? (
+                  <button
+                    onClick={() =>
+                      PortfolioManager.GetWorkspaceManager().executeCommandByKey(
+                        entry.switchScopeCommand || "",
+                        null
+                      )
+                    }
+                  >
+                    <p>
+                      {entry.label}: {entry.value}
+                    </p>
+                  </button>
+                ) : (
+                  <p>
+                    {entry.label}: {entry.value}
+                  </p>
+                )}
+              </div>
+            ),
+            id: scopeKey,
+          });
+        }
+      });
+    }
+  }
+
+  private static appendAuthItem(result1: ShellMenu) {
     const authInfo: {
       primaryUiTokenSourceUid: string | null;
       isAuthenticated: Boolean;
     } = TokenService.getUiAuthenticatedInfo();
     if (authInfo.primaryUiTokenSourceUid && authInfo.isAuthenticated) {
-      result1.topBarItems.unshift({
+      result1.topBarItems?.unshift({
         icon: (
           <div>
             <button
@@ -58,48 +108,6 @@ export class PortfolioBasedMenuService {
         id: "Logoff",
       });
     }
-
-    const appScope: {
-      [dimension: string]: ApplicationScopeEntry;
-    } | null = PortfolioManager.GetPortfolio().applicationScope;
-    if (appScope) {
-      Object.keys(appScope).forEach((scopeKey: string) => {
-        const entry: ApplicationScopeEntry = appScope[scopeKey];
-        if (entry.isVisible) {
-          console.log("ApplicationScopeEntry visible");
-          result1.topBarItems?.unshift({
-            icon: (
-              <div className="flex gap-2">
-                <p>
-                  {entry.label}: {entry.value}
-                </p>
-                {entry.switchScopeCommand && (
-                  <button
-                    onClick={() =>
-                      PortfolioManager.GetWorkspaceManager().executeCommandByKey(
-                        entry.switchScopeCommand || "",
-                        null
-                      )
-                    }
-                  >
-                    Switch
-                  </button>
-                )}
-              </div>
-            ),
-            id: scopeKey,
-          });
-        }
-      });
-    }
-
-    return result1;
-    const commands: CommandDescription[] = module.commands;
-    const result: ShellMenu = new ShellMenu();
-    commands.forEach((command: CommandDescription) => {
-      this.pushIntoMenu(command, result, module);
-    });
-    return result;
   }
 
   private static pushIntoMenu(

@@ -42,6 +42,15 @@ const PortfolioSelector: React.FC<{
   function updateSelected(tagName: string, tagValue: string) {
     const selectedByTag1: { [tagName: string]: string } = { ...selectedByTag };
     selectedByTag1[tagName] = tagValue;
+    const indexOfTagName = Object.keys(selectedByTag1).indexOf(tagName);
+    for (
+      let i = indexOfTagName + 1;
+      i < Object.keys(selectedByTag1).length;
+      i++
+    ) {
+      const nextTagName: string = Object.keys(selectedByTag1)[i];
+      selectedByTag1[nextTagName] = "";
+    }
     setSelectedByTag(selectedByTag1);
   }
 
@@ -107,7 +116,15 @@ const PortfolioSelector: React.FC<{
           <div key={t} className="p-1 m-auto">
             <label>{t}</label>
             <DropdownSelect
-              options={getTagOptions(t, i)}
+              options={getTagOptions(t, i).sort((a, b) => {
+                if (a.label < b.label) {
+                  return -1;
+                }
+                if (a.label > b.label) {
+                  return 1;
+                }
+                return 0;
+              })}
               initialOption={{
                 label: selectedByTag[t],
                 value: selectedByTag[t],
