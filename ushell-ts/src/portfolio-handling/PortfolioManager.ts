@@ -1,4 +1,5 @@
 import {
+  ApplicationScopeEntry,
   AuthTokenConfig,
   CommandDescription,
   ModuleDescription,
@@ -131,12 +132,19 @@ export class PortfolioManager {
       this._Portfolio.applicationScope = {};
     }
     values.forEach((v) => {
-      this._Portfolio!.applicationScope![v.key] = {
-        value: v.value,
-        isVisible: false,
-        label: v.key,
-        switchScopeCommand: null,
-      };
+      let currentEntry: ApplicationScopeEntry | undefined =
+        this._Portfolio?.applicationScope![v.key];
+      if (!currentEntry) {
+        currentEntry = {
+          value: v.value,
+          isVisible: false,
+          label: v.key,
+          switchScopeCommand: null,
+        };
+      } else {
+        currentEntry.value = v.value;
+      }
+      this._Portfolio!.applicationScope![v.key] = currentEntry;
     });
     console.log("after setting app scope", this._Portfolio!.applicationScope);
     DatasourceManager.Instance().init();

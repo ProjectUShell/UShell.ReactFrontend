@@ -148,6 +148,10 @@ const App = () => {
     }
   };
 
+  PortfolioManager.GetWorkspaceManager().onAppScopeChangedMethod = () => {
+    setMenu(PortfolioBasedMenuService.buildMenuFromModule());
+  };
+
   PortfolioManager.GetWorkspaceManager().activateModalMethod =
     setModalUsecaseState;
 
@@ -177,9 +181,13 @@ const App = () => {
     <ShellLayout
       title={
         <img
-          src={"ushell-whitebg.png"}
+          src={
+            PortfolioManager.GetPortfolio().applicationTitle != ""
+              ? PortfolioManager.GetPortfolio().applicationTitle
+              : "ushell-whitebg.png"
+          }
           style={{ height: "30px" }}
-          alt="fireSpot"
+          alt="ushell-whitebg.png"
           onClick={() =>
             PortfolioManager.GetWorkspaceManager().navigateSafe("/")
           }

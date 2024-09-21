@@ -27,6 +27,7 @@ import {
 } from "@tanstack/react-query";
 import { EntitySchema } from "fusefx-modeldescription";
 import DebugWidget from "../demo/DebugWidget";
+import UsecaseWrapper from "./_Templates/UsecaseWrapper";
 const queryClient = new QueryClient();
 
 export class WorkspaceManager {
@@ -82,6 +83,17 @@ export class WorkspaceManager {
 
     this.enterUsecase(newUsecaseState);
   }
+
+  switchScope(scopeKey: string, targetValue: any) {
+    PortfolioManager.GetInstance().SetAppScope([
+      { key: scopeKey, value: targetValue },
+    ]);
+    if (this.onAppScopeChangedMethod) {
+      this.onAppScopeChangedMethod();
+    }
+  }
+
+  onAppScopeChangedMethod: (() => void) | undefined = undefined;
 
   navigateMethod: ((url: string) => void) | undefined = undefined;
 
@@ -355,6 +367,15 @@ export class WorkspaceManager {
         this.navigateSafe("//");
         return;
       }
+      case "switch-scope": {
+        console.warn("switching scope");
+        if (!c.targetScopeKey || !c.targetScopeValue) {
+          console.error("missing targetScope");
+          return;
+        }
+        this.switchScope(c.targetScopeKey, c.targetScopeValue);
+        return;
+      }
     }
     throw "invalid command type";
   }
@@ -428,7 +449,15 @@ export class WorkspaceManager {
       }
     }
     console.log("input", input);
-    return this.renderWidget(usecase.widgetClass, input);
+    const usecaseCommands: CommandDescription[] =
+      PortfolioManager.GetModule().commands.filter(
+        (c) => c.menuOwnerUsecaseKey == usecase.usecaseKey
+      );
+    return (
+      <UsecaseWrapper commands={usecaseCommands}>
+        {this.renderWidget(usecase.widgetClass, input)}
+      </UsecaseWrapper>
+    );
   }
 
   renderWidget(widgetClass: string, input: IWidget) {
