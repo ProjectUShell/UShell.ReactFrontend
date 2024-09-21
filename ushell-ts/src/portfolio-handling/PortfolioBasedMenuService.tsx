@@ -22,7 +22,7 @@ export class PortfolioBasedMenuService {
     const result1: ShellMenu = MenuBuilder.buildMenuFromModule(
       module,
       (command: CommandDescription, e: any) =>
-        PortfolioManager.GetWorkspaceManager().executeCommand(command, e)
+        PortfolioManager.GetWorkspaceManager().executeCommand(command, e, {})
     );
     if (!result1.topBarItems) {
       result1.topBarItems = [];
@@ -136,7 +136,7 @@ export class PortfolioBasedMenuService {
         label: command.label,
         type: "Command",
         command: (e: any) =>
-          PortfolioManager.GetWorkspaceManager().executeCommand(command, e),
+          PortfolioManager.GetWorkspaceManager().executeCommand(command, e, {}),
       };
       menuItems.push(menuItem);
     }

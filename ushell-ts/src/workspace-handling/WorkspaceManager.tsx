@@ -243,6 +243,11 @@ export class WorkspaceManager {
     };
   }
 
+  getUsecaseState(workspaceKey: string, id: string): UsecaseState | undefined {
+    const states: UsecaseState[] = this.getUsecaseStates(workspaceKey);
+    return states.find((s) => s.usecaseInstanceUid == id);
+  }
+
   getUsecaseStates(workspaceKey: string): UsecaseState[] {
     const workspace: WorkspaceDescription | undefined =
       PortfolioManager.GetModule().workspaces.find(
@@ -252,13 +257,8 @@ export class WorkspaceManager {
       return [];
     }
 
-    const usecaseStatesFromLocalStorageJson: string | null =
-      localStorage.getItem(this.getLocaleStorageKey(workspaceKey));
-
     const usecaseStatesFromLocalStorage: UsecaseState[] =
-      usecaseStatesFromLocalStorageJson
-        ? JSON.parse(usecaseStatesFromLocalStorageJson)
-        : [];
+      this.getStoredUsecaseStates(workspaceKey);
 
     const staticUsecaseAssignments: StaticUsecaseAssignment[] =
       PortfolioManager.GetModule().staticUsecaseAssignments.filter(
@@ -305,6 +305,17 @@ export class WorkspaceManager {
     return usecaseStates;
   }
 
+  private getStoredUsecaseStates(workspaceKey: string) {
+    const usecaseStatesFromLocalStorageJson: string | null =
+      localStorage.getItem(this.getLocaleStorageKey(workspaceKey));
+
+    const usecaseStatesFromLocalStorage: UsecaseState[] =
+      usecaseStatesFromLocalStorageJson
+        ? JSON.parse(usecaseStatesFromLocalStorageJson)
+        : [];
+    return usecaseStatesFromLocalStorage;
+  }
+
   getDynamicUsecaseStates(): UsecaseState[] {
     const workspaces: WorkspaceDescription[] =
       PortfolioManager.GetModule().workspaces;
@@ -334,10 +345,14 @@ export class WorkspaceManager {
       console.error("No command with key", commandKey);
       return;
     }
-    this.executeCommand(command, input);
+    this.executeCommand(command, input, {});
   }
 
-  public executeCommand(c: CommandDescription, input: any): void {
+  public executeCommand(
+    c: CommandDescription,
+    input: any,
+    sourceUseCaseUow: any
+  ): void {
     switch (c.commandType) {
       case "activate-workspace": {
         PortfolioManager.GetWorkspaceManager().activateWorkspace(
@@ -350,7 +365,7 @@ export class WorkspaceManager {
         // console.log("start-usecase input", input);
         const uowData: any = ArgumentMapper.resolveDynamicMapping(
           c.initUnitOfWork,
-          {},
+          sourceUseCaseUow,
           false,
           input
         );
@@ -368,12 +383,27 @@ export class WorkspaceManager {
         return;
       }
       case "switch-scope": {
-        console.warn("switching scope");
+        console.warn("switching scope", sourceUseCaseUow);
         if (!c.targetScopeKey || !c.targetScopeValue) {
           console.error("missing targetScope");
           return;
         }
-        this.switchScope(c.targetScopeKey, c.targetScopeValue);
+        if (c.targetScopeValue.includes("://")) {
+          console.log("picking targetScopeValue dynamic", c.targetScopeValue);
+          const dynamicO: any = {
+            targetScopeValue: null,
+            mapDynamic: [{ use: c.targetScopeValue, for: "targetScopeValue" }],
+          };
+          const uowData: any = ArgumentMapper.resolveDynamicMapping(
+            dynamicO,
+            sourceUseCaseUow,
+            false,
+            input
+          );
+          this.switchScope(c.targetScopeKey, uowData.targetScopeValue);
+        } else {
+          this.switchScope(c.targetScopeKey, c.targetScopeValue);
+        }
         return;
       }
     }
@@ -398,6 +428,25 @@ export class WorkspaceManager {
 
   loadInitialUsecaseStates(): UsecaseState[] {
     throw new Error("Method not implemented.");
+  }
+
+  updateUsecaseState(changedState: UsecaseState) {
+    const storedUsecaseStates: UsecaseState[] = this.getStoredUsecaseStates(
+      changedState.parentWorkspaceKey
+    );
+    const storedUsecaseStateIndex: number = storedUsecaseStates.findIndex(
+      (u) => u.usecaseInstanceUid == changedState.usecaseInstanceUid
+    );
+    if (storedUsecaseStateIndex < 0) {
+      console.error("no stored usecaseState", changedState.usecaseInstanceUid);
+      return;
+    }
+    storedUsecaseStates[storedUsecaseStateIndex] = changedState;
+    console.log("updateUsecaseState", storedUsecaseStates);
+    this.saveWorkspaceState(
+      changedState.parentWorkspaceKey,
+      storedUsecaseStates
+    );
   }
 
   terminateUsecase(
@@ -454,7 +503,7 @@ export class WorkspaceManager {
         (c) => c.menuOwnerUsecaseKey == usecase.usecaseKey
       );
     return (
-      <UsecaseWrapper commands={usecaseCommands}>
+      <UsecaseWrapper commands={usecaseCommands} usecaseState={usecaseState}>
         {this.renderWidget(usecase.widgetClass, input)}
       </UsecaseWrapper>
     );
@@ -560,6 +609,6 @@ export class WorkspaceManager {
       );
     if (!command) return;
     console.log("executing guifad command", command);
-    this.executeCommand(command, { record: r });
+    this.executeCommand(command, { record: r }, {});
   }
 }

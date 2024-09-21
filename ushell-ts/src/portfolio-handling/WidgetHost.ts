@@ -16,7 +16,7 @@ export class WidgetHost implements IWidgetHost {
   }
 
   populateChangedState(changedState: UsecaseState): void {
-    throw new Error("Method not implemented.");
+    PortfolioManager.GetWorkspaceManager().updateUsecaseState(changedState);
   }
 
   subscribeEvent(name: string, subscriber: (args: object) => void): void {
@@ -32,7 +32,7 @@ export class WidgetHost implements IWidgetHost {
       console.error("No command with given name", name);
       return;
     }
-    PortfolioManager.GetWorkspaceManager().executeCommand(command, args);
+    PortfolioManager.GetWorkspaceManager().executeCommand(command, args, {});
   }
 
   getAccessToken(

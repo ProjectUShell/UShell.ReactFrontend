@@ -5,7 +5,7 @@ import { ApplicationScopeEntry } from "ushell-portfoliodescription";
 export class ArgumentMapper {
   public static resolveDynamicMapping(
     argumentObject: any,
-    sourceUseCaseUow: object,
+    sourceUseCaseUow: any,
     forceClone: boolean,
     commandArgs?: object
   ): any {
@@ -52,7 +52,7 @@ export class ArgumentMapper {
     this.copyRecursive(argumentObject, clone);
 
     for (var mappingEntry of mappingEntries) {
-      // console.log("checking mappingEntry", mappingEntry);
+      console.log("checking mappingEntry", mappingEntry);
       let value: any = null;
       let error: string | null = null;
       let sourcePath: string = mappingEntry.use.substring(
@@ -114,7 +114,7 @@ export class ArgumentMapper {
       if (error) {
         console.error("resolveArgumentMapping failed: " + error);
       } else {
-        console.debug(
+        console.log(
           "resolveArgumentMapping: using '" +
             value +
             "' for '" +
