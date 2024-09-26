@@ -101,6 +101,7 @@ export class PortfolioManager {
     if (!this._Instance!._Portfolio.applicationScope) {
       this._Instance!._Portfolio.applicationScope = {};
     }
+    this._Instance.restoreAppScope();
     PortfolioManager.externalAppScope?.forEach((v) => {
       this._Instance!._Portfolio!.applicationScope![v.key] = {
         value: v.value,
@@ -120,6 +121,29 @@ export class PortfolioManager {
   }
 
   private static externalAppScope: { key: string; value: string }[];
+
+  private storeAppScope(appScope: {
+    [dimension: string]: ApplicationScopeEntry;
+  }) {
+    if (!this._Portfolio) return;
+    localStorage.setItem(
+      `appScope_${this._Portfolio.applicationTitle}`,
+      JSON.stringify(appScope)
+    );
+  }
+
+  private restoreAppScope() {
+    if (!this._Portfolio) return;
+    const appScopeJson: string | null = localStorage.getItem(
+      `appScope_${this._Portfolio.applicationTitle}`
+    );
+    if (!appScopeJson) return;
+    const appScope: {
+      [dimension: string]: ApplicationScopeEntry;
+    } = JSON.parse(appScopeJson);
+    if (!appScope) return;
+    this._Portfolio.applicationScope = appScope;
+  }
 
   public SetAppScope(values: { key: string; value: string }[]) {
     if (!this._Portfolio) {
@@ -146,7 +170,8 @@ export class PortfolioManager {
       }
       this._Portfolio!.applicationScope![v.key] = currentEntry;
     });
-    console.log("after setting app scope", this._Portfolio!.applicationScope);
+    console.log("after setting app scope", this._Portfolio.applicationScope);
+    this.storeAppScope(this._Portfolio.applicationScope);
     DatasourceManager.Instance().init();
   }
 }

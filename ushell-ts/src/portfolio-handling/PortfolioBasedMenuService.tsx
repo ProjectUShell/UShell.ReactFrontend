@@ -60,6 +60,7 @@ export class PortfolioBasedMenuService {
               <div className="flex gap-2">
                 {entry.switchScopeCommand ? (
                   <button
+                    className="bg-navigation hover:bg-navigationHover dark:bg-contentDark dark:hover:bg-bg4dark rounded-sm px-1"
                     onClick={() =>
                       PortfolioManager.GetWorkspaceManager().executeCommandByKey(
                         entry.switchScopeCommand || "",

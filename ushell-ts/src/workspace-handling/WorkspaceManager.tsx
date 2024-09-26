@@ -63,6 +63,8 @@ export class WorkspaceManager {
           this.areEqual(ucs.unitOfWork, uowDefaults)
       );
     if (existingUsecaseState) {
+      existingUsecaseState.unitOfWork = uowDefaults;
+      this.updateUsecaseState(existingUsecaseState);
       this.enterUsecase(existingUsecaseState);
       return;
     }

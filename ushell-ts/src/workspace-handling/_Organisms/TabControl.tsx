@@ -22,8 +22,8 @@ const TabControl: React.FC<{
   const shellSettings = loadShellSettings();
 
   return (
-    <div className="h-full m-0 flex flex-col w-screen bg-menu dark:bg-menuDark border1-4 border-pink-600">
-      <div className="flex justify-stretch min-w-0">
+    <div className="h-full m-0 flex flex-col w-screen overflow-hidden bg-menu dark:bg-menuDark border-0 border-pink-600">
+      <div className="flex justify-stretch min-w-0 w-full">
         {tabItems.map((ti, index) => (
           <div
             style={
