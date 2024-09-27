@@ -182,7 +182,8 @@ const App = () => {
       title={
         <img
           src={
-            PortfolioManager.GetPortfolio().applicationTitle != ""
+            PortfolioManager.GetPortfolio().applicationTitle != "" &&
+            PortfolioManager.GetPortfolio().applicationTitle.includes(".png")
               ? PortfolioManager.GetPortfolio().applicationTitle
               : "ushell-whitebg.png"
           }

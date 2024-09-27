@@ -63,6 +63,7 @@ export class DatasourceManager implements IDataSourceManager {
       .init()
       .then(() => {
         const ds: IDataStore = this._Stores[i];
+        console.debug(`DataStore ${ds} initialized.`);
         this.appendEntitySchema(ds.getSchemaRoot());
         return this.initDataStores(i + 1);
       })
@@ -161,9 +162,9 @@ export class DatasourceManager implements IDataSourceManager {
           ds.providerArguments["routePattern"],
           ds.providerArguments["entitySchemaUrl"],
           ds.providerArguments["tokenSourceUid"],
-          additionalBodyArgs,
+          () => additionalBodyArgs,
           ds.providerArguments["getSchemaMethod"],
-          additionalHeaderArgs
+          () => additionalHeaderArgs
         );
     }
     return null;
