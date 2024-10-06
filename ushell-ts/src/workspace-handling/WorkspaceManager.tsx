@@ -56,11 +56,18 @@ export class WorkspaceManager {
       ArgumentMapper.copyRecursive(uowData, uowDefaults);
     }
 
+    const isStatic: boolean =
+      PortfolioManager.GetModule().staticUsecaseAssignments.find(
+        (sua) =>
+          sua.usecaseKey == usecase.usecaseKey &&
+          sua.targetWorkspaceKey == workspaceKey
+      ) !== undefined;
+
     const existingUsecaseState: UsecaseState | undefined =
       currentUsecaseStates.find(
         (ucs) =>
           ucs.usecaseKey == usecaseKey &&
-          this.areEqual(ucs.unitOfWork, uowDefaults)
+          (isStatic || this.areEqual(ucs.unitOfWork, uowDefaults))
       );
     if (existingUsecaseState) {
       existingUsecaseState.unitOfWork = uowDefaults;
@@ -106,6 +113,14 @@ export class WorkspaceManager {
 
   activateWorkspace(workspaceKey: string): void {
     this.navigateSafe(workspaceKey);
+  }
+
+  setActiveMenuItemMethod: ((activeMenuItemId: string) => void) | undefined =
+    undefined;
+
+  setActiveMenuItem(activeMenuItemId: string) {
+    if (!this.setActiveMenuItemMethod) return;
+    this.setActiveMenuItemMethod(activeMenuItemId);
   }
 
   navigateSafe(url: string): void {
@@ -372,6 +387,9 @@ export class WorkspaceManager {
           input
         );
         // console.log("start-usecase uowData", uowData);
+        PortfolioManager.GetWorkspaceManager().setActiveMenuItem(
+          c.uniqueCommandKey
+        );
         PortfolioManager.GetWorkspaceManager().startUsecase(
           c.targetWorkspaceKey!,
           c.targetUsecaseKey!,
@@ -536,7 +554,7 @@ export class WorkspaceManager {
       );
     }
     const uow: any = input.state.unitOfWork;
-    // console.log("uow", uow);
+    console.log("uow?.layoutDescription", uow?.layoutDescription);
     if (widgetClass == "debug") {
       return <DebugWidget widget={input}></DebugWidget>;
     }
@@ -548,6 +566,29 @@ export class WorkspaceManager {
             dataSourceManager={DatasourceManager.Instance()}
             enterRecord={(r, es) => this.tryStartGuifad(r, es)}
             record={uow?.record || undefined}
+            layoutDescription={uow?.layoutDescription}
+            // layoutDescription={{
+            //   semanticVersion: "0",
+            //   timestampUtc: "",
+            //   entityLayouts: [
+            //     {
+            //       entityName: "DataEndpoint",
+            //       displayLabel: "Person",
+            //       displayLabelPlural: "People",
+            //       fieldLayouts: [],
+            //       identityLabelPattern: "",
+            //       isBlEntrypoint: false,
+            //       partitions: [
+            //         {
+            //           type: "group",
+            //           name: "Main",
+            //           fields: ["Url", "Label"],
+            //           children: [],
+            //         },
+            //       ],
+            //     },
+            //   ],
+            // }}
           ></Guifad>
         </QueryClientProvider>
       );

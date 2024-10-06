@@ -97,6 +97,9 @@ const App = () => {
 
   const [closing, setClosing] = useState(false);
 
+  const [shellMenuState, setShellMenuState] = useState<ShellMenuState>(
+    loadShellMenuState()
+  );
   // effects
   useEffect(() => {
     console.log("App booting portfolio", portfolio);
@@ -157,6 +160,15 @@ const App = () => {
 
   PortfolioManager.GetWorkspaceManager().deactivateModalMethod = () =>
     setModalUsecaseState(null);
+
+  PortfolioManager.GetWorkspaceManager().setActiveMenuItemMethod = (
+    activeMenuItemId: string
+  ) => {
+    setShellMenuState((sm) => {
+      return { ...sm, activeItemId: activeMenuItemId };
+    });
+  };
+
   if (!PortfolioManager.GetPortfolio()) {
     return <div>Loading...</div>;
   }
@@ -196,7 +208,7 @@ const App = () => {
         />
       }
       shellMenu={menu}
-      shellMenuState={loadShellMenuState()}
+      shellMenuState={shellMenuState}
     >
       <Workspace></Workspace>
       {modalUsecaseState && (
