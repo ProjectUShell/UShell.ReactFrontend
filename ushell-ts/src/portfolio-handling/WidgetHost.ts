@@ -10,6 +10,18 @@ export class WidgetHost implements IWidgetHost {
     return PortfolioManager.GetPortfolio().applicationScope;
   }
 
+  getApplicationScopeValues(): {
+    [dimension: string]: any;
+  } {
+    const appScope = PortfolioManager.GetPortfolio().applicationScope;
+    if (!appScope) return {};
+    const result: any = {};
+    Object.keys(appScope).forEach((apk) => {
+      result[apk] = appScope[apk].value;
+    });
+    return result;
+  }
+
   getDataSource(dataSourceUid: string): Promise<IDataSource> {
     throw new Error("Method not implemented.");
   }
