@@ -9,6 +9,7 @@ import { DatastoreDescription } from "ushell-portfoliodescription";
 import { FuseDataStore } from "ushell-common-components";
 import { TokenService } from "../authentication/TokenService";
 import { ArgumentMapper } from "../portfolio-handling/ArgumentMapper";
+import { PortfolioBasedMenuService } from "../portfolio-handling/PortfolioBasedMenuService";
 
 export class DatasourceManager implements IDataSourceManager {
   private static _Instance: DatasourceManager | null = null;
@@ -20,18 +21,26 @@ export class DatasourceManager implements IDataSourceManager {
     return this._Instance;
   }
 
+  private _IsInitialized: boolean = false;
+
   private _Stores: IDataStore[] = [];
   private _SchemaRoot: SchemaRoot | null = null;
 
   tryGetDataSourceByUid(uid: string): Promise<IDataSource | null> {
     throw new Error("Method not implemented.");
   }
+
+  static isInitialized(): boolean {
+    return this._Instance !== null && this._Instance._IsInitialized;
+  }
+
   init(): Promise<void> {
+    this._IsInitialized = false;
     return new Promise<void>((resolve) => {
-      // console.log(
-      //   "init DatasourceManager",
-      //   PortfolioManager.GetModule().datastores
-      // );
+      console.debug(
+        "init DatasourceManager",
+        PortfolioManager.GetModule().datastores
+      );
       this._Stores = [];
       PortfolioManager.GetModule().datastores?.forEach((ds) => {
         const dataStore: IDataStore | null =
@@ -51,6 +60,7 @@ export class DatasourceManager implements IDataSourceManager {
       };
       this.initDataStores(0).then(() => {
         // console.log("finish init", this._SchemaRoot);
+        this._IsInitialized = true;
         return resolve();
       });
     });
@@ -63,7 +73,7 @@ export class DatasourceManager implements IDataSourceManager {
       .init()
       .then(() => {
         const ds: IDataStore = this._Stores[i];
-        console.debug(`DataStore ${ds} initialized.`);
+        console.debug(`DataStore initialized.`, ds);
         this.appendEntitySchema(ds.getSchemaRoot());
         return this.initDataStores(i + 1);
       })
@@ -103,6 +113,15 @@ export class DatasourceManager implements IDataSourceManager {
     });
   }
 
+  static pickAppScopeValueLabel(value: any): string {
+    //TODO_KRN how to do this since objects are not supported as "_"-sidechannel values
+    if (typeof value !== "object") return value;
+    for (let p in value) {
+      if (p.toLocaleLowerCase().includes("label")) return value[p];
+    }
+    return "object";
+  }
+
   static tryCreateDataStore(ds: DatastoreDescription): IDataStore | null {
     switch (ds.providerClass) {
       case "fuse":
@@ -119,10 +138,10 @@ export class DatasourceManager implements IDataSourceManager {
           additionalBodyArgs["_"] = {};
           for (let dimension in PortfolioManager.GetPortfolio()
             .applicationScope) {
-            additionalBodyArgs["_"][dimension] =
-              PortfolioManager.GetPortfolio().applicationScope![
-                dimension
-              ].value;
+            const appScopeValue = this.pickAppScopeValueLabel(
+              PortfolioManager.GetPortfolio().applicationScope![dimension].value
+            );
+            additionalBodyArgs["_"][dimension] = appScopeValue;
           }
         }
 

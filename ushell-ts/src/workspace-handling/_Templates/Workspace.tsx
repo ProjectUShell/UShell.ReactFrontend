@@ -3,9 +3,10 @@ import { WorkspaceManager } from "../WorkspaceManager";
 import { useParams } from "react-router-dom";
 import { UsecaseState } from "ushell-modulebase";
 import { TabItem } from "../TabItem";
-import TabControl from "../_Organisms/TabControl";
+// import TabControl from "../_Organisms/TabControl";
 import { PortfolioManager } from "../../portfolio-handling/PortfolioManager";
 import { WidgetHost } from "../../portfolio-handling/WidgetHost";
+import { TabControl } from "ushell-common-components";
 
 const Workspace: React.FC<{}> = ({}) => {
   const { workspaceKey, usecaseId, usecaseKey } = useParams();

@@ -148,10 +148,8 @@ export class PortfolioManager {
   public SetAppScope(values: { key: string; value: string }[]) {
     if (!this._Portfolio) {
       PortfolioManager.externalAppScope = values;
-      console.log("setting externalAppScope", values);
       return;
     }
-    console.log("setting app scope values", values);
     if (!this._Portfolio.applicationScope) {
       this._Portfolio.applicationScope = {};
     }
@@ -170,8 +168,6 @@ export class PortfolioManager {
       }
       this._Portfolio!.applicationScope![v.key] = currentEntry;
     });
-    console.log("after setting app scope", this._Portfolio.applicationScope);
     this.storeAppScope(this._Portfolio.applicationScope);
-    DatasourceManager.Instance().init();
   }
 }

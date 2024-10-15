@@ -12,6 +12,7 @@ import { WidgetHost } from "../portfolio-handling/WidgetHost";
 import { ArgumentMapper } from "../portfolio-handling/ArgumentMapper";
 import { PortfolioManager } from "../portfolio-handling/PortfolioManager";
 import { Guifad, GuifadFuse } from "ushell-common-components";
+import GuifadModule from "ushell-common-components/dist/cjs/components/guifad/_Templates/GuifadModule";
 import { RemoteWidgetDescription } from "../federation/RemoteWidgetDescription";
 import FederatedComponentProxy from "../federation/_Molecules/FederatedComponentProxy";
 import PortfolioSelector from "../portfolio-handling/_Organisms/PortfolioSelector";
@@ -559,37 +560,17 @@ export class WorkspaceManager {
       return <DebugWidget widget={input}></DebugWidget>;
     }
     if (widgetClass == "guifad") {
+      console.log("guifad widget", uow);
       return (
         <QueryClientProvider client={queryClient}>
-          <Guifad
-            rootEntityName={uow.entityName}
-            dataSourceManager={DatasourceManager.Instance()}
-            enterRecord={(r, es) => this.tryStartGuifad(r, es)}
-            record={uow?.record || undefined}
-            layoutDescription={uow?.layoutDescription}
-            // layoutDescription={{
-            //   semanticVersion: "0",
-            //   timestampUtc: "",
-            //   entityLayouts: [
-            //     {
-            //       entityName: "DataEndpoint",
-            //       displayLabel: "Person",
-            //       displayLabelPlural: "People",
-            //       fieldLayouts: [],
-            //       identityLabelPattern: "",
-            //       isBlEntrypoint: false,
-            //       partitions: [
-            //         {
-            //           type: "group",
-            //           name: "Main",
-            //           fields: ["Url", "Label"],
-            //           children: [],
-            //         },
-            //       ],
-            //     },
-            //   ],
-            // }}
-          ></Guifad>
+          <GuifadModule
+            widget={input}
+            // rootEntityName={uow.entityName}
+            // dataSourceManager={DatasourceManager.Instance()}
+            // enterRecord={(r, es) => this.tryStartGuifad(r, es)}
+            // record={uow?.record || undefined}
+            // layoutDescription={uow?.layoutDescription}
+          ></GuifadModule>
         </QueryClientProvider>
       );
     }

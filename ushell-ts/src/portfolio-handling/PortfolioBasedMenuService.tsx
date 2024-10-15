@@ -18,7 +18,7 @@ import ArrowRightStartOn from "../authentication/Components/ArrowRightStartOn";
 export class PortfolioBasedMenuService {
   public static buildMenuFromModule(): ShellMenu {
     const module: ModuleDescription = PortfolioManager.GetModule();
-    console.log("build menu", module);
+    console.debug("building menu", module);
     const result1: ShellMenu = MenuBuilder.buildMenuFromModule(
       module,
       (command: CommandDescription, e: any) =>
@@ -46,6 +46,14 @@ export class PortfolioBasedMenuService {
     });
   }
 
+  public static pickAppScopeValueLabel(value: any): string {
+    if (typeof value !== "object") return value;
+    for (let p in value) {
+      if (p.toLocaleLowerCase().includes("label")) return value[p];
+    }
+    return "object";
+  }
+
   private static appendAppScopeItems(result1: ShellMenu) {
     const appScope: {
       [dimension: string]: ApplicationScopeEntry;
@@ -54,13 +62,13 @@ export class PortfolioBasedMenuService {
       Object.keys(appScope).forEach((scopeKey: string) => {
         const entry: ApplicationScopeEntry = appScope[scopeKey];
         if (entry.isVisible) {
-          console.log("ApplicationScopeEntry visible");
           result1.topBarItems?.unshift({
             icon: (
               <div className="flex gap-2">
                 {entry.switchScopeCommand ? (
                   <button
-                    className="bg-navigation hover:bg-navigationHover dark:bg-contentDark dark:hover:bg-bg4dark rounded-sm px-1"
+                    className=" hover:bg-navigationHover dark:hover:bg-bg4dark
+                     rounded-sm p-1"
                     onClick={() =>
                       PortfolioManager.GetWorkspaceManager().executeCommandByKey(
                         entry.switchScopeCommand || "",
@@ -68,9 +76,14 @@ export class PortfolioBasedMenuService {
                       )
                     }
                   >
-                    <p>
-                      {entry.label}: {entry.value}
-                    </p>
+                    <div className="flex gap-1">
+                      <p>{entry.label}:</p>
+                      <p>
+                        {PortfolioBasedMenuService.pickAppScopeValueLabel(
+                          entry.value
+                        )}
+                      </p>
+                    </div>
                   </button>
                 ) : (
                   <p>

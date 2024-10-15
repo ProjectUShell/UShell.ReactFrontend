@@ -6,6 +6,9 @@ import { TokenService } from "../authentication/TokenService";
 import { DatasourceManager } from "../datasource-handling/DatasourceManager";
 
 export class WidgetHost implements IWidgetHost {
+  tryGetDataSource(entityName: string, storeName?: string): IDataSource | null {
+    return this.getDataSourceForEntity(entityName, storeName);
+  }
   getApplicationScope() {
     return PortfolioManager.GetPortfolio().applicationScope;
   }

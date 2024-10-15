@@ -107,7 +107,6 @@ const App = () => {
       (p) => {
         PortfolioManager.SetModule(p.portfolio, p.module);
 
-        console.log("resolveAuthTokenInfo");
         TokenService.resolveAuthTokenInfo(
           authTokenInfo,
           searchParams,
@@ -152,7 +151,11 @@ const App = () => {
   };
 
   PortfolioManager.GetWorkspaceManager().onAppScopeChangedMethod = () => {
-    setMenu(PortfolioBasedMenuService.buildMenuFromModule());
+    DatasourceManager.Instance()
+      .init()
+      .then(() => {
+        setMenu(PortfolioBasedMenuService.buildMenuFromModule());
+      });
   };
 
   PortfolioManager.GetWorkspaceManager().activateModalMethod =
@@ -177,10 +180,16 @@ const App = () => {
     return <div>Shell is loading...</div>;
   }
 
+  if (!DatasourceManager.isInitialized()) {
+    return <div>Shell is loading...</div>;
+  }
+
   if (isAuthenticated !== TokenService.isUiAuthenticated()) {
     setIsAuthenticated(TokenService.isUiAuthenticated());
     setMenu(PortfolioBasedMenuService.buildMenuFromModule());
   }
+
+  console.debug("rendering app");
 
   if (headless) {
     return (
