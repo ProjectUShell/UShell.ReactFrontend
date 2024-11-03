@@ -18,6 +18,15 @@ export function loadShellMenuState(): ShellMenuState {
   return JSON.parse(shellMenuStateJson);
 }
 
+// export function trySetActiveMenuItem(itemId: string) {
+//   console.log("trySetActiveMenuItem", itemId);
+//   const shellMenuState: ShellMenuState = loadShellMenuState();
+//   // if (Object.keys(shellMenuState).includes(itemId)) {
+//   shellMenuState.activeItemId = itemId;
+//   saveShellMenuState(shellMenuState);
+//   // }
+// }
+
 export function saveShellMenuState(shellMenuState: ShellMenuState) {
   localStorage.setItem("ShellMenuState", JSON.stringify(shellMenuState));
 }

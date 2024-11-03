@@ -30,9 +30,16 @@ import LogonPage from "./authentication/Components/LogonPage";
 import { AuthTokenInfo } from "./authentication/AuthTokenInfo";
 import { DatasourceManager } from "./datasource-handling/DatasourceManager";
 import { ShellMenuState } from "ushell-common-components/dist/esm/components/shell-layout/ShellMenuState";
-import { loadShellMenuState } from "./shell-layout/ShellMenuState";
+import {
+  loadShellMenuState,
+  saveShellMenuState,
+} from "./shell-layout/ShellMenuState";
 import UsecaseModal from "./workspace-handling/_Templates/UsecaseModal";
 import { ColorMode, loadShellSettings } from "./shell-layout/ShellSettings";
+import AppBreadcrumb, {
+  AppBreadcrumbItem,
+} from "./workspace-handling/_Molecules/AppBreadcrumb";
+import { WidgetHost } from "./portfolio-handling/WidgetHost";
 
 const glob: any = globalThis;
 glob.globalWorkspaceManager = PortfolioManager.GetWorkspaceManager();
@@ -70,6 +77,20 @@ const App = () => {
 
   const headless: string | null = searchParams.get("headless");
 
+  // states
+  const [menu, setMenu] = useState<ShellMenu | null>(null);
+  const [appBreadcrumbItems, setAppBreacdrumbItems] = useState<
+    AppBreadcrumbItem[]
+  >([]);
+
+  const [modalUsecaseState, setModalUsecaseState] =
+    useState<UsecaseState | null>(null);
+
+  const [closing, setClosing] = useState(false);
+
+  const [shellMenuState, setShellMenuState] = useState<ShellMenuState>(
+    loadShellMenuState()
+  );
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const authTokenInfo: AuthTokenInfo = TokenService.tryGetAuthTokenInfo(
@@ -87,22 +108,14 @@ const App = () => {
 
   const portfolio: string | null = searchParams.get("portfolio");
 
-  // states
-  const [menu, setMenu] = useState<ShellMenu | null>(null);
-
-  const [modalUsecaseState, setModalUsecaseState] =
-    useState<UsecaseState | null>(null);
+  // effects
   useEffect(() => {
+    console.log("useEffect portfolioLocation");
     PortfolioManager.SetPortfolioLocation(portfolioLocation);
   }, [portfolioLocation]);
 
-  const [closing, setClosing] = useState(false);
-
-  const [shellMenuState, setShellMenuState] = useState<ShellMenuState>(
-    loadShellMenuState()
-  );
-  // effects
   useEffect(() => {
+    console.log("useEffect portfolio");
     console.debug("App booting portfolio", portfolio);
     PortfolioLoader.loadModuleDescription(portfolioLocation, portfolio).then(
       (p) => {
@@ -133,9 +146,35 @@ const App = () => {
     );
   }, [portfolio]);
 
+  useEffect(() => {
+    console.log("useEffect shellMenuState");
+    saveShellMenuState(shellMenuState);
+  }, [shellMenuState]);
   if (closing) {
     return <div>closing...</div>;
   }
+
+  // debug useEffects
+
+  // useEffect(() => {
+  //   console.log("useEffect menu");
+  // }, [menu]);
+
+  // useEffect(() => {
+  //   console.log("useEffect appBreadcrumbItems");
+  // }, [appBreadcrumbItems]);
+
+  // useEffect(() => {
+  //   console.log("useEffect isAuthenticated");
+  // }, [isAuthenticated]);
+
+  // useEffect(() => {
+  //   console.log("useEffect shellMenuState");
+  // }, [shellMenuState]);
+
+  // useEffect(() => {
+  //   console.log("useEffect modalUsecaseState");
+  // }, [modalUsecaseState]);
 
   // init managers
   PortfolioManager.GetWorkspaceManager().navigateMethod = (url: string) => {
@@ -185,6 +224,26 @@ const App = () => {
     });
   };
 
+  PortfolioManager.GetWorkspaceManager().pushBreadcrumbItem = (
+    id,
+    label,
+    command
+  ) => {
+    if (appBreadcrumbItems.find((bi) => bi.id == id)) return;
+    console.log("pushBreadcrumbItem", id);
+    appBreadcrumbItems.push({ id: id, label: label, onClicked: command });
+    setAppBreacdrumbItems([...appBreadcrumbItems]);
+  };
+
+  PortfolioManager.GetWorkspaceManager().activateBreadcrumbItemMethod = (
+    id
+  ) => {
+    console.log("activateBreadcrumbItemMethod", id);
+    if (id == "") {
+      setAppBreacdrumbItems([]);
+    }
+  };
+
   if (!PortfolioManager.GetPortfolio()) {
     return <div>Loading...</div>;
   }
@@ -214,27 +273,39 @@ const App = () => {
   return (
     <ShellLayout
       title={
-        <img
-          src={
-            loadShellSettings().colorMode == ColorMode.Dark
-              ? PortfolioManager.GetPortfolio().logoUrlDark &&
-                PortfolioManager.GetPortfolio().logoUrlDark != "" &&
-                PortfolioManager.GetPortfolio().logoUrlDark!.includes(".png")
-                ? PortfolioManager.GetPortfolio().logoUrlDark
+        <div className="flex items-center content-center">
+          <img
+            src={
+              loadShellSettings().colorMode == ColorMode.Dark
+                ? PortfolioManager.GetPortfolio().logoUrlDark &&
+                  PortfolioManager.GetPortfolio().logoUrlDark != "" &&
+                  PortfolioManager.GetPortfolio().logoUrlDark!.includes(".png")
+                  ? PortfolioManager.GetPortfolio().logoUrlDark
+                  : "ushell-whitebg.png"
+                : PortfolioManager.GetPortfolio().logoUrlLight &&
+                  PortfolioManager.GetPortfolio().logoUrlLight != "" &&
+                  PortfolioManager.GetPortfolio().logoUrlLight!.includes(".png")
+                ? PortfolioManager.GetPortfolio().logoUrlLight
                 : "ushell-whitebg.png"
-              : PortfolioManager.GetPortfolio().logoUrlLight &&
-                PortfolioManager.GetPortfolio().logoUrlLight != "" &&
-                PortfolioManager.GetPortfolio().logoUrlLight!.includes(".png")
-              ? PortfolioManager.GetPortfolio().logoUrlLight
-              : "ushell-whitebg.png"
-          }
-          style={{ height: "30px" }}
-          alt="ushell-whitebg.png"
-          onClick={() =>
-            PortfolioManager.GetWorkspaceManager().navigateSafe("/")
-          }
-          className="cursor-pointer"
-        />
+            }
+            style={{ height: "30px" }}
+            alt="ushell-whitebg.png"
+            onClick={() => {
+              const homeWorkspaceKey: string =
+                PortfolioManager.GetPortfolio().landingWorkspaceName;
+              if (homeWorkspaceKey.startsWith("activate")) {
+                WidgetHost.fireEvent1(homeWorkspaceKey, {});
+              } else {
+                PortfolioManager.GetWorkspaceManager().navigateSafe("/");
+              }
+              setAppBreacdrumbItems([]);
+            }}
+            className="cursor-pointer"
+          />
+          <div>
+            <AppBreadcrumb items={appBreadcrumbItems}></AppBreadcrumb>
+          </div>
+        </div>
       }
       shellMenu={menu}
       shellMenuState={shellMenuState}

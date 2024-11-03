@@ -4,6 +4,7 @@ import { PortfolioManager } from "./PortfolioManager";
 import { CommandDescription } from "ushell-portfoliodescription";
 import { TokenService } from "../authentication/TokenService";
 import { DatasourceManager } from "../datasource-handling/DatasourceManager";
+import { WorkspaceManager } from "../workspace-handling/WorkspaceManager";
 
 export class WidgetHost implements IWidgetHost {
   tryGetDataSource(entityName: string, storeName?: string): IDataSource | null {
@@ -12,7 +13,9 @@ export class WidgetHost implements IWidgetHost {
   getApplicationScope() {
     return PortfolioManager.GetPortfolio().applicationScope;
   }
-
+  switchScope(scopeKey: string, targetValue: any) {
+    PortfolioManager.GetWorkspaceManager().switchScope(scopeKey, targetValue);
+  }
   getApplicationScopeValues(): {
     [dimension: string]: any;
   } {
@@ -48,6 +51,26 @@ export class WidgetHost implements IWidgetHost {
 
   subscribeEvent(name: string, subscriber: (args: object) => void): void {
     throw new Error("Method not implemented.");
+  }
+
+  pushBreadcrumbItem(id: string, label: string, command: () => void) {
+    PortfolioManager.GetWorkspaceManager().pushBreadcrumbItem(
+      id,
+      label,
+      command
+    );
+  }
+
+  static fireEvent1(name: string, args: object): void {
+    const command: CommandDescription | undefined =
+      PortfolioManager.GetModule().commands.find(
+        (c) => c.uniqueCommandKey == name
+      );
+    if (!command) {
+      console.error("No command with given name", name);
+      return;
+    }
+    PortfolioManager.GetWorkspaceManager().executeCommand(command, args, {});
   }
 
   fireEvent(name: string, args: object): void {

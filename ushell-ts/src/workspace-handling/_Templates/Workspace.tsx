@@ -26,6 +26,8 @@ const Workspace: React.FC<{}> = ({}) => {
     } else {
       activeUsecaseState = staticUsecaseStates[0];
     }
+    console.log("Render Home Workspace");
+
     return PortfolioManager.GetWorkspaceManager().renderUsecase(
       activeUsecaseState,
       { state: activeUsecaseState, widgetHost: new WidgetHost() }

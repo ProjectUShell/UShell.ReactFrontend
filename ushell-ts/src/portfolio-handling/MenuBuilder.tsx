@@ -11,6 +11,7 @@ import PowerIcon from "ushell-common-components/dist/cjs/_Atoms/PowerIcon";
 import ListIcon from "ushell-common-components/dist/cjs/_Icons/ListIcon";
 import { TokenService } from "../authentication/TokenService";
 import { PortfolioManager } from "./PortfolioManager";
+import { WorkspaceManager } from "../workspace-handling/WorkspaceManager";
 
 export class MenuBuilder {
   public static buildMenuFromModuleUrl(
@@ -44,6 +45,36 @@ export class MenuBuilder {
     }
   }
 
+  public static fullfillsRequiredTag(rt: string): boolean {
+    const scopeMarker: string = "Scope_";
+    if (rt.startsWith(scopeMarker)) {
+      const requiredScope: string = rt.substring(scopeMarker.length);
+      if (!PortfolioManager.GetPortfolio().applicationScope) return false;
+      const scopeEntry: any =
+        PortfolioManager.GetPortfolio().applicationScope![requiredScope];
+      if (!scopeEntry) return false;
+      if (!scopeEntry.value) return false;
+      if (scopeEntry.value == "") return false;
+      return true;
+    }
+
+    const notScopeMarker: string = "NotScope_";
+    if (rt.startsWith(notScopeMarker)) {
+      console.log("check NotScope_", rt);
+      const notRequiredScope: string = rt.substring(notScopeMarker.length);
+      if (!PortfolioManager.GetPortfolio().applicationScope) return true;
+      const scopeEntry: any =
+        PortfolioManager.GetPortfolio().applicationScope![notRequiredScope];
+      console.log("NotScope scopeEntry", scopeEntry);
+      if (!scopeEntry) return true;
+      if (!scopeEntry.value) return true;
+      if (scopeEntry.value == "") return true;
+      console.log("NotScope false");
+      return false;
+    }
+    return true;
+  }
+
   public static buildMenuFromModule(
     module: ModuleDescription,
     executeCommand: (comman: CommandDescription, e: any) => void
@@ -53,10 +84,15 @@ export class MenuBuilder {
     const isAuthenticated: boolean = TokenService.isUiAuthenticated();
     // console.log("buildMenuFromModule", commands);
     commands
-      .filter(
-        (c) =>
-          isAuthenticated || !PortfolioManager.commandRequiresAuthentication(c)
-      )
+      .filter((c) => {
+        let result =
+          isAuthenticated || !PortfolioManager.commandRequiresAuthentication(c);
+        if (!c.requiredRuntimeTagsForVisibility) return result;
+        for (let rt of c.requiredRuntimeTagsForVisibility) {
+          result = result && this.fullfillsRequiredTag(rt);
+        }
+        return result;
+      })
       .forEach((command: CommandDescription) => {
         // console.log("adding command", command);
         if (command.menuFolder == "TopBar") {

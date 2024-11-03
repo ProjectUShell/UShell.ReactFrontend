@@ -30,6 +30,7 @@ import {
 import { EntitySchema } from "fusefx-modeldescription";
 import DebugWidget from "../demo/DebugWidget";
 import UsecaseWrapper from "./_Templates/UsecaseWrapper";
+import { loadShellMenuState } from "../shell-layout/ShellMenuState";
 const queryClient = new QueryClient();
 
 export class WorkspaceManager {
@@ -98,7 +99,15 @@ export class WorkspaceManager {
     return this.enterUsecase(newUsecaseState);
   }
 
-  switchScope(scopeKey: string, targetValue: any) {
+  public switchScope(scopeKey: string, targetValue: any) {
+    const currentAppScope = PortfolioManager.GetPortfolio().applicationScope;
+    const keyKnown = currentAppScope && scopeKey in currentAppScope;
+    if (keyKnown && currentAppScope[scopeKey].value == targetValue) return;
+    console.log(
+      "switching scope current entry",
+      currentAppScope && currentAppScope[scopeKey]
+    );
+    console.log("switching scope to", targetValue);
     PortfolioManager.GetInstance().SetAppScope([
       { key: scopeKey, value: targetValue },
     ]);
@@ -128,6 +137,19 @@ export class WorkspaceManager {
   setActiveMenuItem(activeMenuItemId: string) {
     if (!this.setActiveMenuItemMethod) return;
     this.setActiveMenuItemMethod(activeMenuItemId);
+  }
+
+  pushBreadcrumbItemMethod:
+    | ((id: string, label: string, command: () => void) => void)
+    | undefined = undefined;
+  pushBreadcrumbItem(id: string, label: string, command: () => void) {
+    this.pushBreadcrumbItemMethod &&
+      this.pushBreadcrumbItemMethod(id, label, command);
+  }
+
+  activateBreadcrumbItemMethod: ((id: string) => void) | undefined = undefined;
+  activateBreadcrumbItem(id: string) {
+    this.activateBreadcrumbItemMethod && this.activateBreadcrumbItemMethod(id);
   }
 
   navigateSafe(url: string): void {
@@ -381,6 +403,9 @@ export class WorkspaceManager {
       case "activate-workspace": {
         PortfolioManager.GetWorkspaceManager().activateWorkspace(
           c.targetWorkspaceKey!
+        );
+        PortfolioManager.GetWorkspaceManager().setActiveMenuItem(
+          c.uniqueCommandKey
         );
         return;
       }
