@@ -42,7 +42,6 @@ export class PortfolioManager {
   }
 
   static commandRequiresAuthentication(command: CommandDescription): boolean {
-    console.log("commandRequiresAuthentication", command);
     if (!this.GetPortfolio().anonymousAccess) {
       return true;
     }
@@ -110,7 +109,7 @@ export class PortfolioManager {
         switchScopeCommand: null,
       };
     });
-    console.log(
+    console.debug(
       "after setting externalAppScope",
       this._Instance!._Portfolio!.applicationScope
     );
@@ -146,6 +145,7 @@ export class PortfolioManager {
   }
 
   public SetAppScope(values: { key: string; value: string }[]) {
+    console.log("set appscope", values);
     if (!this._Portfolio) {
       PortfolioManager.externalAppScope = values;
       return;

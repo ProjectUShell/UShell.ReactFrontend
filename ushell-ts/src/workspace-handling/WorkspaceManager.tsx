@@ -13,6 +13,7 @@ import { ArgumentMapper } from "../portfolio-handling/ArgumentMapper";
 import { PortfolioManager } from "../portfolio-handling/PortfolioManager";
 import { Guifad, GuifadFuse } from "ushell-common-components";
 import GuifadModule from "ushell-common-components/dist/cjs/components/guifad/_Templates/GuifadModule";
+import EntitySelection from "ushell-common-components/dist/cjs/_Organisms/EntitySelection";
 import { RemoteWidgetDescription } from "../federation/RemoteWidgetDescription";
 import FederatedComponentProxy from "../federation/_Molecules/FederatedComponentProxy";
 import PortfolioSelector from "../portfolio-handling/_Organisms/PortfolioSelector";
@@ -32,7 +33,11 @@ import UsecaseWrapper from "./_Templates/UsecaseWrapper";
 const queryClient = new QueryClient();
 
 export class WorkspaceManager {
-  startUsecase(workspaceKey: string, usecaseKey: string, uowData: any): void {
+  startUsecase(
+    workspaceKey: string,
+    usecaseKey: string,
+    uowData: any
+  ): boolean {
     //TODO für init von uow: auch aufrufendes usecaseInstance verwenden => iwie pushen / merken
     const usecase: UsecaseDescription | undefined =
       PortfolioManager.GetModule().usecases.find(
@@ -40,7 +45,7 @@ export class WorkspaceManager {
       );
     if (!usecase) {
       console.error(`No Usecase with usecaseKey `);
-      return;
+      return false;
     }
     const currentUsecaseStates: UsecaseState[] =
       this.getUsecaseStates(workspaceKey);
@@ -73,8 +78,7 @@ export class WorkspaceManager {
     if (existingUsecaseState) {
       existingUsecaseState.unitOfWork = uowDefaults;
       this.updateUsecaseState(existingUsecaseState);
-      this.enterUsecase(existingUsecaseState);
-      return;
+      return this.enterUsecase(existingUsecaseState);
     }
 
     const newUsecaseState: UsecaseState = {
@@ -91,7 +95,7 @@ export class WorkspaceManager {
     currentUsecaseStates.push(newUsecaseState);
     this.saveWorkspaceState(workspaceKey, currentUsecaseStates);
 
-    this.enterUsecase(newUsecaseState);
+    return this.enterUsecase(newUsecaseState);
   }
 
   switchScope(scopeKey: string, targetValue: any) {
@@ -110,7 +114,9 @@ export class WorkspaceManager {
   activateModalMethod: ((usecaseState: UsecaseState) => void) | undefined =
     undefined;
 
-  deactivateModalMethod: (() => void) | undefined = undefined;
+  deactivateModalMethod:
+    | ((modalUsecaseState?: UsecaseState) => void)
+    | undefined = undefined;
 
   activateWorkspace(workspaceKey: string): void {
     this.navigateSafe(workspaceKey);
@@ -388,14 +394,18 @@ export class WorkspaceManager {
           input
         );
         // console.log("start-usecase uowData", uowData);
-        PortfolioManager.GetWorkspaceManager().setActiveMenuItem(
-          c.uniqueCommandKey
-        );
-        PortfolioManager.GetWorkspaceManager().startUsecase(
-          c.targetWorkspaceKey!,
-          c.targetUsecaseKey!,
-          uowData
-        );
+
+        const navigated: boolean =
+          PortfolioManager.GetWorkspaceManager().startUsecase(
+            c.targetWorkspaceKey!,
+            c.targetUsecaseKey!,
+            uowData
+          );
+        if (navigated) {
+          PortfolioManager.GetWorkspaceManager().setActiveMenuItem(
+            c.uniqueCommandKey
+          );
+        }
         return;
       }
       case "navigate": {
@@ -410,7 +420,6 @@ export class WorkspaceManager {
           return;
         }
         if (c.targetScopeValue.includes("://")) {
-          console.log("picking targetScopeValue dynamic", c.targetScopeValue);
           const dynamicO: any = {
             targetScopeValue: null,
             mapDynamic: [{ use: c.targetScopeValue, for: "targetScopeValue" }],
@@ -431,7 +440,7 @@ export class WorkspaceManager {
     throw "invalid command type";
   }
 
-  enterUsecase(usecaseState: UsecaseState): void {
+  enterUsecase(usecaseState: UsecaseState): boolean {
     //HACK
     //TODO do this correctly
     const usecase: UsecaseDescription | undefined =
@@ -440,11 +449,12 @@ export class WorkspaceManager {
       );
     if (usecase && usecase.iconName == "modal") {
       this.activateModal(usecaseState);
-      return;
+      return false;
     }
     this.navigateSafe(
       `${usecaseState.parentWorkspaceKey}\\${usecaseState.usecaseInstanceUid}`
     );
+    return true;
   }
 
   loadInitialUsecaseStates(): UsecaseState[] {
@@ -463,7 +473,6 @@ export class WorkspaceManager {
       return;
     }
     storedUsecaseStates[storedUsecaseStateIndex] = changedState;
-    console.log("updateUsecaseState", storedUsecaseStates);
     this.saveWorkspaceState(
       changedState.parentWorkspaceKey,
       storedUsecaseStates
@@ -485,6 +494,8 @@ export class WorkspaceManager {
 
     if (navigateToParentWorkspace)
       this.navigateSafe(usecaseState.parentWorkspaceKey);
+
+    this.deactivateModalMethod && this.deactivateModalMethod(usecaseState);
   }
 
   renderUsecase(usecaseState: UsecaseState, input: IWidget): JSX.Element {
@@ -503,8 +514,8 @@ export class WorkspaceManager {
       )
     ) {
       if (!TokenService.isUiAuthenticated()) {
-        console.log(
-          "Protected route -> navigate to laogin!",
+        console.warn(
+          "Protected route -> navigate to login!",
           PortfolioManager.GetPortfolio()
         );
 
@@ -518,7 +529,6 @@ export class WorkspaceManager {
         );
       }
     }
-    console.log("input", input);
     const usecaseCommands: CommandDescription[] =
       PortfolioManager.GetModule().commands.filter(
         (c) => c.menuOwnerUsecaseKey == usecase.usecaseKey
@@ -531,18 +541,7 @@ export class WorkspaceManager {
   }
 
   renderWidget(widgetClass: string, input: IWidget) {
-    const remoteWidgetDesc: RemoteWidgetDescription | null =
-      this.parseWidgetClass(widgetClass, input);
-    if (remoteWidgetDesc) {
-      return (
-        <FederatedComponentProxy
-          scope={remoteWidgetDesc.scope}
-          module={remoteWidgetDesc.module}
-          url={remoteWidgetDesc.url}
-          inputData={remoteWidgetDesc.inputData}
-        ></FederatedComponentProxy>
-      );
-    }
+    const uow: any = input.state.unitOfWork;
     if (widgetClass == "portfolioChooser") {
       const portfolioLocation: string = PortfolioManager.GetPortfolioLocation();
       return (
@@ -554,13 +553,10 @@ export class WorkspaceManager {
         ></PortfolioSelector>
       );
     }
-    const uow: any = input.state.unitOfWork;
-    console.log("uow?.layoutDescription", uow?.layoutDescription);
     if (widgetClass == "debug") {
       return <DebugWidget widget={input}></DebugWidget>;
     }
     if (widgetClass == "guifad") {
-      console.log("guifad widget", uow);
       return (
         <QueryClientProvider client={queryClient}>
           <GuifadModule
@@ -586,6 +582,24 @@ export class WorkspaceManager {
         ></GuifadFuse>
       );
     }
+    if (widgetClass == "scopeSelection") {
+      return (
+        <EntitySelection
+          dataSource={
+            DatasourceManager.Instance().tryGetDataSource(uow.entityName)!
+          }
+          onRecordSelected={(sr) => {
+            console.log("selecting scope", sr);
+            if (!sr) {
+              this.terminateUsecase(input.state, false);
+              return;
+            }
+            this.switchScope(uow.scopeKey, sr);
+          }}
+          layoutDescription={uow.layoutDescription}
+        ></EntitySelection>
+      );
+    }
     if (widgetClass.toLowerCase() == "login") {
       return (
         <LogonPage
@@ -599,6 +613,19 @@ export class WorkspaceManager {
     if (widgetClass.toLocaleLowerCase() == "demo") {
       return <Demo widget={input}></Demo>;
     }
+    const remoteWidgetDesc: RemoteWidgetDescription | null =
+      this.parseWidgetClass(widgetClass, input);
+    if (remoteWidgetDesc) {
+      return (
+        <FederatedComponentProxy
+          scope={remoteWidgetDesc.scope}
+          module={remoteWidgetDesc.module}
+          url={remoteWidgetDesc.url}
+          inputData={remoteWidgetDesc.inputData}
+        ></FederatedComponentProxy>
+      );
+    }
+
     return <div>Invalid Widget Class</div>;
   }
 
@@ -621,7 +648,6 @@ export class WorkspaceManager {
   }
 
   tryStartGuifad(r: any, es: EntitySchema) {
-    console.log("try executing guifad command", r);
     const usecase: UsecaseDescription | undefined =
       PortfolioManager.GetModule().usecases.find(
         (uc) => uc.usecaseKey == es.name
@@ -632,7 +658,6 @@ export class WorkspaceManager {
         (c) => c.targetUsecaseKey == usecase.usecaseKey
       );
     if (!command) return;
-    console.log("executing guifad command", command);
     this.executeCommand(command, { record: r }, {});
   }
 }

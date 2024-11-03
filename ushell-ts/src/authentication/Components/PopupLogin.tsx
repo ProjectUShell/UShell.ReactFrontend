@@ -17,7 +17,6 @@ const PopupLogin: React.FC<{
     portfolio,
     true
   );
-  console.log("oauthUrl", oauthUrl);
 
   if (!oauthUrl) {
     return <div>nope</div>;
@@ -33,14 +32,13 @@ const PopupLogin: React.FC<{
         if (TokenService.isAuthenticated(tokenSourceUid)) {
           setDone(true);
         }
-        console.log("stuff");
       }, 1000)
     );
   }, []);
 
   useEffect(() => {
     if (done) {
-      console.log("clearing interval");
+      console.debug("clearing interval");
       clearInterval(checkInterval);
       if (portfolio) {
         navigate("/?portfolio=" + portfolio);
@@ -63,7 +61,6 @@ const PopupLogin: React.FC<{
   const desiredY: number = window.screenY;
   const desiredWidth: number = window.innerWidth - 20;
   const desiredHeight: number = window.innerHeight - 20;
-  console.log("window pos", { x: desiredX, y: desiredY });
   popup?.resizeTo(desiredWidth, desiredHeight);
   popup?.moveTo(desiredX + 20, desiredY + 20);
 

@@ -32,6 +32,7 @@ import { DatasourceManager } from "./datasource-handling/DatasourceManager";
 import { ShellMenuState } from "ushell-common-components/dist/esm/components/shell-layout/ShellMenuState";
 import { loadShellMenuState } from "./shell-layout/ShellMenuState";
 import UsecaseModal from "./workspace-handling/_Templates/UsecaseModal";
+import { ColorMode, loadShellSettings } from "./shell-layout/ShellSettings";
 
 const glob: any = globalThis;
 glob.globalWorkspaceManager = PortfolioManager.GetWorkspaceManager();
@@ -61,7 +62,7 @@ const portfolioLocation: string = plm
   ? plm.content
   : pickBasePath() + "portfolio";
 
-console.log("portfolioLocation", portfolioLocation);
+console.debug("portfolioLocation", portfolioLocation);
 
 const App = () => {
   const navigate = useNavigate();
@@ -77,7 +78,7 @@ const App = () => {
   );
 
   if (authTokenInfo.stateFromUrlQuery.portfolio) {
-    console.log(
+    console.debug(
       "Setting portfolio from oauth-state: ",
       authTokenInfo.stateFromUrlQuery.portfolio
     );
@@ -102,7 +103,7 @@ const App = () => {
   );
   // effects
   useEffect(() => {
-    console.log("App booting portfolio", portfolio);
+    console.debug("App booting portfolio", portfolio);
     PortfolioLoader.loadModuleDescription(portfolioLocation, portfolio).then(
       (p) => {
         PortfolioManager.SetModule(p.portfolio, p.module);
@@ -151,6 +152,7 @@ const App = () => {
   };
 
   PortfolioManager.GetWorkspaceManager().onAppScopeChangedMethod = () => {
+    setModalUsecaseState(null);
     DatasourceManager.Instance()
       .init()
       .then(() => {
@@ -161,8 +163,19 @@ const App = () => {
   PortfolioManager.GetWorkspaceManager().activateModalMethod =
     setModalUsecaseState;
 
-  PortfolioManager.GetWorkspaceManager().deactivateModalMethod = () =>
+  PortfolioManager.GetWorkspaceManager().deactivateModalMethod = (
+    mus?: UsecaseState
+  ) => {
+    if (mus) {
+      if (
+        modalUsecaseState &&
+        modalUsecaseState.usecaseInstanceUid == mus.usecaseInstanceUid
+      ) {
+        setModalUsecaseState(null);
+      }
+    }
     setModalUsecaseState(null);
+  };
 
   PortfolioManager.GetWorkspaceManager().setActiveMenuItemMethod = (
     activeMenuItemId: string
@@ -203,9 +216,16 @@ const App = () => {
       title={
         <img
           src={
-            PortfolioManager.GetPortfolio().applicationTitle != "" &&
-            PortfolioManager.GetPortfolio().applicationTitle.includes(".png")
-              ? PortfolioManager.GetPortfolio().applicationTitle
+            loadShellSettings().colorMode == ColorMode.Dark
+              ? PortfolioManager.GetPortfolio().logoUrlDark &&
+                PortfolioManager.GetPortfolio().logoUrlDark != "" &&
+                PortfolioManager.GetPortfolio().logoUrlDark!.includes(".png")
+                ? PortfolioManager.GetPortfolio().logoUrlDark
+                : "ushell-whitebg.png"
+              : PortfolioManager.GetPortfolio().logoUrlLight &&
+                PortfolioManager.GetPortfolio().logoUrlLight != "" &&
+                PortfolioManager.GetPortfolio().logoUrlLight!.includes(".png")
+              ? PortfolioManager.GetPortfolio().logoUrlLight
               : "ushell-whitebg.png"
           }
           style={{ height: "30px" }}

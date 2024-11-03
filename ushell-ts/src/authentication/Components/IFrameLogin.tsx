@@ -18,7 +18,6 @@ const IFrameLogin: React.FC<{
     portfolio,
     false
   );
-  console.log("oauthUrl", oauthUrl);
 
   if (!oauthUrl) {
     return <div>nope</div>;

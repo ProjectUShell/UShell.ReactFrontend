@@ -14,6 +14,7 @@ import UsecaseInstanceDropdown from "../workspace-handling/_Molecules/UsecaseIns
 import ClipboardIcon from "../shell-layout/_Icons/ClipboardIcon";
 import { TokenService } from "../authentication/TokenService";
 import ArrowRightStartOn from "../authentication/Components/ArrowRightStartOn";
+import ChevronDownIcon from "ushell-common-components/dist/cjs/_Icons/ChevrodnDownIcon";
 
 export class PortfolioBasedMenuService {
   public static buildMenuFromModule(): ShellMenu {
@@ -76,13 +77,17 @@ export class PortfolioBasedMenuService {
                       )
                     }
                   >
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 items-center content-center">
                       <p>{entry.label}:</p>
                       <p>
                         {PortfolioBasedMenuService.pickAppScopeValueLabel(
-                          entry.value
+                          entry.value || "Empty"
                         )}
                       </p>
+                      <ChevronDownIcon
+                        size={1.2}
+                        strokeWidth={3}
+                      ></ChevronDownIcon>
                     </div>
                   </button>
                 ) : (

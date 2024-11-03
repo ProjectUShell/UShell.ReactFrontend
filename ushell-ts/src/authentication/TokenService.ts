@@ -88,7 +88,6 @@ export class TokenService {
     const result = localStorage.getItem(
       TokenService.generateLocalStorageKey(tokenSourceUid)
     );
-    // console.log("getToken", result);
     return result;
     return localStorage.getItem(
       TokenService.generateLocalStorageKey(tokenSourceUid)
@@ -166,7 +165,7 @@ export class TokenService {
       try {
         decodedState = atob(result.stateFromUrlQuery);
       } catch (error) {}
-      console.log(
+      console.debug(
         "Reiceived State via Url (seems to come from OAuth redirect): ",
         { decoded: decodedState, raw: result.stateFromUrlQuery }
       );
@@ -321,7 +320,7 @@ export class TokenService {
     if (authTokenInfo.codeFromUrlQuery || authTokenInfo.tokenFromUrlQuery) {
       result.noParams = false;
 
-      console.log(
+      console.debug(
         "Code: ",
         authTokenInfo.codeFromUrlQuery,
         " State: ",
@@ -343,7 +342,7 @@ export class TokenService {
       result.wasPopup = authTokenInfo.stateFromUrlQuery.popup;
       if (token) {
         result.success = true;
-        console.log(
+        console.debug(
           "importing token '" + token + "' for source " + tokenSourceUid
         );
         TokenService.setToken(tokenSourceUid, token);
@@ -370,7 +369,6 @@ export class TokenService {
     codeFromUrlQuery: string | null,
     tokenSourceUid: string
   ): Promise<string | null> {
-    // console.log("getting token from code 1", tokenSourceUid);
     if (!codeFromUrlQuery) {
       return null;
     }
@@ -390,7 +388,6 @@ export class TokenService {
     }
     retrieveUrl += `&client_id=${tokenConfig.clientId}`;
     try {
-      // console.log("getting token from code 2", retrieveUrl);
       const response = await fetch(retrieveUrl, {
         method: "Get",
         credentials: "include",

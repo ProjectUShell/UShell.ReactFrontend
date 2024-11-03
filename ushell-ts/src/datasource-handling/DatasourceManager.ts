@@ -46,20 +46,13 @@ export class DatasourceManager implements IDataSourceManager {
         const dataStore: IDataStore | null =
           DatasourceManager.tryCreateDataStore(ds);
         if (dataStore) {
-          // console.log("adding dataStore", dataStore);
-
           this._Stores.push(dataStore);
         }
       });
       FuseDataStore.getTokenMethod = (tokenSourceUid: string) => {
-        // console.log("getTokenMethod", {
-        //   tokenSourceUid: tokenSourceUid,
-        //   tokenService: TokenService,
-        // });
         return TokenService.getToken(tokenSourceUid)!;
       };
       this.initDataStores(0).then(() => {
-        // console.log("finish init", this._SchemaRoot);
         this._IsInitialized = true;
         return resolve();
       });
@@ -86,10 +79,7 @@ export class DatasourceManager implements IDataSourceManager {
       this._SchemaRoot.relations = [...sr.relations];
       return;
     }
-    // console.log("appending SchemaRoot", {
-    //   current: this._SchemaRoot,
-    //   appending: sr,
-    // });
+
     sr.entities.forEach((entity: EntitySchema) => {
       const existingEntity: EntitySchema | undefined =
         this._SchemaRoot?.entities.find((e) => e.name == entity.name);
@@ -158,24 +148,15 @@ export class DatasourceManager implements IDataSourceManager {
             typeof originalValue === "object" &&
             "mapDynamic" in originalValue
           ) {
-            // console.log(
-            //   "additionalHeaderArgs before " + headerKey,
-            //   ds.providerArguments["additionalHeaderArgs"][headerKey]
-            // );
             additionalHeaderArgs[headerKey] =
               ArgumentMapper.resolveDynamicMapping(
                 ds.providerArguments["additionalHeaderArgs"][headerKey],
                 {},
                 true
               );
-            // console.log(
-            //   "additionalHeaderArgs after " + headerKey,
-            //   additionalHeaderArgs[headerKey]
-            // );
           }
         }
-        // console.log("additionalHeaderArgs", additionalHeaderArgs);
-        // console.log("additionalBodyArgs", additionalBodyArgs);
+
         return new FuseDataStore(
           ds.providerArguments["url"],
           ds.providerArguments["routePattern"],
@@ -192,17 +173,13 @@ export class DatasourceManager implements IDataSourceManager {
     entityName: string,
     storeName?: string | undefined
   ): IDataSource | null {
-    // console.log("tryGetDataSource", entityName);
     for (let dataStore of this._Stores) {
-      // console.log("trying tryGetDataSource", dataStore);
       const result = dataStore.tryGetDataSource(entityName);
-      // console.log("result of tryGetDataSource", result);
       if (result) return result;
     }
     return null;
   }
   getSchemaRoot(): SchemaRoot {
-    // console.log("getSchemaRoot", this._Stores);
     if (this._Stores.length == 0) return new SchemaRoot();
     return this._SchemaRoot!;
   }

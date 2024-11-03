@@ -27,7 +27,7 @@ function FederatedComponentProxy(props: {
   const Component = React.lazy(loadModule(props.scope, props.module));
 
   return (
-    <Suspense fallback="Loading Module">
+    <Suspense fallback="">
       <Component inputData={props.inputData} />
     </Suspense>
   );

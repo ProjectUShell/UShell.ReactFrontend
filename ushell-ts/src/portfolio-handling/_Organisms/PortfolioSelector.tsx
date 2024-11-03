@@ -78,7 +78,6 @@ const PortfolioSelector: React.FC<{
     tagKey: string,
     index: number
   ): { label: string; value: any }[] {
-    console.log("tagKey", tagKey);
     if (index == 0) {
       return tags[tagKey].map((tv: string) => {
         return { label: tv, value: tv };
@@ -96,12 +95,7 @@ const PortfolioSelector: React.FC<{
         }
       });
     });
-    console.log("matchingTags", {
-      matchingTags: matchingTags,
-      tagKey: tagKey,
-      matchingEntries: matchingEntries,
-      selectedByTag: selectedByTag,
-    });
+
     if (!(tagKey in matchingTags)) return [];
     return matchingTags[tagKey].map((tv: string) => {
       return { label: tv, value: tv };

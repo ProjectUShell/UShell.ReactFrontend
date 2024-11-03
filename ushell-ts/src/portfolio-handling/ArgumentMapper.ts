@@ -10,11 +10,9 @@ export class ArgumentMapper {
     commandArgs?: object
   ): any {
     if (!argumentObject) {
-      // console.log("no argumentObject");
       return {};
     }
     if (!argumentObject["mapDynamic"]) {
-      // console.log("no 'mapDynamic'");
       if (forceClone) {
         let clone: object = {};
         ArgumentMapper.copyRecursive(argumentObject, clone);
@@ -52,7 +50,6 @@ export class ArgumentMapper {
     this.copyRecursive(argumentObject, clone);
 
     for (var mappingEntry of mappingEntries) {
-      console.log("checking mappingEntry", mappingEntry);
       let value: any = null;
       let error: string | null = null;
       let sourcePath: string = mappingEntry.use.substring(
