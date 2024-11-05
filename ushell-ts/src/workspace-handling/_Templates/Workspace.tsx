@@ -34,6 +34,10 @@ const Workspace: React.FC<{}> = ({}) => {
     );
   }
 
+  if (workspaceKey) {
+    PortfolioManager.GetWorkspaceManager().trySetActiveMenuItem(workspaceKey);
+  }
+
   if (workspaceKey && usecaseKey) {
     PortfolioManager.GetWorkspaceManager().startUsecase(
       workspaceKey,

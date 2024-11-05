@@ -89,14 +89,13 @@ export class ArgumentMapper {
           value = ArgumentMapper.pickValue(sourceUseCaseUow, sourcePath);
         }
       } else if (mappingEntry.use.startsWith("applicationScope://")) {
-        // console.log("resolving applicationScope", sourcePath);
         const applicationScope: any =
           PortfolioManager.GetPortfolio().applicationScope;
         const applicationScopeEntry: ApplicationScopeEntry =
           ArgumentMapper.pickValue(applicationScope, sourcePath);
         // console.log("resolving applicationScopeEntry", applicationScopeEntry);
 
-        value = applicationScopeEntry.value;
+        value = applicationScopeEntry;
         // console.log("resolving applicationScopeEntry value", value);
       } else if (mappingEntry.use.startsWith("userInput://")) {
         error = "this channel is under construction!";

@@ -134,9 +134,17 @@ export class WorkspaceManager {
   setActiveMenuItemMethod: ((activeMenuItemId: string) => void) | undefined =
     undefined;
 
+  trySetActiveMenuItemMethod: ((workspaceKey: string) => void) | undefined =
+    undefined;
+
   setActiveMenuItem(activeMenuItemId: string) {
     if (!this.setActiveMenuItemMethod) return;
     this.setActiveMenuItemMethod(activeMenuItemId);
+  }
+
+  trySetActiveMenuItem(workspaceKey: string) {
+    this.trySetActiveMenuItemMethod &&
+      this.trySetActiveMenuItemMethod(workspaceKey);
   }
 
   pushBreadcrumbItemMethod:

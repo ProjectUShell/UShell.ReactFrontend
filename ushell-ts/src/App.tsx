@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as ReactDOMClient from "react-dom/client";
 
 import "./App.css";
 // import ShellLayout from "./shell-layout/_Templates/ShellLayout";
 import { ShellLayout } from "ushell-common-components";
-import { ShellMenu } from "./shell-layout/ShellMenu";
+import { containsItem, ShellMenu } from "./shell-layout/ShellMenu";
 
 import {
   createBrowserRouter,
@@ -40,6 +40,7 @@ import AppBreadcrumb, {
   AppBreadcrumbItem,
 } from "./workspace-handling/_Molecules/AppBreadcrumb";
 import { WidgetHost } from "./portfolio-handling/WidgetHost";
+import { CommandDescription } from "ushell-portfoliodescription";
 
 const glob: any = globalThis;
 glob.globalWorkspaceManager = PortfolioManager.GetWorkspaceManager();
@@ -139,6 +140,7 @@ const App = () => {
             DatasourceManager.Instance()
               .init()
               .then(() => {
+                console.log("set menu because portfolio change");
                 setMenu(PortfolioBasedMenuService.buildMenuFromModule());
               });
           });
@@ -155,6 +157,10 @@ const App = () => {
   }
 
   // debug useEffects
+
+  // useEffect(() => {
+  //   console.log("useEffect closing");
+  // }, [closing]);
 
   // useEffect(() => {
   //   console.log("useEffect menu");
@@ -195,7 +201,9 @@ const App = () => {
     DatasourceManager.Instance()
       .init()
       .then(() => {
-        setMenu(PortfolioBasedMenuService.buildMenuFromModule());
+        const newMenu = PortfolioBasedMenuService.buildMenuFromModule();
+        // console.log("set menu after appScope change", newMenu);
+        setMenu(newMenu);
       });
   };
 
@@ -219,9 +227,30 @@ const App = () => {
   PortfolioManager.GetWorkspaceManager().setActiveMenuItemMethod = (
     activeMenuItemId: string
   ) => {
+    // console.log("setActiveMenuItemMethod called");
     setShellMenuState((sm) => {
       return { ...sm, activeItemId: activeMenuItemId };
     });
+  };
+
+  PortfolioManager.GetWorkspaceManager().trySetActiveMenuItemMethod = (
+    workspaceKey: string
+  ) => {
+    if (!menu) return;
+    if (containsItem(menu.items, shellMenuState.activeItemId)) return;
+    // console.log("trySetActiveMenuItemMethod", menu, shellMenuState);
+    const matchingCommands: CommandDescription[] =
+      PortfolioManager.GetModule().commands.filter(
+        (c) => c.targetWorkspaceKey == workspaceKey
+      );
+    for (let matchingCommand of matchingCommands) {
+      if (containsItem(menu.items, matchingCommand.uniqueCommandKey)) {
+        setShellMenuState((sm) => {
+          return { ...sm, activeItemId: matchingCommand.uniqueCommandKey };
+        });
+        return;
+      }
+    }
   };
 
   PortfolioManager.GetWorkspaceManager().pushBreadcrumbItem = (
@@ -230,7 +259,7 @@ const App = () => {
     command
   ) => {
     if (appBreadcrumbItems.find((bi) => bi.id == id)) return;
-    console.log("pushBreadcrumbItem", id);
+    // console.log("pushBreadcrumbItem", id);
     appBreadcrumbItems.push({ id: id, label: label, onClicked: command });
     setAppBreacdrumbItems([...appBreadcrumbItems]);
   };
@@ -238,7 +267,7 @@ const App = () => {
   PortfolioManager.GetWorkspaceManager().activateBreadcrumbItemMethod = (
     id
   ) => {
-    console.log("activateBreadcrumbItemMethod", id);
+    // console.log("activateBreadcrumbItemMethod", id);
     if (id == "") {
       setAppBreacdrumbItems([]);
     }
@@ -258,10 +287,12 @@ const App = () => {
 
   if (isAuthenticated !== TokenService.isUiAuthenticated()) {
     setIsAuthenticated(TokenService.isUiAuthenticated());
-    setMenu(PortfolioBasedMenuService.buildMenuFromModule());
+    const newMenu = PortfolioBasedMenuService.buildMenuFromModule();
+    // console.log("set menu because authentication change", newMenu);
+    setMenu(newMenu);
   }
 
-  console.debug("rendering app");
+  // console.debug("rendering app", menu);
 
   if (headless) {
     return (

@@ -12,6 +12,7 @@ import ListIcon from "ushell-common-components/dist/cjs/_Icons/ListIcon";
 import { TokenService } from "../authentication/TokenService";
 import { PortfolioManager } from "./PortfolioManager";
 import { WorkspaceManager } from "../workspace-handling/WorkspaceManager";
+import { ArgumentMapper } from "./ArgumentMapper";
 
 export class MenuBuilder {
   public static buildMenuFromModuleUrl(
@@ -60,16 +61,13 @@ export class MenuBuilder {
 
     const notScopeMarker: string = "NotScope_";
     if (rt.startsWith(notScopeMarker)) {
-      console.log("check NotScope_", rt);
       const notRequiredScope: string = rt.substring(notScopeMarker.length);
       if (!PortfolioManager.GetPortfolio().applicationScope) return true;
       const scopeEntry: any =
         PortfolioManager.GetPortfolio().applicationScope![notRequiredScope];
-      console.log("NotScope scopeEntry", scopeEntry);
       if (!scopeEntry) return true;
       if (!scopeEntry.value) return true;
       if (scopeEntry.value == "") return true;
-      console.log("NotScope false");
       return false;
     }
     return true;
@@ -82,7 +80,6 @@ export class MenuBuilder {
     const commands: CommandDescription[] = module.commands;
     const result: ShellMenu = new ShellMenu();
     const isAuthenticated: boolean = TokenService.isUiAuthenticated();
-    // console.log("buildMenuFromModule", commands);
     commands
       .filter((c) => {
         let result =
@@ -94,7 +91,6 @@ export class MenuBuilder {
         return result;
       })
       .forEach((command: CommandDescription) => {
-        // console.log("adding command", command);
         if (command.menuFolder == "TopBar") {
           const icon: ReactElement = this.getIcon(
             command.iconKey ? command.iconKey : ""
@@ -129,9 +125,11 @@ export class MenuBuilder {
       return;
     }
     //TODO_KRN what is menuOwnerUsecaseKey? => tooblar im usecase selbst
-    const menuFolders: string[] = command.menuFolder
+    const menuFolder = command.menuFolder.replaceAll("root", "");
+    const menuFolders: string[] = menuFolder
       ? command.menuFolder.split("\\")
       : [];
+
     this.peekOrCreateItem(
       menuFolders,
       command,
@@ -147,9 +145,19 @@ export class MenuBuilder {
     menuItems: MenuItem[]
   ) {
     if (!menuFolders || menuFolders.length == 0) {
+      const mappedStuff: any = ArgumentMapper.resolveDynamicMapping(
+        {
+          mapDynamic: { use: command.label, for: "label" },
+          label: command.label,
+        },
+        {},
+        false
+      );
+
+      console.log("push menu item", mappedStuff);
       const menuItem: MenuItem = {
         id: command.uniqueCommandKey,
-        label: command.label,
+        label: mappedStuff.label,
         type: "Command",
         command: (e: any) => executeCommand(command, e),
       };
@@ -158,14 +166,23 @@ export class MenuBuilder {
 
     let currentFolder: MenuItem | undefined;
     menuFolders.forEach((menuFolder: string) => {
+      const mappedStuff: any = ArgumentMapper.resolveDynamicMapping(
+        {
+          mapDynamic: [{ use: menuFolder, for: "label" }],
+          label: menuFolder,
+        },
+        {},
+        false
+      );
+
       currentFolder = menuItems.find(
-        (i) => i.type == "Folder" && i.label == menuFolder
+        (i) => i.type == "Group" && i.label == mappedStuff.label
       );
       if (!currentFolder) {
         currentFolder = {
           id: menuFolder,
-          label: menuFolder,
-          type: "Folder",
+          label: mappedStuff.label,
+          type: "Group",
           children: [],
         };
         menuItems.push(currentFolder);
