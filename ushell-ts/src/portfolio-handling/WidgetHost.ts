@@ -61,6 +61,10 @@ export class WidgetHost implements IWidgetHost {
     );
   }
 
+  forceBreadcrumbItem(id: string) {
+    PortfolioManager.GetWorkspaceManager().forceBreadcrumbItem(id);
+  }
+
   static fireEvent1(name: string, args: object): void {
     const command: CommandDescription | undefined =
       PortfolioManager.GetModule().commands.find(

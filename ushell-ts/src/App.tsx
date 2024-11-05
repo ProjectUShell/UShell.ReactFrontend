@@ -253,15 +253,35 @@ const App = () => {
     }
   };
 
-  PortfolioManager.GetWorkspaceManager().pushBreadcrumbItem = (
+  PortfolioManager.GetWorkspaceManager().pushBreadcrumbItemMethod = (
     id,
     label,
     command
   ) => {
+    const indexOfItem: number = appBreadcrumbItems.findIndex(
+      (bi) => bi.id == id
+    );
+    console.log("pushBreadcrumbItemMethod", appBreadcrumbItems, indexOfItem);
+    if (indexOfItem >= 0) {
+      if (indexOfItem == appBreadcrumbItems.length - 1) return;
+      appBreadcrumbItems.splice(indexOfItem + 1);
+      setAppBreacdrumbItems([...appBreadcrumbItems]);
+      return;
+    }
     if (appBreadcrumbItems.find((bi) => bi.id == id)) return;
     // console.log("pushBreadcrumbItem", id);
     appBreadcrumbItems.push({ id: id, label: label, onClicked: command });
     setAppBreacdrumbItems([...appBreadcrumbItems]);
+  };
+
+  PortfolioManager.GetWorkspaceManager().forceBreadcrumbItemMethod = (id) => {
+    if (id == "" && appBreadcrumbItems.length > 0) setAppBreacdrumbItems([]);
+    const indexOfItem: number = appBreadcrumbItems.findIndex(
+      (bi) => bi.id == id
+    );
+    if (indexOfItem < 0 || indexOfItem == appBreadcrumbItems.length - 1) return;
+    const newAppBreadcrumbItems = appBreadcrumbItems.splice(indexOfItem + 1);
+    setAppBreacdrumbItems([...newAppBreadcrumbItems]);
   };
 
   PortfolioManager.GetWorkspaceManager().activateBreadcrumbItemMethod = (
@@ -277,9 +297,9 @@ const App = () => {
     return <div>Loading...</div>;
   }
 
-  if (!menu) {
-    return <div>Shell is loading...</div>;
-  }
+  // if (!menu) {
+  //   return <div>Shell is loading...</div>;
+  // }
 
   if (!DatasourceManager.isInitialized()) {
     return <div>Shell is loading...</div>;
@@ -338,7 +358,7 @@ const App = () => {
           </div>
         </div>
       }
-      shellMenu={menu}
+      shellMenu={menu || { items: [] }}
       shellMenuState={shellMenuState}
     >
       <Workspace></Workspace>

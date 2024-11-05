@@ -155,6 +155,11 @@ export class WorkspaceManager {
       this.pushBreadcrumbItemMethod(id, label, command);
   }
 
+  forceBreadcrumbItemMethod: ((id: string) => void) | undefined = undefined;
+  forceBreadcrumbItem(id: string) {
+    this.forceBreadcrumbItemMethod && this.forceBreadcrumbItemMethod(id);
+  }
+
   activateBreadcrumbItemMethod: ((id: string) => void) | undefined = undefined;
   activateBreadcrumbItem(id: string) {
     this.activateBreadcrumbItemMethod && this.activateBreadcrumbItemMethod(id);

@@ -13,6 +13,8 @@ import { TokenService } from "../authentication/TokenService";
 import { PortfolioManager } from "./PortfolioManager";
 import { WorkspaceManager } from "../workspace-handling/WorkspaceManager";
 import { ArgumentMapper } from "./ArgumentMapper";
+import ChevrodnDownIcon from "ushell-common-components/dist/cjs/_Icons/ChevrodnDownIcon";
+import { getIcon } from "ushell-common-components";
 
 export class MenuBuilder {
   public static buildMenuFromModuleUrl(
@@ -42,7 +44,7 @@ export class MenuBuilder {
           </div>
         );
       default:
-        return <ListIcon></ListIcon>;
+        return getIcon(iconKey);
     }
   }
 
@@ -157,6 +159,7 @@ export class MenuBuilder {
       console.log("push menu item", mappedStuff);
       const menuItem: MenuItem = {
         id: command.uniqueCommandKey,
+        icon: command.iconKey ? this.getIcon(command.iconKey) : undefined,
         label: mappedStuff.label,
         type: "Command",
         command: (e: any) => executeCommand(command, e),
