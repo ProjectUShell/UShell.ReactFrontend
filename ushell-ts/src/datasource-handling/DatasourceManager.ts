@@ -23,7 +23,7 @@ export class DatasourceManager implements IDataSourceManager {
 
   private _IsInitialized: boolean = false;
 
-  private _Stores: IDataStore[] = [];
+  private _Stores: { [key: string]: IDataStore } = {};
   private _SchemaRoot: SchemaRoot | null = null;
 
   tryGetDataSourceByUid(uid: string): Promise<IDataSource | null> {
@@ -41,12 +41,13 @@ export class DatasourceManager implements IDataSourceManager {
         "init DatasourceManager",
         PortfolioManager.GetModule().datastores
       );
-      this._Stores = [];
+      this._Stores = {};
       PortfolioManager.GetModule().datastores?.forEach((ds) => {
         const dataStore: IDataStore | null =
           DatasourceManager.tryCreateDataStore(ds);
         if (dataStore) {
-          this._Stores.push(dataStore);
+          console.log("adding dataStore", ds);
+          this._Stores[ds.key] = dataStore;
         }
       });
       FuseDataStore.getTokenMethod = (tokenSourceUid: string) => {
@@ -59,13 +60,14 @@ export class DatasourceManager implements IDataSourceManager {
     });
   }
   initDataStores(i: number): Promise<void> {
-    if (i > this._Stores.length - 1) {
+    const key: string = Object.keys(this._Stores)[i];
+    if (i > Object.keys(this._Stores).length - 1) {
       return new Promise<void>((resolve) => resolve());
     }
-    return this._Stores[i]
+    return this._Stores[key]
       .init()
       .then(() => {
-        const ds: IDataStore = this._Stores[i];
+        const ds: IDataStore = this._Stores[key];
         console.debug(`DataStore initialized.`, ds);
         this.appendEntitySchema(ds.getSchemaRoot());
         return this.initDataStores(i + 1);
@@ -173,14 +175,17 @@ export class DatasourceManager implements IDataSourceManager {
     entityName: string,
     storeName?: string | undefined
   ): IDataSource | null {
-    for (let dataStore of this._Stores) {
+    console.log("tryGetDataSource", storeName);
+    for (let dataStoreKey in this._Stores) {
+      const dataStore: IDataStore = this._Stores[dataStoreKey];
+      if (storeName && dataStoreKey != storeName) continue;
       const result = dataStore.tryGetDataSource(entityName);
       if (result) return result;
     }
     return null;
   }
   getSchemaRoot(): SchemaRoot {
-    if (this._Stores.length == 0) return new SchemaRoot();
+    if (Object.keys(this._Stores).length == 0) return new SchemaRoot();
     return this._SchemaRoot!;
   }
 }

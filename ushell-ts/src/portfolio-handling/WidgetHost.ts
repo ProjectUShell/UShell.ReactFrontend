@@ -36,7 +36,10 @@ export class WidgetHost implements IWidgetHost {
     entityName: string,
     storeName?: string | undefined
   ): IDataSource {
-    const result = DatasourceManager.Instance().tryGetDataSource(entityName);
+    const result = DatasourceManager.Instance().tryGetDataSource(
+      entityName,
+      storeName
+    );
     if (!result) throw `No DataSource for entityName ${entityName}`;
     return result;
   }

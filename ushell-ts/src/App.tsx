@@ -89,9 +89,9 @@ const App = () => {
 
   const [closing, setClosing] = useState(false);
 
-  const [shellMenuState, setShellMenuState] = useState<ShellMenuState>(
-    loadShellMenuState()
-  );
+  // const [shellMenuState, setShellMenuState] = useState<ShellMenuState>(
+  //   loadShellMenuState()
+  // );
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const authTokenInfo: AuthTokenInfo = TokenService.tryGetAuthTokenInfo(
@@ -148,10 +148,10 @@ const App = () => {
     );
   }, [portfolio]);
 
-  useEffect(() => {
-    console.log("useEffect shellMenuState");
-    saveShellMenuState(shellMenuState);
-  }, [shellMenuState]);
+  // useEffect(() => {
+  //   console.log("useEffect shellMenuState");
+  //   saveShellMenuState(shellMenuState);
+  // }, [shellMenuState]);
   if (closing) {
     return <div>closing...</div>;
   }
@@ -224,34 +224,34 @@ const App = () => {
     setModalUsecaseState(null);
   };
 
-  PortfolioManager.GetWorkspaceManager().setActiveMenuItemMethod = (
-    activeMenuItemId: string
-  ) => {
-    // console.log("setActiveMenuItemMethod called");
-    setShellMenuState((sm) => {
-      return { ...sm, activeItemId: activeMenuItemId };
-    });
-  };
+  // PortfolioManager.GetWorkspaceManager().setActiveMenuItemMethod = (
+  //   activeMenuItemId: string
+  // ) => {
+  //   // console.log("setActiveMenuItemMethod called");
+  //   setShellMenuState((sm) => {
+  //     return { ...sm, activeItemId: activeMenuItemId };
+  //   });
+  // };
 
-  PortfolioManager.GetWorkspaceManager().trySetActiveMenuItemMethod = (
-    workspaceKey: string
-  ) => {
-    if (!menu) return;
-    if (containsItem(menu.items, shellMenuState.activeItemId)) return;
-    // console.log("trySetActiveMenuItemMethod", menu, shellMenuState);
-    const matchingCommands: CommandDescription[] =
-      PortfolioManager.GetModule().commands.filter(
-        (c) => c.targetWorkspaceKey == workspaceKey
-      );
-    for (let matchingCommand of matchingCommands) {
-      if (containsItem(menu.items, matchingCommand.uniqueCommandKey)) {
-        setShellMenuState((sm) => {
-          return { ...sm, activeItemId: matchingCommand.uniqueCommandKey };
-        });
-        return;
-      }
-    }
-  };
+  // PortfolioManager.GetWorkspaceManager().trySetActiveMenuItemMethod = (
+  //   workspaceKey: string
+  // ) => {
+  //   if (!menu) return;
+  //   if (containsItem(menu.items, shellMenuState.activeItemId)) return;
+  //   // console.log("trySetActiveMenuItemMethod", menu, shellMenuState);
+  //   const matchingCommands: CommandDescription[] =
+  //     PortfolioManager.GetModule().commands.filter(
+  //       (c) => c.targetWorkspaceKey == workspaceKey
+  //     );
+  //   for (let matchingCommand of matchingCommands) {
+  //     if (containsItem(menu.items, matchingCommand.uniqueCommandKey)) {
+  //       setShellMenuState((sm) => {
+  //         return { ...sm, activeItemId: matchingCommand.uniqueCommandKey };
+  //       });
+  //       return;
+  //     }
+  //   }
+  // };
 
   PortfolioManager.GetWorkspaceManager().pushBreadcrumbItemMethod = (
     id,
@@ -359,7 +359,7 @@ const App = () => {
         </div>
       }
       shellMenu={menu || { items: [] }}
-      shellMenuState={shellMenuState}
+      // shellMenuState={shellMenuState}
     >
       <Workspace></Workspace>
       {modalUsecaseState && (
