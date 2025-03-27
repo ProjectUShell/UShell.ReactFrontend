@@ -104,12 +104,13 @@ const PortfolioSelector: React.FC<{
 
   return (
     <div className="flex h-screen w-screen  overflow-auto m-auto">
-      <div className="flex flex-col m-auto bg-bg6 dark:bg-bg5dark p-2 rounded-md">
+      <div className="flex flex-col mx-auto my-20 bg-bg4 dark:bg-bg8dark p-2 rounded-md min-w-96 overflow-auto">
         <h1 className="text-lg border-b">Select a portfolio</h1>
         {Object.keys(tags).map((t, i) => (
-          <div key={t} className="p-1 m-auto">
+          <div key={t} className="p-1 mx-auto w-full">
             <label>{t}</label>
             <DropdownSelect
+              classNameBg="bg-bg-6 dark:bg-bg-6dark text-center"
               options={getTagOptions(t, i).sort((a, b) => {
                 if (a.label < b.label) {
                   return -1;
@@ -133,12 +134,11 @@ const PortfolioSelector: React.FC<{
         <div className="p-2">
           {getFilteredEntries(Object.keys(tags).length).map((pe) => (
             <div
+              onClick={(e) => onPortfolioSelected(pe.portfolioUrl)}
               key={pe.portfolioUrl}
-              className="m-1 hover:bg-bg8 dark:hover:bg-bg2dark p-2 rounded-md"
+              className="m-1 bg-bg7 hover:bg-bg8 dark:bg-bg3dark dark:hover:bg-bg5dark p-2 rounded-md text-center hover:cursor-pointer"
             >
-              <button onClick={(e) => onPortfolioSelected(pe.portfolioUrl)}>
-                {pe.label}
-              </button>
+              {pe.label}
             </div>
           ))}
         </div>
