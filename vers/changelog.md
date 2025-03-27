@@ -12,6 +12,12 @@ This files contains a version history including all changes relevant for semanti
 
 
 
+## v 3.2.1
+released **2025-03-27**, including:
+ - new revision without significant changes
+
+
+
 ## v 3.2.0
 released **2025-03-26**, including:
  - new feature: integrated big update of common-components

@@ -1,13 +1,13 @@
 {
-  "currentVersion": "3.2.0",
-  "currentVersionWithSuffix": "3.2.0",
+  "currentVersion": "3.2.1",
+  "currentVersionWithSuffix": "3.2.1",
   "releaseType": "official",
-  "previousVersion": "3.1.61",
-  "changeGrade": "minor",
+  "previousVersion": "3.2.0",
+  "changeGrade": "patch",
   "currentMajor": 3,
   "currentMinor": 2,
-  "currentPatch": 0,
-  "versionDateInfo": "2025-03-26",
-  "versionTimeInfo": "11:30:48",
-  "versionNotes": "- new feature: integrated big update of common-components\n"
+  "currentPatch": 1,
+  "versionDateInfo": "2025-03-27",
+  "versionTimeInfo": "11:18:31",
+  "versionNotes": "- new revision without significant changes\n"
 }
