@@ -353,6 +353,7 @@ const App = () => {
             }}
             className="cursor-pointer"
           />
+          <p>{PortfolioManager.GetPortfolio().applicationTitle}</p>
           <div>
             <AppBreadcrumb items={appBreadcrumbItems}></AppBreadcrumb>
           </div>
