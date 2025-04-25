@@ -1,13 +1,13 @@
 {
-  "currentVersion": "3.2.2",
-  "currentVersionWithSuffix": "3.2.2",
+  "currentVersion": "3.2.3",
+  "currentVersionWithSuffix": "3.2.3",
   "releaseType": "official",
-  "previousVersion": "3.2.1",
+  "previousVersion": "3.2.2",
   "changeGrade": "patch",
   "currentMajor": 3,
   "currentMinor": 2,
-  "currentPatch": 2,
-  "versionDateInfo": "2025-04-23",
-  "versionTimeInfo": "15:49:06",
+  "currentPatch": 3,
+  "versionDateInfo": "2025-04-25",
+  "versionTimeInfo": "12:25:43",
   "versionNotes": "- new revision without significant changes\n"
 }
