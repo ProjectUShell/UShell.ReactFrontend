@@ -110,7 +110,7 @@ const PortfolioSelector: React.FC<{
           <div key={t} className="p-1 mx-auto w-full">
             <label>{t}</label>
             <DropdownSelect
-              classNameBg="bg-bg-6 dark:bg-bg-6dark text-center"
+              classNameBg="bg-bg-6 dark:bg-bg6dark text-center"
               options={getTagOptions(t, i).sort((a, b) => {
                 if (a.label < b.label) {
                   return -1;
