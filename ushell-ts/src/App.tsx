@@ -29,11 +29,12 @@ import {
 import LogonPage from "./authentication/Components/LogonPage";
 import { AuthTokenInfo } from "./authentication/AuthTokenInfo";
 import { DatasourceManager } from "./datasource-handling/DatasourceManager";
-import { ShellMenuState } from "ushell-common-components/dist/esm/components/shell-layout/ShellMenuState";
 import {
-  loadShellMenuState,
+  loadShellMenuStates,
   saveShellMenuState,
-} from "./shell-layout/ShellMenuState";
+  ShellMenuState,
+} from "ushell-common-components/dist/esm/components/shell-layout/ShellMenuState";
+
 import UsecaseModal from "./workspace-handling/_Templates/UsecaseModal";
 import { ColorMode, loadShellSettings } from "./shell-layout/ShellSettings";
 import AppBreadcrumb, {
@@ -233,25 +234,33 @@ const App = () => {
   //   });
   // };
 
-  // PortfolioManager.GetWorkspaceManager().trySetActiveMenuItemMethod = (
-  //   workspaceKey: string
-  // ) => {
-  //   if (!menu) return;
-  //   if (containsItem(menu.items, shellMenuState.activeItemId)) return;
-  //   // console.log("trySetActiveMenuItemMethod", menu, shellMenuState);
-  //   const matchingCommands: CommandDescription[] =
-  //     PortfolioManager.GetModule().commands.filter(
-  //       (c) => c.targetWorkspaceKey == workspaceKey
-  //     );
-  //   for (let matchingCommand of matchingCommands) {
-  //     if (containsItem(menu.items, matchingCommand.uniqueCommandKey)) {
-  //       setShellMenuState((sm) => {
-  //         return { ...sm, activeItemId: matchingCommand.uniqueCommandKey };
-  //       });
-  //       return;
-  //     }
-  //   }
-  // };
+  PortfolioManager.GetWorkspaceManager().trySetActiveMenuItemMethod = (
+    workspaceKey: string
+  ) => {
+    if (!menu) return;
+    // if (containsItem(menu.items, shellMenuState.activeItemId)) return;
+    // console.log("trySetActiveMenuItemMethod", menu, shellMenuState);
+    const matchingCommands: CommandDescription[] =
+      PortfolioManager.GetModule().commands.filter(
+        (c) => c.targetWorkspaceKey == workspaceKey
+      );
+    for (let matchingCommand of matchingCommands) {
+      if (containsItem(menu.items, matchingCommand.uniqueCommandKey)) {
+        const shellMenuStates: ShellMenuState[] = loadShellMenuStates();
+        const defaultShellMenuState: ShellMenuState | undefined =
+          shellMenuStates.find((s) => s.id == "");
+        if (!defaultShellMenuState) {
+          return;
+        }
+        defaultShellMenuState.activeItemId = matchingCommand.uniqueCommandKey;
+        saveShellMenuState(defaultShellMenuState, true);
+        // setShellMenuState((sm) => {
+        //   return { ...sm, activeItemId: matchingCommand.uniqueCommandKey };
+        // });
+        return;
+      }
+    }
+  };
 
   PortfolioManager.GetWorkspaceManager().pushBreadcrumbItemMethod = (
     id,
