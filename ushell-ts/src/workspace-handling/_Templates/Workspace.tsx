@@ -7,6 +7,7 @@ import { TabItem } from "../TabItem";
 import { PortfolioManager } from "../../portfolio-handling/PortfolioManager";
 import { WidgetHost } from "../../portfolio-handling/WidgetHost";
 import { TabControl } from "ushell-common-components";
+import PortfolioView from "../../portfolio-handling/_Organisms/PortfolioView";
 
 const Workspace: React.FC<{}> = ({}) => {
   const { workspaceKey, usecaseId, usecaseKey } = useParams();
@@ -23,7 +24,8 @@ const Workspace: React.FC<{}> = ({}) => {
     let activeUsecaseState: UsecaseState;
     if (staticUsecaseStates.length == 0) {
       PortfolioManager.GetWorkspaceManager().trySetActiveMenuItem("");
-      return <div>no usecases</div>;
+      return <PortfolioView></PortfolioView>;
+      // return <div>no usecases</div>;
     } else {
       activeUsecaseState = staticUsecaseStates[0];
     }
