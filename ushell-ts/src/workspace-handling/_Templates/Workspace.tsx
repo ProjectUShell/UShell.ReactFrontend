@@ -22,6 +22,7 @@ const Workspace: React.FC<{}> = ({}) => {
     );
     let activeUsecaseState: UsecaseState;
     if (staticUsecaseStates.length == 0) {
+      PortfolioManager.GetWorkspaceManager().trySetActiveMenuItem("");
       return <div>no usecases</div>;
     } else {
       activeUsecaseState = staticUsecaseStates[0];

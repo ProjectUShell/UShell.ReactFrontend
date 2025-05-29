@@ -90,6 +90,7 @@ const App = () => {
 
   const [closing, setClosing] = useState(false);
 
+  const [r, setR] = useState(0);
   // const [shellMenuState, setShellMenuState] = useState<ShellMenuState>(
   //   loadShellMenuState()
   // );
@@ -240,6 +241,21 @@ const App = () => {
     if (!menu) return;
     // if (containsItem(menu.items, shellMenuState.activeItemId)) return;
     // console.log("trySetActiveMenuItemMethod", menu, shellMenuState);
+    if (!workspaceKey || workspaceKey == "") {
+      const shellMenuStates: ShellMenuState[] = loadShellMenuStates();
+      const defaultShellMenuState: ShellMenuState | undefined =
+        shellMenuStates.find((s) => s.id == "");
+      if (!defaultShellMenuState) {
+        return;
+      }
+      if (defaultShellMenuState.activeItemId == "") {
+        return;
+      }
+      defaultShellMenuState.activeItemId = "";
+      saveShellMenuState(defaultShellMenuState, true);
+      setR((r) => r + 1);
+      return;
+    }
     const matchingCommands: CommandDescription[] =
       PortfolioManager.GetModule().commands.filter(
         (c) => c.targetWorkspaceKey == workspaceKey
