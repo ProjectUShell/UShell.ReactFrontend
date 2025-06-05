@@ -179,13 +179,13 @@ export class MenuBuilder {
       );
 
       currentFolder = menuItems.find(
-        (i) => i.type == "Group" && i.label == mappedStuff.label
+        (i) => i.type == "Folder" && i.label == mappedStuff.label
       );
       if (!currentFolder) {
         currentFolder = {
           id: menuFolder,
           label: mappedStuff.label,
-          type: "Group",
+          type: "Folder",
           children: [],
         };
         menuItems.push(currentFolder);
