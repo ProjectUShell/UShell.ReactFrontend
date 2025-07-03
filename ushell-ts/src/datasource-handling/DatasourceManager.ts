@@ -10,6 +10,7 @@ import { FuseDataStore } from "ushell-common-components";
 import { TokenService } from "../authentication/TokenService";
 import { ArgumentMapper } from "../portfolio-handling/ArgumentMapper";
 import { PortfolioBasedMenuService } from "../portfolio-handling/PortfolioBasedMenuService";
+import { LocalDataStore } from "./LocalDataStore";
 
 export class DatasourceManager implements IDataSourceManager {
   private static _Instance: DatasourceManager | null = null;
@@ -168,6 +169,9 @@ export class DatasourceManager implements IDataSourceManager {
           ds.providerArguments["getSchemaMethod"],
           () => additionalHeaderArgs
         );
+      case "localstore":
+        console.log("creating local data store", ds);
+        return new LocalDataStore(ds.providerArguments["schema"] as string);
     }
     return null;
   }

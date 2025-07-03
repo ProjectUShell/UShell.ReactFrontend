@@ -85,6 +85,8 @@ const App = () => {
     AppBreadcrumbItem[]
   >([]);
 
+  const [error, setError] = useState<string | null>(null);
+
   const [modalUsecaseState, setModalUsecaseState] =
     useState<UsecaseState | null>(null);
 
@@ -120,8 +122,8 @@ const App = () => {
   useEffect(() => {
     console.log("useEffect portfolio");
     console.debug("App booting portfolio", portfolio);
-    PortfolioLoader.loadModuleDescription(portfolioLocation, portfolio).then(
-      (p) => {
+    PortfolioLoader.loadModuleDescription(portfolioLocation, portfolio)
+      .then((p) => {
         PortfolioManager.SetModule(p.portfolio, p.module);
 
         TokenService.resolveAuthTokenInfo(
@@ -146,14 +148,31 @@ const App = () => {
                 setMenu(PortfolioBasedMenuService.buildMenuFromModule());
               });
           });
-      }
-    );
+      })
+      .catch((err) => {
+        console.error(
+          `Error loading portfolio (PortfolioLocation = ${portfolioLocation})`,
+          err
+        );
+        setError(
+          "Error loading portfolio. Please check the console for more details."
+        );
+      });
   }, [portfolio]);
 
   // useEffect(() => {
   //   console.log("useEffect shellMenuState");
   //   saveShellMenuState(shellMenuState);
   // }, [shellMenuState]);
+
+  if (error) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center">
+        <div className="text-red-500 text-lg">{error}</div>
+      </div>
+    );
+  }
+
   if (closing) {
     return <div>closing...</div>;
   }
