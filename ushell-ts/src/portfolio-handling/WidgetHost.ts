@@ -5,8 +5,33 @@ import { CommandDescription } from "ushell-portfoliodescription";
 import { TokenService } from "../authentication/TokenService";
 import { DatasourceManager } from "../datasource-handling/DatasourceManager";
 import { WorkspaceManager } from "../workspace-handling/WorkspaceManager";
+import { createServiceProxy } from "ushell-common-components";
 
 export class WidgetHost implements IWidgetHost {
+  getServiceByName<TService>(
+    serviceName: string,
+    tokenSourceUid?: string
+  ): TService {
+    throw new Error("Method not implemented.");
+  }
+  createServiceProxy<TService extends object>(
+    serviceUrl: string,
+    tokenSourceUid?: string
+  ): TService {
+    return createServiceProxy<TService>(
+      serviceUrl,
+      tokenSourceUid
+        ? () => {
+            return {
+              Authorization: TokenService.getToken(tokenSourceUid),
+            };
+          }
+        : undefined,
+      () => {
+        return { _: this.getApplicationScopeValues() };
+      }
+    );
+  }
   tryGetDataSource(entityName: string, storeName?: string): IDataSource | null {
     return this.getDataSourceForEntity(entityName, storeName);
   }
@@ -20,11 +45,13 @@ export class WidgetHost implements IWidgetHost {
     [dimension: string]: any;
   } {
     const appScope = PortfolioManager.GetPortfolio().applicationScope;
+    console.log("appScope", appScope);
     if (!appScope) return {};
     const result: any = {};
     Object.keys(appScope).forEach((apk) => {
       result[apk] = appScope[apk].value;
     });
+    console.log("appScope result", result);
     return result;
   }
 
