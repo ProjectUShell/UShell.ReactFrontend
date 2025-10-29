@@ -48,9 +48,10 @@ export class WidgetHost implements IWidgetHost {
     console.log("appScope", appScope);
     if (!appScope) return {};
     const result: any = {};
-    Object.keys(appScope).forEach((apk) => {
-      result[apk] = appScope[apk].value;
-    });
+
+    for (const appScopeEntry of appScope) {
+      result[appScopeEntry.name] = appScopeEntry.initialValue;
+    }
     console.log("appScope result", result);
     return result;
   }

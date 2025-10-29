@@ -129,12 +129,12 @@ export class DatasourceManager implements IDataSourceManager {
             .length > 0
         ) {
           additionalBodyArgs["_"] = {};
-          for (let dimension in PortfolioManager.GetPortfolio()
-            .applicationScope) {
+          for (let appScopeEntry of PortfolioManager.GetPortfolio()
+            .applicationScope!) {
             const appScopeValue = this.pickAppScopeValueLabel(
-              PortfolioManager.GetPortfolio().applicationScope![dimension].value
+              appScopeEntry.initialValue
             );
-            additionalBodyArgs["_"][dimension] = appScopeValue;
+            additionalBodyArgs["_"][appScopeEntry.name] = appScopeValue;
           }
         }
 

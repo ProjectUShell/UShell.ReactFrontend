@@ -98,16 +98,20 @@ export class PortfolioManager {
     this._Instance._Module = module;
     this._Instance._Portfolio = portfolio;
     if (!this._Instance!._Portfolio.applicationScope) {
-      this._Instance!._Portfolio.applicationScope = {};
+      this._Instance!._Portfolio.applicationScope = [];
     }
     this._Instance.restoreAppScope();
     PortfolioManager.externalAppScope?.forEach((v) => {
-      this._Instance!._Portfolio!.applicationScope![v.key] = {
-        value: v.value,
+      this._Instance!._Portfolio!.applicationScope!.push({
+        initialValue: v.value,
         isVisible: false,
         label: v.key,
         switchScopeCommand: null,
-      };
+        knownValues: null,
+        dependentScopeConstraints: null,
+        dependentScopeNames: null,
+        name: v.key,
+      });
     });
     console.debug(
       "after setting externalAppScope",
@@ -121,9 +125,7 @@ export class PortfolioManager {
 
   private static externalAppScope: { key: string; value: string }[];
 
-  private storeAppScope(appScope: {
-    [dimension: string]: ApplicationScopeEntry;
-  }) {
+  private storeAppScope(appScope: ApplicationScopeEntry[]) {
     if (!this._Portfolio) return;
     localStorage.setItem(
       `appScope_${this._Portfolio.applicationTitle}`,
@@ -137,9 +139,7 @@ export class PortfolioManager {
       `appScope_${this._Portfolio.applicationTitle}`
     );
     if (!appScopeJson) return;
-    const appScope: {
-      [dimension: string]: ApplicationScopeEntry;
-    } = JSON.parse(appScopeJson);
+    const appScope: ApplicationScopeEntry[] = JSON.parse(appScopeJson);
     if (!appScope) return;
     this._Portfolio.applicationScope = appScope;
   }
@@ -151,22 +151,27 @@ export class PortfolioManager {
       return;
     }
     if (!this._Portfolio.applicationScope) {
-      this._Portfolio.applicationScope = {};
+      this._Portfolio.applicationScope = [];
     }
     values.forEach((v) => {
       let currentEntry: ApplicationScopeEntry | undefined =
-        this._Portfolio?.applicationScope![v.key];
+        this._Portfolio?.applicationScope!.find((ase) => ase.name == v.key);
       if (!currentEntry) {
         currentEntry = {
-          value: v.value,
+          initialValue: v.value,
           isVisible: false,
           label: v.key,
           switchScopeCommand: null,
+          knownValues: null,
+          dependentScopeConstraints: null,
+          dependentScopeNames: null,
+          name: v.key,
         };
       } else {
-        currentEntry.value = v.value;
+        currentEntry.initialValue = v.value;
       }
-      this._Portfolio!.applicationScope![v.key] = currentEntry;
+
+      // this._Portfolio!.applicationScope![v.key] = currentEntry;
     });
     this.storeAppScope(this._Portfolio.applicationScope);
   }

@@ -365,6 +365,11 @@ const App = () => {
       </div>
     );
   }
+
+  console.log(
+    "application scope",
+    new WidgetHost().getApplicationScopeValues()
+  );
   return (
     <ShellLayout
       title={

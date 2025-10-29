@@ -100,13 +100,18 @@ export class WorkspaceManager {
   }
 
   public switchScope(scopeKey: string, targetValue: any) {
-    const currentAppScope = PortfolioManager.GetPortfolio().applicationScope;
-    const keyKnown = currentAppScope && scopeKey in currentAppScope;
-    if (keyKnown && currentAppScope[scopeKey].value == targetValue) return;
-    console.log(
-      "switching scope current entry",
-      currentAppScope && currentAppScope[scopeKey]
-    );
+    const currentAppScopes = PortfolioManager.GetPortfolio().applicationScope;
+    if (currentAppScopes == null) {
+      console.error("no app scope defined");
+      return;
+    }
+    const appscopeEntry = currentAppScopes.find((ase) => ase.name == scopeKey);
+    if (!appscopeEntry) {
+      console.error("no app scope entry for key", scopeKey);
+      return;
+    }
+
+    console.log("switching scope current entry", appscopeEntry);
     console.log("switching scope to", targetValue);
     PortfolioManager.GetInstance().SetAppScope([
       { key: scopeKey, value: targetValue },

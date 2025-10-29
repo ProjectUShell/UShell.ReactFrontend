@@ -15,6 +15,7 @@ import ClipboardIcon from "../shell-layout/_Icons/ClipboardIcon";
 import { TokenService } from "../authentication/TokenService";
 import ArrowRightStartOn from "../authentication/Components/ArrowRightStartOn";
 import ChevronDownIcon from "ushell-common-components/dist/cjs/_Icons/ChevrodnDownIcon";
+import DropdownSelect from "ushell-common-components/dist/cjs/_Atoms/DropdownSelect";
 
 export class PortfolioBasedMenuService {
   public static buildMenuFromModule(): ShellMenu {
@@ -56,17 +57,16 @@ export class PortfolioBasedMenuService {
   }
 
   private static appendAppScopeItems(result1: ShellMenu) {
-    const appScope: {
-      [dimension: string]: ApplicationScopeEntry;
-    } | null = PortfolioManager.GetPortfolio().applicationScope;
-    if (appScope) {
-      Object.keys(appScope).forEach((scopeKey: string) => {
-        const entry: ApplicationScopeEntry = appScope[scopeKey];
+    const appScopes: ApplicationScopeEntry[] | null =
+      PortfolioManager.GetPortfolio().applicationScope;
+    if (appScopes) {
+      console.log("appScopes", appScopes);
+      appScopes.forEach((entry: ApplicationScopeEntry) => {
         if (entry.isVisible) {
           result1.topBarItems?.unshift({
             icon: (
               <div className="flex gap-2">
-                {entry.switchScopeCommand ? (
+                {entry.switchScopeCommand && (
                   <button
                     className=" hover:bg-navigationHover dark:hover:bg-bg4dark
                      rounded-sm p-1"
@@ -81,7 +81,7 @@ export class PortfolioBasedMenuService {
                       <p>{entry.label}:</p>
                       <p>
                         {PortfolioBasedMenuService.pickAppScopeValueLabel(
-                          entry.value || "Empty"
+                          entry.initialValue || "Empty"
                         )}
                       </p>
                       <ChevronDownIcon
@@ -90,14 +90,35 @@ export class PortfolioBasedMenuService {
                       ></ChevronDownIcon>
                     </div>
                   </button>
-                ) : (
-                  <p>
-                    {entry.label}: {entry.value}
-                  </p>
                 )}
+                {entry.knownValues &&
+                Object.keys(entry.knownValues).length > 0 ? (
+                  <div className="flex gap-2 items-center content-center">
+                    <p>{entry.label}:</p>
+                    <DropdownSelect
+                      options={Object.keys(entry.knownValues).map((ek) => ({
+                        value: ek,
+                        label: entry.knownValues![ek],
+                      }))}
+                      initialOption={{
+                        label: entry.initialValue || "Empty",
+                        value:
+                          entry.knownValues![entry.initialValue] || "Empty",
+                      }}
+                      onOptionSet={(
+                        option: { label: string; value: string } | null
+                      ) => {
+                        PortfolioManager.GetWorkspaceManager().switchScope(
+                          entry.name || "",
+                          option?.value
+                        );
+                      }}
+                    ></DropdownSelect>
+                  </div>
+                ) : null}
               </div>
             ),
-            id: scopeKey,
+            id: entry.name,
           });
         }
       });

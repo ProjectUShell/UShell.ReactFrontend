@@ -54,7 +54,9 @@ export class MenuBuilder {
       const requiredScope: string = rt.substring(scopeMarker.length);
       if (!PortfolioManager.GetPortfolio().applicationScope) return false;
       const scopeEntry: any =
-        PortfolioManager.GetPortfolio().applicationScope![requiredScope];
+        PortfolioManager.GetPortfolio().applicationScope!.find(
+          (as) => as.name == requiredScope
+        );
       if (!scopeEntry) return false;
       if (!scopeEntry.value) return false;
       if (scopeEntry.value == "") return false;
@@ -66,7 +68,9 @@ export class MenuBuilder {
       const notRequiredScope: string = rt.substring(notScopeMarker.length);
       if (!PortfolioManager.GetPortfolio().applicationScope) return true;
       const scopeEntry: any =
-        PortfolioManager.GetPortfolio().applicationScope![notRequiredScope];
+        PortfolioManager.GetPortfolio().applicationScope!.find(
+          (as) => as.name == notRequiredScope
+        );
       if (!scopeEntry) return true;
       if (!scopeEntry.value) return true;
       if (scopeEntry.value == "") return true;
