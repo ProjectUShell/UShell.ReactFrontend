@@ -76,7 +76,10 @@ export class MenuBuilder {
       if (scopeEntry.value == "") return true;
       return false;
     }
-    return true;
+
+    return (
+      PortfolioManager.GetPortfolio().intialRuntimeTags?.includes(rt) || false
+    );
   }
 
   public static buildMenuFromModule(

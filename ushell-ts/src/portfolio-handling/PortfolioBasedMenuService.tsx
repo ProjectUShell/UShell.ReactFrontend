@@ -16,6 +16,7 @@ import { TokenService } from "../authentication/TokenService";
 import ArrowRightStartOn from "../authentication/Components/ArrowRightStartOn";
 import ChevronDownIcon from "ushell-common-components/dist/cjs/_Icons/ChevrodnDownIcon";
 import DropdownSelect from "ushell-common-components/dist/cjs/_Atoms/DropdownSelect";
+import AppScopeDropdown from "./_Molecules/AppScopeDropdown";
 
 export class PortfolioBasedMenuService {
   public static buildMenuFromModule(): ShellMenu {
@@ -93,28 +94,7 @@ export class PortfolioBasedMenuService {
                 )}
                 {entry.knownValues &&
                 Object.keys(entry.knownValues).length > 0 ? (
-                  <div className="flex gap-2 items-center content-center">
-                    <p>{entry.label}:</p>
-                    <DropdownSelect
-                      options={Object.keys(entry.knownValues).map((ek) => ({
-                        value: ek,
-                        label: entry.knownValues![ek],
-                      }))}
-                      initialOption={{
-                        label: entry.initialValue || "Empty",
-                        value:
-                          entry.knownValues![entry.initialValue] || "Empty",
-                      }}
-                      onOptionSet={(
-                        option: { label: string; value: string } | null
-                      ) => {
-                        PortfolioManager.GetWorkspaceManager().switchScope(
-                          entry.name || "",
-                          option?.value
-                        );
-                      }}
-                    ></DropdownSelect>
-                  </div>
+                  <AppScopeDropdown entry={entry}></AppScopeDropdown>
                 ) : null}
               </div>
             ),

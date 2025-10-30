@@ -8,6 +8,7 @@ import { PortfolioManager } from "../../portfolio-handling/PortfolioManager";
 import { WidgetHost } from "../../portfolio-handling/WidgetHost";
 import { TabControl } from "ushell-common-components";
 import PortfolioView from "../../portfolio-handling/_Organisms/PortfolioView";
+import { WorkspaceDescription } from "ushell-portfoliodescription";
 
 const Workspace: React.FC<{}> = ({}) => {
   const { workspaceKey, usecaseId, usecaseKey } = useParams();
@@ -38,6 +39,28 @@ const Workspace: React.FC<{}> = ({}) => {
   }
 
   if (workspaceKey) {
+    const workspaceDescription: WorkspaceDescription | undefined =
+      PortfolioManager.GetModule().workspaces.find(
+        (ws) => ws.workspaceKey == workspaceKey
+      );
+    if (
+      workspaceDescription &&
+      workspaceDescription.requiredApplicationScopes
+    ) {
+      const runtimeTags: string[] =
+        PortfolioManager.GetPortfolio().intialRuntimeTags || [];
+      const hasAllRequiredScopes: boolean =
+        workspaceDescription.requiredApplicationScopes.every((ras) =>
+          runtimeTags.includes(ras)
+        );
+      if (!hasAllRequiredScopes) {
+        return (
+          <div className="p-4">
+            You do not have the required permissions to access this workspace.
+          </div>
+        );
+      }
+    }
     PortfolioManager.GetWorkspaceManager().trySetActiveMenuItem(workspaceKey);
   }
 

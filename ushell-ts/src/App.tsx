@@ -145,6 +145,7 @@ const App = () => {
               .init()
               .then(() => {
                 console.log("set menu because portfolio change");
+                TokenService.setRuntimeTagsFromTokenScopes();
                 setMenu(PortfolioBasedMenuService.buildMenuFromModule());
               });
           });
@@ -350,9 +351,12 @@ const App = () => {
   }
 
   if (isAuthenticated !== TokenService.isUiAuthenticated()) {
-    setIsAuthenticated(TokenService.isUiAuthenticated());
+    const newIsAuthenticated = TokenService.isUiAuthenticated();
+    setIsAuthenticated(newIsAuthenticated);
+
     const newMenu = PortfolioBasedMenuService.buildMenuFromModule();
     // console.log("set menu because authentication change", newMenu);
+    TokenService.setRuntimeTagsFromTokenScopes();
     setMenu(newMenu);
   }
 
@@ -369,6 +373,15 @@ const App = () => {
   console.log(
     "application scope",
     new WidgetHost().getApplicationScopeValues()
+  );
+  console.log(
+    "token runtime tags",
+    PortfolioManager.GetPortfolio().intialRuntimeTags
+  );
+  TokenService.getTokenAndContent("4e888413-243b-22a9-4407-6af84f43a12e").then(
+    (token) => {
+      console.log("token", token);
+    }
   );
   return (
     <ShellLayout

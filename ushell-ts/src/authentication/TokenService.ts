@@ -345,6 +345,7 @@ export class TokenService {
         console.debug(
           "importing token '" + token + "' for source " + tokenSourceUid
         );
+
         TokenService.setToken(tokenSourceUid, token);
       } else {
         result.success = false;
@@ -365,6 +366,48 @@ export class TokenService {
     result.noParams = true;
     return result;
   }
+  static setRuntimeTagsFromTokenScopes() {
+    PortfolioManager.GetPortfolio().authenticatedAccess?.primaryUiTokenSources?.forEach(
+      (ts) => {
+        const token = TokenService.getToken(ts);
+        if (token) {
+          TokenService.setRuntimeTagsFromTokenScopesForToken(token);
+        }
+      }
+    );
+  }
+
+  static setRuntimeTagsFromTokenScopesForToken(token: string) {
+    // set the runtime tags from the token scope
+
+    const runtimeTagsFromTokenScope =
+      PortfolioManager.GetPortfolio().authenticatedAccess
+        ?.runtimeTagsFromTokenScope;
+    if (runtimeTagsFromTokenScope) {
+      console.log("runtimeTagsFromTokenScope", runtimeTagsFromTokenScope);
+      const tokenPayload: any = TokenService.tryGetJwtPayload(token);
+      const scopes: string[] = tokenPayload.scope.split(" ");
+      if (tokenPayload && tokenPayload.scope) {
+        for (let rt in runtimeTagsFromTokenScope) {
+          const scopeName = runtimeTagsFromTokenScope[rt];
+          if (scopes.includes(scopeName)) {
+            console.debug(
+              `setting runtime tag '${rt}' from token scope '${scopeName}'`
+            );
+            if (PortfolioManager.GetPortfolio().intialRuntimeTags == null) {
+              PortfolioManager.GetPortfolio().intialRuntimeTags = [];
+            }
+            if (
+              !PortfolioManager.GetPortfolio().intialRuntimeTags?.includes(rt)
+            ) {
+              PortfolioManager.GetPortfolio().intialRuntimeTags?.push(rt);
+            }
+          }
+        }
+      }
+    }
+  }
+
   static async getTokenFromCode(
     codeFromUrlQuery: string | null,
     tokenSourceUid: string
