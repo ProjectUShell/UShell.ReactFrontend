@@ -133,6 +133,11 @@ export class PortfolioManager {
     );
   }
 
+  deleteAppScopeCache() {
+    if (!this._Portfolio) return;
+    localStorage.removeItem(`appScope_${this._Portfolio.applicationTitle}`);
+  }
+
   private restoreAppScope() {
     if (!this._Portfolio) return;
     const appScopeJson: string | null = localStorage.getItem(

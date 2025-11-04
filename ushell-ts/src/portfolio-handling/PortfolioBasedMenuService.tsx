@@ -118,6 +118,7 @@ export class PortfolioBasedMenuService {
               className="relative align-middle"
               onClick={() => {
                 TokenService.deleteToken(authInfo.primaryUiTokenSourceUid!);
+                PortfolioManager.GetInstance().deleteAppScopeCache();
                 PortfolioManager.GetWorkspaceManager().navigateSafe("/");
               }}
             >
