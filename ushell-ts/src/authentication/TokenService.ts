@@ -88,10 +88,25 @@ export class TokenService {
     const result = localStorage.getItem(
       TokenService.generateLocalStorageKey(tokenSourceUid)
     );
+    TokenService.checkTokenExpired(tokenSourceUid, result);
     return result;
     return localStorage.getItem(
       TokenService.generateLocalStorageKey(tokenSourceUid)
     );
+  }
+  static async checkTokenExpired(tokenSourceUid: string, token: string | null) {
+    if (!token) {
+      return;
+    }
+    const payload = TokenService.tryGetJwtPayload(token);
+    if (payload && payload.exp) {
+      if (TokenService.isExpired(payload.exp)) {
+        console.warn("Token is expired!");
+        // TODO refresh token?
+        // For now, just delete it
+        TokenService.deleteToken(tokenSourceUid);
+      }
+    }
   }
 
   public static getTokenAndContent(
@@ -386,6 +401,12 @@ export class TokenService {
     if (runtimeTagsFromTokenScope) {
       console.log("runtimeTagsFromTokenScope", runtimeTagsFromTokenScope);
       const tokenPayload: any = TokenService.tryGetJwtPayload(token);
+      if (!tokenPayload) {
+        return;
+      }
+      if (!tokenPayload.scope) {
+        return;
+      }
       const scopes: string[] = tokenPayload.scope.split(" ");
       if (tokenPayload && tokenPayload.scope) {
         for (let rt in runtimeTagsFromTokenScope) {

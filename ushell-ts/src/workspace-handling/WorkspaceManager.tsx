@@ -550,6 +550,7 @@ export class WorkspaceManager {
       return <div>No Usecase Description</div>;
     }
 
+    // check authentication
     if (
       !PortfolioManager.GetPortfolio().anonymousAccess?.authIndependentUsecases?.find(
         //TODO wildcards
@@ -569,6 +570,29 @@ export class WorkspaceManager {
             }
             portfolio={PortfolioLoader.GetPortfolioUrl()}
           ></LogonPage>
+        );
+      }
+    }
+    // check app scopes
+    const workspaceDescription: WorkspaceDescription | undefined =
+      PortfolioManager.GetModule().workspaces.find(
+        (ws) => ws.workspaceKey == usecaseState.parentWorkspaceKey
+      );
+    if (
+      workspaceDescription &&
+      workspaceDescription.requiredApplicationScopes
+    ) {
+      const runtimeTags: string[] =
+        PortfolioManager.GetPortfolio().intialRuntimeTags || [];
+      const hasAllRequiredScopes: boolean =
+        workspaceDescription.requiredApplicationScopes.every((ras) =>
+          runtimeTags.includes(ras)
+        );
+      if (!hasAllRequiredScopes) {
+        return (
+          <div className="p-4">
+            You do not have the required permissions to access this workspace.
+          </div>
         );
       }
     }
