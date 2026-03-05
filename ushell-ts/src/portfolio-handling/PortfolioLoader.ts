@@ -33,7 +33,7 @@ export class PortfolioLoader {
 
   private static loadFromUrl(
     portfolioLocation: string,
-    portfolioName: string
+    portfolioName: string,
   ): Promise<{
     portfolio: PortfolioDescription;
     module: ModuleDescription;
@@ -65,7 +65,7 @@ export class PortfolioLoader {
           actualPortfolio,
           result,
           0,
-          portfolioLocation
+          portfolioLocation,
         ).then((md) => {
           return {
             portfolio: actualPortfolio,
@@ -77,7 +77,7 @@ export class PortfolioLoader {
 
   static loadModuleDescription(
     portfolioLocation: string,
-    portfolioName: string | null
+    portfolioName: string | null,
   ): Promise<{ portfolio: PortfolioDescription; module: ModuleDescription }> {
     if (!portfolioName) {
       return PortfolioLoader.GetDefaultPortfolio(portfolioLocation);
@@ -99,12 +99,16 @@ export class PortfolioLoader {
     portfolio: PortfolioDescription,
     result: ModuleDescription,
     index: number,
-    portfolioLocation: string
+    portfolioLocation: string,
   ): Promise<ModuleDescription> {
     const urls = portfolio.moduleDescriptionUrls;
     const finalPath: string = PortfolioLoader.isPathAbsolute(urls[index])
       ? urls[index]
       : this.getFullModuleUrl(portfolioLocation, urls[index]);
+    const moduleFinalPathWithoutFilename = finalPath.substring(
+      0,
+      finalPath.lastIndexOf("/"),
+    );
     return fetch(finalPath, {
       headers: {
         "Content-Type": "application/json",
@@ -118,11 +122,15 @@ export class PortfolioLoader {
         // füge die moduleDescription in das porfolio ein
         console.debug("loading ModuleDescription", md);
         md.commands?.forEach((c) => result.commands.push(c));
-        md.usecases?.forEach((c) => result.usecases.push(c));
+        md.usecases?.forEach((c) => {
+          (c as any).moduleFinalPathWithoutFilename =
+            moduleFinalPathWithoutFilename;
+          result.usecases.push(c);
+        });
         md.workspaces?.forEach((c) => result.workspaces.push(c));
         md.datastores?.forEach((ds) => result.datastores.push(ds));
         md.staticUsecaseAssignments?.forEach((c) =>
-          result.staticUsecaseAssignments.push(c)
+          result.staticUsecaseAssignments.push(c),
         );
         // falls noch nicht fertig, rufe diese Funktion rekursiv mit dem nächsten Index auf,
         // sonst returne portfolio
@@ -131,7 +139,7 @@ export class PortfolioLoader {
             portfolio,
             result,
             index + 1,
-            portfolioLocation
+            portfolioLocation,
           );
         } else {
           return result;
@@ -140,7 +148,7 @@ export class PortfolioLoader {
   }
   static getFullModuleUrl(
     portfolioLocation: string,
-    moduleUrl: string
+    moduleUrl: string,
   ): string {
     let basPath: string = portfolioLocation;
     if (basPath.endsWith("/portfolio")) {

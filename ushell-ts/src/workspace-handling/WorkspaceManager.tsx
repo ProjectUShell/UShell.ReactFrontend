@@ -37,12 +37,12 @@ export class WorkspaceManager {
   startUsecase(
     workspaceKey: string,
     usecaseKey: string,
-    uowData: any
+    uowData: any,
   ): boolean {
     //TODO für init von uow: auch aufrufendes usecaseInstance verwenden => iwie pushen / merken
     const usecase: UsecaseDescription | undefined =
       PortfolioManager.GetModule().usecases.find(
-        (uc) => uc.usecaseKey == usecaseKey
+        (uc) => uc.usecaseKey == usecaseKey,
       );
     if (!usecase) {
       console.error(`No Usecase with usecaseKey `);
@@ -56,7 +56,7 @@ export class WorkspaceManager {
       uowDefaults = ArgumentMapper.resolveDynamicMapping(
         usecase.unitOfWorkDefaults,
         {},
-        true
+        true,
       );
     }
     if (uowData) {
@@ -67,14 +67,14 @@ export class WorkspaceManager {
       PortfolioManager.GetModule().staticUsecaseAssignments.find(
         (sua) =>
           sua.usecaseKey == usecase.usecaseKey &&
-          sua.targetWorkspaceKey == workspaceKey
+          sua.targetWorkspaceKey == workspaceKey,
       ) !== undefined;
 
     const existingUsecaseState: UsecaseState | undefined =
       currentUsecaseStates.find(
         (ucs) =>
           ucs.usecaseKey == usecaseKey &&
-          (isStatic || this.areEqual(ucs.unitOfWork, uowDefaults))
+          (isStatic || this.areEqual(ucs.unitOfWork, uowDefaults)),
       );
     if (existingUsecaseState) {
       existingUsecaseState.unitOfWork = uowDefaults;
@@ -263,12 +263,12 @@ export class WorkspaceManager {
 
   private saveWorkspaceState(
     workspaceKey: string,
-    usecaseStates: UsecaseState[]
+    usecaseStates: UsecaseState[],
   ) {
     this._UsecaseStatesByWorkspaceId[workspaceKey] = usecaseStates;
     localStorage.setItem(
       this.getLocaleStorageKey(workspaceKey),
-      JSON.stringify(usecaseStates)
+      JSON.stringify(usecaseStates),
     );
   }
 
@@ -284,14 +284,14 @@ export class WorkspaceManager {
     useCase: UsecaseDescription,
     parentWorkspaceKey: string,
     fixed: boolean,
-    uowInitializationData?: any
+    uowInitializationData?: any,
   ): UsecaseState {
     let uow: any = {};
     if (useCase.unitOfWorkDefaults) {
       uow = ArgumentMapper.resolveDynamicMapping(
         useCase.unitOfWorkDefaults,
         {},
-        true
+        true,
       );
     }
     if (uowInitializationData) {
@@ -315,7 +315,7 @@ export class WorkspaceManager {
   getUsecaseStates(workspaceKey: string): UsecaseState[] {
     const workspace: WorkspaceDescription | undefined =
       PortfolioManager.GetModule().workspaces.find(
-        (ws) => ws.workspaceKey == workspaceKey
+        (ws) => ws.workspaceKey == workspaceKey,
       );
     if (!workspace) {
       return [];
@@ -326,21 +326,21 @@ export class WorkspaceManager {
 
     const staticUsecaseAssignments: StaticUsecaseAssignment[] =
       PortfolioManager.GetModule().staticUsecaseAssignments.filter(
-        (sua) => sua.targetWorkspaceKey == workspaceKey
+        (sua) => sua.targetWorkspaceKey == workspaceKey,
       );
 
     const unsavedStaticUsecaseAssignments: StaticUsecaseAssignment[] =
       staticUsecaseAssignments.filter(
         (sua) =>
           usecaseStatesFromLocalStorage.find(
-            (l) => l.usecaseKey == sua.usecaseKey
-          ) == undefined
+            (l) => l.usecaseKey == sua.usecaseKey,
+          ) == undefined,
       );
     const usecaseStatesFromUnsavedStaticUsecaseAssignments: UsecaseState[] =
       unsavedStaticUsecaseAssignments.map((sua) => {
         const useCase: UsecaseDescription | undefined =
           PortfolioManager.GetModule().usecases.find(
-            (u) => u.usecaseKey == sua.usecaseKey
+            (u) => u.usecaseKey == sua.usecaseKey,
           );
         if (!useCase) {
           console.error("No UsecaseDescription", sua);
@@ -350,7 +350,7 @@ export class WorkspaceManager {
           useCase,
           workspaceKey,
           true,
-          sua.initUnitOfWork
+          sua.initUnitOfWork,
         );
         // return {
         //   fixed: true,
@@ -363,7 +363,7 @@ export class WorkspaceManager {
       });
     const usecaseStates: UsecaseState[] =
       usecaseStatesFromUnsavedStaticUsecaseAssignments.concat(
-        usecaseStatesFromLocalStorage
+        usecaseStatesFromLocalStorage,
       );
     this.saveWorkspaceState(workspaceKey, usecaseStates);
     return usecaseStates;
@@ -403,7 +403,7 @@ export class WorkspaceManager {
   public executeCommandByKey(commandKey: string, input: any) {
     const command: CommandDescription | undefined =
       PortfolioManager.GetModule().commands.find(
-        (c) => c.uniqueCommandKey == commandKey
+        (c) => c.uniqueCommandKey == commandKey,
       );
     if (!command) {
       console.error("No command with key", commandKey);
@@ -415,15 +415,15 @@ export class WorkspaceManager {
   public executeCommand(
     c: CommandDescription,
     input: any,
-    sourceUseCaseUow: any
+    sourceUseCaseUow: any,
   ): void {
     switch (c.commandType) {
       case "activate-workspace": {
         PortfolioManager.GetWorkspaceManager().activateWorkspace(
-          c.targetWorkspaceKey!
+          c.targetWorkspaceKey!,
         );
         PortfolioManager.GetWorkspaceManager().setActiveMenuItem(
-          c.uniqueCommandKey
+          c.uniqueCommandKey,
         );
         return;
       }
@@ -434,7 +434,7 @@ export class WorkspaceManager {
           c.initUnitOfWork,
           sourceUseCaseUow,
           false,
-          input
+          input,
         );
         // console.log("start-usecase uowData", uowData);
 
@@ -442,11 +442,11 @@ export class WorkspaceManager {
           PortfolioManager.GetWorkspaceManager().startUsecase(
             c.targetWorkspaceKey!,
             c.targetUsecaseKey!,
-            uowData
+            uowData,
           );
         if (navigated) {
           PortfolioManager.GetWorkspaceManager().setActiveMenuItem(
-            c.uniqueCommandKey
+            c.uniqueCommandKey,
           );
         }
         return;
@@ -471,7 +471,7 @@ export class WorkspaceManager {
             dynamicO,
             sourceUseCaseUow,
             false,
-            input
+            input,
           );
           this.switchScope(c.targetScopeKey, uowData.targetScopeValue);
         } else {
@@ -488,14 +488,14 @@ export class WorkspaceManager {
     //TODO do this correctly
     const usecase: UsecaseDescription | undefined =
       PortfolioManager.GetModule().usecases.find(
-        (uc) => uc.usecaseKey == usecaseState.usecaseKey
+        (uc) => uc.usecaseKey == usecaseState.usecaseKey,
       );
     if (usecase && usecase.iconName == "modal") {
       this.activateModal(usecaseState);
       return false;
     }
     this.navigateSafe(
-      `${usecaseState.parentWorkspaceKey}\\${usecaseState.usecaseInstanceUid}`
+      `${usecaseState.parentWorkspaceKey}\\${usecaseState.usecaseInstanceUid}`,
     );
     return true;
   }
@@ -506,10 +506,10 @@ export class WorkspaceManager {
 
   updateUsecaseState(changedState: UsecaseState) {
     const storedUsecaseStates: UsecaseState[] = this.getStoredUsecaseStates(
-      changedState.parentWorkspaceKey
+      changedState.parentWorkspaceKey,
     );
     const storedUsecaseStateIndex: number = storedUsecaseStates.findIndex(
-      (u) => u.usecaseInstanceUid == changedState.usecaseInstanceUid
+      (u) => u.usecaseInstanceUid == changedState.usecaseInstanceUid,
     );
     if (storedUsecaseStateIndex < 0) {
       console.error("no stored usecaseState", changedState.usecaseInstanceUid);
@@ -518,19 +518,19 @@ export class WorkspaceManager {
     storedUsecaseStates[storedUsecaseStateIndex] = changedState;
     this.saveWorkspaceState(
       changedState.parentWorkspaceKey,
-      storedUsecaseStates
+      storedUsecaseStates,
     );
   }
 
   terminateUsecase(
     usecaseState: UsecaseState,
-    navigateToParentWorkspace: boolean = true
+    navigateToParentWorkspace: boolean = true,
   ): void {
     const usecaseStates: UsecaseState[] = this.getUsecaseStates(
-      usecaseState.parentWorkspaceKey
+      usecaseState.parentWorkspaceKey,
     );
     const indexOfUsecaseState: number = usecaseStates.findIndex(
-      (ucs) => ucs.usecaseInstanceUid == usecaseState.usecaseInstanceUid
+      (ucs) => ucs.usecaseInstanceUid == usecaseState.usecaseInstanceUid,
     );
     usecaseStates.splice(indexOfUsecaseState, 1);
     this.saveWorkspaceState(usecaseState.parentWorkspaceKey, usecaseStates);
@@ -544,7 +544,7 @@ export class WorkspaceManager {
   renderUsecase(usecaseState: UsecaseState, input: IWidget): JSX.Element {
     const usecase: UsecaseDescription | undefined =
       PortfolioManager.GetModule().usecases.find(
-        (uc) => uc.usecaseKey == usecaseState.usecaseKey
+        (uc) => uc.usecaseKey == usecaseState.usecaseKey,
       );
     if (!usecase) {
       return <div>No Usecase Description</div>;
@@ -554,13 +554,13 @@ export class WorkspaceManager {
     if (
       !PortfolioManager.GetPortfolio().anonymousAccess?.authIndependentUsecases?.find(
         //TODO wildcards
-        (uc) => uc == usecase.usecaseKey
+        (uc) => uc == usecase.usecaseKey,
       )
     ) {
       if (!TokenService.isUiAuthenticated()) {
         console.warn(
           "Protected route -> navigate to login!",
-          PortfolioManager.GetPortfolio()
+          PortfolioManager.GetPortfolio(),
         );
 
         return (
@@ -576,7 +576,7 @@ export class WorkspaceManager {
     // check app scopes
     const workspaceDescription: WorkspaceDescription | undefined =
       PortfolioManager.GetModule().workspaces.find(
-        (ws) => ws.workspaceKey == usecaseState.parentWorkspaceKey
+        (ws) => ws.workspaceKey == usecaseState.parentWorkspaceKey,
       );
     if (
       workspaceDescription &&
@@ -586,7 +586,7 @@ export class WorkspaceManager {
         PortfolioManager.GetPortfolio().intialRuntimeTags || [];
       const hasAllRequiredScopes: boolean =
         workspaceDescription.requiredApplicationScopes.every((ras) =>
-          runtimeTags.includes(ras)
+          runtimeTags.includes(ras),
         );
       if (!hasAllRequiredScopes) {
         return (
@@ -598,16 +598,17 @@ export class WorkspaceManager {
     }
     const usecaseCommands: CommandDescription[] =
       PortfolioManager.GetModule().commands.filter(
-        (c) => c.menuOwnerUsecaseKey == usecase.usecaseKey
+        (c) => c.menuOwnerUsecaseKey == usecase.usecaseKey,
       );
     return (
       <UsecaseWrapper commands={usecaseCommands} usecaseState={usecaseState}>
-        {this.renderWidget(usecase.widgetClass, input)}
+        {this.renderWidget(usecase, input)}
       </UsecaseWrapper>
     );
   }
 
-  renderWidget(widgetClass: string, input: IWidget) {
+  renderWidget(usecaseDesc: UsecaseDescription, input: IWidget) {
+    const widgetClass: string = usecaseDesc.widgetClass;
     const uow: any = input.state.unitOfWork;
     if (widgetClass == "portfolioChooser") {
       const portfolioLocation: string = PortfolioManager.GetPortfolioLocation();
@@ -683,6 +684,8 @@ export class WorkspaceManager {
     const remoteWidgetDesc: RemoteWidgetDescription | null =
       this.parseWidgetClass(widgetClass, input);
     if (remoteWidgetDesc) {
+      this.resolveRemoteUrl(usecaseDesc, remoteWidgetDesc, input);
+
       return (
         <FederatedComponentProxy
           scope={remoteWidgetDesc.scope}
@@ -696,9 +699,41 @@ export class WorkspaceManager {
     return <div>Invalid Widget Class</div>;
   }
 
+  private resolveRemoteUrl(
+    usecaseDesc: UsecaseDescription,
+    remoteWidgetDesc: RemoteWidgetDescription,
+    input: IWidget,
+  ) {
+    // Only modify if url is not absolute (does not start with http:// or https://)
+    const url = remoteWidgetDesc.url;
+    if (!new RegExp("^(?:[a-z+]+:)?//", "i").test(url)) {
+      console.log("Resolving remote widget url", url);
+      // If url starts with '/', treat as relative and modify
+      const base = (usecaseDesc as any).moduleFinalPathWithoutFilename;
+      console.log(
+        "Base path for module",
+        base,
+        "user input.state.usecaseKey",
+        input.state.usecaseKey,
+        "is",
+        base,
+      );
+      const baseEndsWithSlash = base.endsWith("/");
+      const urlStartsWithSlash = url.startsWith("/");
+      if (baseEndsWithSlash && urlStartsWithSlash) {
+        remoteWidgetDesc.url = base + url.substring(1);
+      } else if (!baseEndsWithSlash && !urlStartsWithSlash) {
+        remoteWidgetDesc.url = base + "/" + url;
+      } else {
+        remoteWidgetDesc.url = base + url;
+      }
+    }
+    console.log("Resolved remote widget url", remoteWidgetDesc.url);
+  }
+
   parseWidgetClass(
     widgetClass: string,
-    input: IWidget
+    input: IWidget,
   ): RemoteWidgetDescription | null {
     try {
       let result: RemoteWidgetDescription | undefined = JSON.parse(widgetClass);
@@ -717,12 +752,12 @@ export class WorkspaceManager {
   tryStartGuifad(r: any, es: EntitySchema) {
     const usecase: UsecaseDescription | undefined =
       PortfolioManager.GetModule().usecases.find(
-        (uc) => uc.usecaseKey == es.name
+        (uc) => uc.usecaseKey == es.name,
       );
     if (!usecase) return;
     const command: CommandDescription | undefined =
       PortfolioManager.GetModule().commands.find(
-        (c) => c.targetUsecaseKey == usecase.usecaseKey
+        (c) => c.targetUsecaseKey == usecase.usecaseKey,
       );
     if (!command) return;
     this.executeCommand(command, { record: r }, {});
