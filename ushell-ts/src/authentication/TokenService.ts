@@ -13,7 +13,7 @@ export class TokenService {
     tokenSourceUid: string,
     redirectUri: string,
     onClose: () => void,
-    portfolio: string | null
+    portfolio: string | null,
   ): void {
     if (!PortfolioManager.GetPortfolio().authTokenConfigs) {
       return;
@@ -30,7 +30,7 @@ export class TokenService {
       redirectUri,
       tokenSourceUid,
       portfolio,
-      true
+      true,
     );
     if (!oauthUrl) {
       return;
@@ -54,7 +54,7 @@ export class TokenService {
     redirectUri: string,
     tokenSourceUid: string,
     portfolio: string | null,
-    popup: boolean
+    popup: boolean,
   ): string | null {
     if (!tokenConfig.authEndpointUrl) {
       return null;
@@ -64,7 +64,7 @@ export class TokenService {
       redirectUri,
       tokenSourceUid,
       portfolio,
-      popup
+      popup,
     );
     let result: string = tokenConfig.authEndpointUrl + "?";
     for (const [key, value] of Object.entries(params)) {
@@ -79,19 +79,19 @@ export class TokenService {
   public static setToken(tokenSourceUid: string, token: string): Boolean {
     localStorage.setItem(
       TokenService.generateLocalStorageKey(tokenSourceUid),
-      token
+      token,
     );
     return true;
   }
 
   public static getToken(tokenSourceUid: string): string | null {
     const result = localStorage.getItem(
-      TokenService.generateLocalStorageKey(tokenSourceUid)
+      TokenService.generateLocalStorageKey(tokenSourceUid),
     );
     TokenService.checkTokenExpired(tokenSourceUid, result);
     return result;
     return localStorage.getItem(
-      TokenService.generateLocalStorageKey(tokenSourceUid)
+      TokenService.generateLocalStorageKey(tokenSourceUid),
     );
   }
   static async checkTokenExpired(tokenSourceUid: string, token: string | null) {
@@ -110,7 +110,7 @@ export class TokenService {
   }
 
   public static getTokenAndContent(
-    tokenSourceUid: string
+    tokenSourceUid: string,
   ): Promise<{ token: string; content: object } | null> {
     const currentToken: string | null = TokenService.getToken(tokenSourceUid);
     if (!currentToken) {
@@ -126,7 +126,7 @@ export class TokenService {
 
   public static deleteToken(tokenSourceUid: string): Boolean {
     localStorage.removeItem(
-      TokenService.generateLocalStorageKey(tokenSourceUid)
+      TokenService.generateLocalStorageKey(tokenSourceUid),
     );
     return true;
   }
@@ -154,7 +154,7 @@ export class TokenService {
 
   public static tryGetAuthTokenInfo(
     location: Location,
-    searchParams: URLSearchParams
+    searchParams: URLSearchParams,
   ): AuthTokenInfo {
     const codeFromUrlQuery: string | null = searchParams.get("code");
     const tokenFromUrlQuery: string | null =
@@ -182,7 +182,7 @@ export class TokenService {
       } catch (error) {}
       console.debug(
         "Reiceived State via Url (seems to come from OAuth redirect): ",
-        { decoded: decodedState, raw: result.stateFromUrlQuery }
+        { decoded: decodedState, raw: result.stateFromUrlQuery },
       );
       try {
         receivedOAuthState = JSON.parse(result.stateFromUrlQuery);
@@ -251,7 +251,7 @@ export class TokenService {
         if (TokenService.isAuthenticated(ts)) {
           result = { primaryUiTokenSourceUid: ts, isAuthenticated: true };
         }
-      }
+      },
     );
     return result;
   }
@@ -275,7 +275,7 @@ export class TokenService {
         if (TokenService.isAuthenticated(ts)) {
           result = true;
         }
-      }
+      },
     );
     return result;
   }
@@ -328,7 +328,7 @@ export class TokenService {
   public static async resolveAuthTokenInfo(
     authTokenInfo: AuthTokenInfo,
     searchParams: URLSearchParams,
-    setSearchParams: (sp: URLSearchParams) => void
+    setSearchParams: (sp: URLSearchParams) => void,
   ): Promise<TokenResolveResult> {
     const result: TokenResolveResult = new TokenResolveResult();
 
@@ -341,7 +341,7 @@ export class TokenService {
         " State: ",
         authTokenInfo.stateFromUrlQuery,
         " Token: ",
-        authTokenInfo.tokenFromUrlQuery
+        authTokenInfo.tokenFromUrlQuery,
       );
 
       var token = authTokenInfo.tokenFromUrlQuery;
@@ -351,14 +351,14 @@ export class TokenService {
       if (!token) {
         token = await this.getTokenFromCode(
           authTokenInfo.codeFromUrlQuery,
-          tokenSourceUid
+          tokenSourceUid,
         );
       }
       result.wasPopup = authTokenInfo.stateFromUrlQuery.popup;
       if (token) {
         result.success = true;
         console.debug(
-          "importing token '" + token + "' for source " + tokenSourceUid
+          "importing token '" + token + "' for source " + tokenSourceUid,
         );
 
         TokenService.setToken(tokenSourceUid, token);
@@ -388,7 +388,7 @@ export class TokenService {
         if (token) {
           TokenService.setRuntimeTagsFromTokenScopesForToken(token);
         }
-      }
+      },
     );
   }
 
@@ -409,19 +409,45 @@ export class TokenService {
       }
       const scopes: string[] = tokenPayload.scope.split(" ");
       if (tokenPayload && tokenPayload.scope) {
-        for (let rt in runtimeTagsFromTokenScope) {
-          const scopeName = runtimeTagsFromTokenScope[rt];
-          if (scopes.includes(scopeName)) {
+        for (let rtKey in runtimeTagsFromTokenScope) {
+          const rtValue = runtimeTagsFromTokenScope[rtKey];
+          if (scopes.includes(rtValue)) {
             console.debug(
-              `setting runtime tag '${rt}' from token scope '${scopeName}'`
+              `setting runtime tag '${rtKey}' from token scope '${rtValue}'`,
             );
             if (PortfolioManager.GetPortfolio().intialRuntimeTags == null) {
               PortfolioManager.GetPortfolio().intialRuntimeTags = [];
             }
             if (
-              !PortfolioManager.GetPortfolio().intialRuntimeTags?.includes(rt)
+              !PortfolioManager.GetPortfolio().intialRuntimeTags?.includes(
+                rtKey,
+              )
             ) {
-              PortfolioManager.GetPortfolio().intialRuntimeTags?.push(rt);
+              PortfolioManager.GetPortfolio().intialRuntimeTags?.push(rtKey);
+            }
+          }
+          // support wildcards like {Abl: "Abl:"} to set runtime tag "SomethingAbl" for scope "Abl:Something"
+          if (rtValue.endsWith(":") && rtKey == rtValue.slice(0, -1)) {
+            for (let scope of scopes) {
+              if (scope.startsWith(rtValue)) {
+                const scopeValue = scope.slice(rtValue.length);
+                const runtimeTagValue = scopeValue + rtKey;
+                console.debug(
+                  `setting runtime tag '${rtKey}' with value '${runtimeTagValue}' from token scope '${scope}'`,
+                );
+                if (PortfolioManager.GetPortfolio().intialRuntimeTags == null) {
+                  PortfolioManager.GetPortfolio().intialRuntimeTags = [];
+                }
+                if (
+                  !PortfolioManager.GetPortfolio().intialRuntimeTags?.includes(
+                    runtimeTagValue,
+                  )
+                ) {
+                  PortfolioManager.GetPortfolio().intialRuntimeTags?.push(
+                    runtimeTagValue,
+                  );
+                }
+              }
             }
           }
         }
@@ -431,7 +457,7 @@ export class TokenService {
 
   static async getTokenFromCode(
     codeFromUrlQuery: string | null,
-    tokenSourceUid: string
+    tokenSourceUid: string,
   ): Promise<string | null> {
     if (!codeFromUrlQuery) {
       return null;
@@ -445,7 +471,7 @@ export class TokenService {
       tokenConfig.retrieveEndpointUrl + `?code=${codeFromUrlQuery}`;
     if (tokenConfig.additionalAuthArgs) {
       for (const [key, value] of Object.entries(
-        tokenConfig.additionalAuthArgs!
+        tokenConfig.additionalAuthArgs!,
       )) {
         retrieveUrl += `&${key}=${value}`;
       }
@@ -470,7 +496,7 @@ export class TokenService {
     tokenConfig: AuthTokenConfig,
     redirectUri: string,
     tokenSourceUid: string,
-    portfolio: string | null
+    portfolio: string | null,
   ) {
     var oauth2Endpoint = tokenConfig.authEndpointUrl;
 
@@ -485,7 +511,7 @@ export class TokenService {
       redirectUri,
       tokenSourceUid,
       portfolio,
-      false
+      false,
     );
 
     // Add form parameters as hidden input values.
@@ -507,7 +533,7 @@ export class TokenService {
     redirectUri: string,
     tokenSourceUid: string,
     portfolio: string | null,
-    popup: boolean = false
+    popup: boolean = false,
   ) {
     let scope: string = "";
     if (tokenConfig.claims) {
@@ -530,13 +556,13 @@ export class TokenService {
           tokenSourceUid: tokenSourceUid,
           portfolio: portfolio,
           popup: popup,
-        })
+        }),
       ),
     };
 
     if (tokenConfig.additionalAuthArgs) {
       for (const [key, value] of Object.entries(
-        tokenConfig.additionalAuthArgs
+        tokenConfig.additionalAuthArgs,
       )) {
         params[key] = value;
       }
