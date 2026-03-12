@@ -7,7 +7,7 @@ import {
   CommandDescription,
   ModuleDescription,
 } from "ushell-portfoliodescription";
-import PowerIcon from "ushell-common-components/dist/cjs/_Atoms/PowerIcon";
+import PowerIcon from "../shell-layout/_Icons/PowerIcon";
 import ListIcon from "ushell-common-components/dist/cjs/_Icons/ListIcon";
 import { TokenService } from "../authentication/TokenService";
 import { PortfolioManager } from "./PortfolioManager";
@@ -19,7 +19,7 @@ import { getIcon } from "ushell-common-components";
 export class MenuBuilder {
   public static buildMenuFromModuleUrl(
     moduleUrl: string,
-    executeCommand: (comman: CommandDescription, e: any) => void
+    executeCommand: (comman: CommandDescription, e: any) => void,
   ): Promise<ShellMenu> {
     return fetch(moduleUrl, {
       headers: {
@@ -38,11 +38,7 @@ export class MenuBuilder {
   private static getIcon(iconKey: string): ReactElement {
     switch (iconKey) {
       case "Power":
-        return (
-          <div className="hover:text-red-400 dark:hover:text-red-300">
-            <PowerIcon></PowerIcon>
-          </div>
-        );
+        return <PowerIcon size={1.2}></PowerIcon>;
       default:
         return getIcon(iconKey);
     }
@@ -55,7 +51,7 @@ export class MenuBuilder {
       if (!PortfolioManager.GetPortfolio().applicationScope) return false;
       const scopeEntry: any =
         PortfolioManager.GetPortfolio().applicationScope!.find(
-          (as) => as.name == requiredScope
+          (as) => as.name == requiredScope,
         );
       if (!scopeEntry) return false;
       if (!scopeEntry.value) return false;
@@ -69,7 +65,7 @@ export class MenuBuilder {
       if (!PortfolioManager.GetPortfolio().applicationScope) return true;
       const scopeEntry: any =
         PortfolioManager.GetPortfolio().applicationScope!.find(
-          (as) => as.name == notRequiredScope
+          (as) => as.name == notRequiredScope,
         );
       if (!scopeEntry) return true;
       if (!scopeEntry.value) return true;
@@ -84,7 +80,7 @@ export class MenuBuilder {
 
   public static buildMenuFromModule(
     module: ModuleDescription,
-    executeCommand: (comman: CommandDescription, e: any) => void
+    executeCommand: (comman: CommandDescription, e: any) => void,
   ): ShellMenu {
     const commands: CommandDescription[] = module.commands;
     const result: ShellMenu = new ShellMenu();
@@ -101,8 +97,9 @@ export class MenuBuilder {
       })
       .forEach((command: CommandDescription) => {
         if (command.menuFolder == "TopBar") {
+          console.log("add topbar item for command", command);
           const icon: ReactElement = this.getIcon(
-            command.iconKey ? command.iconKey : ""
+            command.iconKey ? command.iconKey : "",
           );
           if (!result.topBarItems) {
             result.topBarItems = [];
@@ -128,7 +125,7 @@ export class MenuBuilder {
   private static pushIntoMenu(
     command: CommandDescription,
     executeCommand: (comman: CommandDescription, e: any) => void,
-    shellMenu: ShellMenu
+    shellMenu: ShellMenu,
   ) {
     if (command.menuFolder == "") {
       return;
@@ -143,7 +140,7 @@ export class MenuBuilder {
       menuFolders,
       command,
       executeCommand,
-      shellMenu.items
+      shellMenu.items,
     );
   }
 
@@ -151,7 +148,7 @@ export class MenuBuilder {
     menuFolders: string[],
     command: CommandDescription,
     executeCommand: (comman: CommandDescription, e: any) => void,
-    menuItems: MenuItem[]
+    menuItems: MenuItem[],
   ) {
     if (!menuFolders || menuFolders.length == 0) {
       const mappedStuff: any = ArgumentMapper.resolveDynamicMapping(
@@ -160,7 +157,7 @@ export class MenuBuilder {
           label: command.label,
         },
         {},
-        false
+        false,
       );
 
       console.log("push menu item", mappedStuff);
@@ -182,11 +179,11 @@ export class MenuBuilder {
           label: menuFolder,
         },
         {},
-        false
+        false,
       );
 
       currentFolder = menuItems.find(
-        (i) => i.type == "Folder" && i.label == mappedStuff.label
+        (i) => i.type == "Folder" && i.label == mappedStuff.label,
       );
       if (!currentFolder) {
         currentFolder = {
@@ -204,7 +201,7 @@ export class MenuBuilder {
         menuFolders.slice(1),
         command,
         executeCommand,
-        currentFolder.children
+        currentFolder.children,
       );
     });
   }

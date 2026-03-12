@@ -75,6 +75,7 @@ console.debug("portfolioLocation", portfolioLocation);
 
 const App = () => {
   const navigate = useNavigate();
+  const [loadingApp, setLoadingApp] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const headless: string | null = searchParams.get("headless");
@@ -100,13 +101,13 @@ const App = () => {
 
   const authTokenInfo: AuthTokenInfo = TokenService.tryGetAuthTokenInfo(
     location,
-    searchParams
+    searchParams,
   );
 
   if (authTokenInfo.stateFromUrlQuery.portfolio) {
     console.debug(
       "Setting portfolio from oauth-state: ",
-      authTokenInfo.stateFromUrlQuery.portfolio
+      authTokenInfo.stateFromUrlQuery.portfolio,
     );
     searchParams.set("portfolio", authTokenInfo.stateFromUrlQuery.portfolio);
   }
@@ -122,6 +123,7 @@ const App = () => {
   useEffect(() => {
     console.log("useEffect portfolio");
     console.debug("App booting portfolio", portfolio);
+    setLoadingApp(true);
     PortfolioLoader.loadModuleDescription(portfolioLocation, portfolio)
       .then((p) => {
         PortfolioManager.SetModule(p.portfolio, p.module);
@@ -129,7 +131,7 @@ const App = () => {
         TokenService.resolveAuthTokenInfo(
           authTokenInfo,
           searchParams,
-          setSearchParams
+          setSearchParams,
         )
           .then((result: TokenResolveResult) => {
             if (!result.noParams && result.wasPopup) {
@@ -147,16 +149,17 @@ const App = () => {
                 console.log("set menu because portfolio change");
                 TokenService.setRuntimeTagsFromTokenScopes();
                 setMenu(PortfolioBasedMenuService.buildMenuFromModule());
+                setLoadingApp(false);
               });
           });
       })
       .catch((err) => {
         console.error(
           `Error loading portfolio (PortfolioLocation = ${portfolioLocation})`,
-          err
+          err,
         );
         setError(
-          "Error loading portfolio. Please check the console for more details."
+          "Error loading portfolio. Please check the console for more details.",
         );
       });
   }, [portfolio]);
@@ -176,6 +179,18 @@ const App = () => {
 
   if (closing) {
     return <div>closing...</div>;
+  }
+
+  if (loadingApp) {
+    return (
+      <div
+        className="w-screen h-screen flex bg-gray-500 p-4
+       border-0 border-red-400"
+      >
+        Loading {portfolio ? ` (Portfolio: ${portfolio})` : "Default Portfolio"}
+        ...
+      </div>
+    );
   }
 
   // debug useEffects
@@ -233,7 +248,7 @@ const App = () => {
     setModalUsecaseState;
 
   PortfolioManager.GetWorkspaceManager().deactivateModalMethod = (
-    mus?: UsecaseState
+    mus?: UsecaseState,
   ) => {
     if (mus) {
       if (
@@ -256,7 +271,7 @@ const App = () => {
   // };
 
   PortfolioManager.GetWorkspaceManager().trySetActiveMenuItemMethod = (
-    workspaceKey: string
+    workspaceKey: string,
   ) => {
     if (!menu) return;
     // if (containsItem(menu.items, shellMenuState.activeItemId)) return;
@@ -278,7 +293,7 @@ const App = () => {
     }
     const matchingCommands: CommandDescription[] =
       PortfolioManager.GetModule().commands.filter(
-        (c) => c.targetWorkspaceKey == workspaceKey
+        (c) => c.targetWorkspaceKey == workspaceKey,
       );
     for (let matchingCommand of matchingCommands) {
       if (containsItem(menu.items, matchingCommand.uniqueCommandKey)) {
@@ -301,10 +316,10 @@ const App = () => {
   PortfolioManager.GetWorkspaceManager().pushBreadcrumbItemMethod = (
     id,
     label,
-    command
+    command,
   ) => {
     const indexOfItem: number = appBreadcrumbItems.findIndex(
-      (bi) => bi.id == id
+      (bi) => bi.id == id,
     );
     console.log("pushBreadcrumbItemMethod", appBreadcrumbItems, indexOfItem);
     if (indexOfItem >= 0) {
@@ -322,7 +337,7 @@ const App = () => {
   PortfolioManager.GetWorkspaceManager().forceBreadcrumbItemMethod = (id) => {
     if (id == "" && appBreadcrumbItems.length > 0) setAppBreacdrumbItems([]);
     const indexOfItem: number = appBreadcrumbItems.findIndex(
-      (bi) => bi.id == id
+      (bi) => bi.id == id,
     );
     if (indexOfItem < 0 || indexOfItem == appBreadcrumbItems.length - 1) return;
     const newAppBreadcrumbItems = appBreadcrumbItems.splice(indexOfItem + 1);
@@ -330,7 +345,7 @@ const App = () => {
   };
 
   PortfolioManager.GetWorkspaceManager().activateBreadcrumbItemMethod = (
-    id
+    id,
   ) => {
     // console.log("activateBreadcrumbItemMethod", id);
     if (id == "") {
@@ -372,16 +387,16 @@ const App = () => {
 
   console.log(
     "application scope",
-    new WidgetHost().getApplicationScopeValues()
+    new WidgetHost().getApplicationScopeValues(),
   );
   console.log(
     "token runtime tags",
-    PortfolioManager.GetPortfolio().intialRuntimeTags
+    PortfolioManager.GetPortfolio().intialRuntimeTags,
   );
   TokenService.getTokenAndContent("4e888413-243b-22a9-4407-6af84f43a12e").then(
     (token) => {
       console.log("token", token);
-    }
+    },
   );
   return (
     <ShellLayout
@@ -396,10 +411,12 @@ const App = () => {
                   ? PortfolioManager.GetPortfolio().logoUrlDark
                   : "ushell-whitebg.png"
                 : PortfolioManager.GetPortfolio().logoUrlLight &&
-                  PortfolioManager.GetPortfolio().logoUrlLight != "" &&
-                  PortfolioManager.GetPortfolio().logoUrlLight!.includes(".png")
-                ? PortfolioManager.GetPortfolio().logoUrlLight
-                : "ushell-whitebg.png"
+                    PortfolioManager.GetPortfolio().logoUrlLight != "" &&
+                    PortfolioManager.GetPortfolio().logoUrlLight!.includes(
+                      ".png",
+                    )
+                  ? PortfolioManager.GetPortfolio().logoUrlLight
+                  : "ushell-whitebg.png"
             }
             style={{ height: "30px" }}
             alt="ushell-whitebg.png"
@@ -430,7 +447,7 @@ const App = () => {
           usecaseState={modalUsecaseState}
           terminate={() => {
             PortfolioManager.GetWorkspaceManager().terminateModal(
-              modalUsecaseState
+              modalUsecaseState,
             );
           }}
         ></UsecaseModal>
@@ -445,7 +462,7 @@ const router = createBrowserRouter(
     {
       path: "/",
       //element: <ProtectedRoute redirectPath="/login" primaryUiTokenSourceUid="4E888413-243B-22A9-4407-6AF84F43A12E" />,
-      element: <App></App>,
+      // element: <App></App>,
       children: [
         {
           path: "",
@@ -466,7 +483,7 @@ const router = createBrowserRouter(
     //   element: <LogonPage></LogonPage>,
     // },
   ],
-  { basename: pickBasePath() }
+  { basename: pickBasePath() },
 );
 
 const container: any = document.getElementById("root");

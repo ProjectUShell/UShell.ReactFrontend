@@ -1,6 +1,6 @@
 import React from "react";
 
-const ClipboardIcon = () => {
+const ClipboardIcon: React.FC<{ size?: number }> = ({ size = 1 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -8,7 +8,7 @@ const ClipboardIcon = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="w-6 h-6"
+      style={{ width: `${size}rem`, height: `${size}rem` }}
     >
       <path
         strokeLinecap="round"

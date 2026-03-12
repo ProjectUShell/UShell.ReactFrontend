@@ -9,6 +9,7 @@ import { WidgetHost } from "../../portfolio-handling/WidgetHost";
 import { TabControl } from "ushell-common-components";
 import PortfolioView from "../../portfolio-handling/_Organisms/PortfolioView";
 import { WorkspaceDescription } from "ushell-portfoliodescription";
+import LogonPage from "../../authentication/Components/LogonPage";
 
 const Workspace: React.FC<{}> = ({}) => {
   const { workspaceKey, usecaseId, usecaseKey } = useParams();
@@ -20,7 +21,7 @@ const Workspace: React.FC<{}> = ({}) => {
     const usecaseStates: UsecaseState[] =
       PortfolioManager.GetWorkspaceManager().getUsecaseStates(homeWorkspaceKey);
     const staticUsecaseStates: UsecaseState[] = usecaseStates.filter(
-      (ucs) => ucs.fixed
+      (ucs) => ucs.fixed,
     );
     let activeUsecaseState: UsecaseState;
     if (staticUsecaseStates.length == 0) {
@@ -34,7 +35,7 @@ const Workspace: React.FC<{}> = ({}) => {
 
     return PortfolioManager.GetWorkspaceManager().renderUsecase(
       activeUsecaseState,
-      { state: activeUsecaseState, widgetHost: new WidgetHost() }
+      { state: activeUsecaseState, widgetHost: new WidgetHost() },
     );
   }
 
@@ -46,7 +47,7 @@ const Workspace: React.FC<{}> = ({}) => {
     PortfolioManager.GetWorkspaceManager().startUsecase(
       workspaceKey,
       usecaseKey,
-      {}
+      {},
     );
   }
 
@@ -54,16 +55,19 @@ const Workspace: React.FC<{}> = ({}) => {
     PortfolioManager.GetWorkspaceManager().getUsecaseStates(workspaceKey);
 
   let activeUsecaseState: UsecaseState | undefined = usecaseStates.find(
-    (ucs) => ucs.usecaseInstanceUid == usecaseId
+    (ucs) => ucs.usecaseInstanceUid == usecaseId,
   ); //TODO_KRN how to determine which usecase is active? => save in wsm
 
   // TODO Idee: usecaseKey-singletonActionKey (oder instanceUid) als key im localstorage für einzelne usecaseStates
 
   if (!activeUsecaseState) {
     const staticUsecaseStates: UsecaseState[] = usecaseStates.filter(
-      (ucs) => ucs.fixed
+      (ucs) => ucs.fixed,
     );
     if (staticUsecaseStates.length == 0) {
+      if (workspaceKey == "login") {
+        return <LogonPage tokenSourceUid={""} portfolio={null}></LogonPage>;
+      }
       return <div>Empty Workspace</div>;
     } else {
       activeUsecaseState = staticUsecaseStates[0];
@@ -72,13 +76,13 @@ const Workspace: React.FC<{}> = ({}) => {
   if (usecaseStates.length == 1) {
     return PortfolioManager.GetWorkspaceManager().renderUsecase(
       activeUsecaseState,
-      { state: activeUsecaseState, widgetHost: new WidgetHost() }
+      { state: activeUsecaseState, widgetHost: new WidgetHost() },
     );
   }
   const tabItems: TabItem[] =
     PortfolioManager.GetWorkspaceManager().getTabItems(usecaseStates);
   const activeIndex: number = tabItems.findIndex(
-    (ti) => ti.id == activeUsecaseState!.usecaseInstanceUid
+    (ti) => ti.id == activeUsecaseState!.usecaseInstanceUid,
   );
 
   return (

@@ -10,13 +10,19 @@ import { PortfolioManager } from "./PortfolioManager";
 // import { MenuBuilder } from "ushell-common-components/dist/cjs/components/shell-layout/MenuBuilder";
 import { MenuBuilder } from "./MenuBuilder";
 import { ShellMenu } from "ushell-common-components/dist/cjs/components/shell-layout/ShellMenu";
-import UsecaseInstanceDropdown from "../workspace-handling/_Molecules/UsecaseInstanceDropdown";
+import {
+  UsecaseInstanceDropdownButton,
+  UsecaseInstanceDropdownContent,
+} from "../workspace-handling/_Molecules/UsecaseInstanceDropdown";
 import ClipboardIcon from "../shell-layout/_Icons/ClipboardIcon";
 import { TokenService } from "../authentication/TokenService";
 import ArrowRightStartOn from "../authentication/Components/ArrowRightStartOn";
 import ChevronDownIcon from "ushell-common-components/dist/cjs/_Icons/ChevrodnDownIcon";
 import DropdownSelect from "ushell-common-components/dist/cjs/_Atoms/DropdownSelect";
 import AppScopeDropdown from "./_Molecules/AppScopeDropdown";
+import UserCircleIcon from "./_Icons/UserCircleIcon";
+import UserPlusIcon from "./_Icons/UserPlusIcon";
+import UserMinusIcon from "./_Icons/UserMinusIcon";
 
 export class PortfolioBasedMenuService {
   public static buildMenuFromModule(): ShellMenu {
@@ -25,7 +31,7 @@ export class PortfolioBasedMenuService {
     const result1: ShellMenu = MenuBuilder.buildMenuFromModule(
       module,
       (command: CommandDescription, e: any) =>
-        PortfolioManager.GetWorkspaceManager().executeCommand(command, e, {})
+        PortfolioManager.GetWorkspaceManager().executeCommand(command, e, {}),
     );
     if (!result1.topBarItems) {
       result1.topBarItems = [];
@@ -33,7 +39,7 @@ export class PortfolioBasedMenuService {
 
     PortfolioBasedMenuService.appendAuthItem(result1);
     PortfolioBasedMenuService.appendUsecaseInstanceDropdown(result1);
-    PortfolioBasedMenuService.appendAppScopeItems(result1);
+    // PortfolioBasedMenuService.appendAppScopeItems(result1);
 
     return result1;
   }
@@ -41,9 +47,14 @@ export class PortfolioBasedMenuService {
   private static appendUsecaseInstanceDropdown(result1: ShellMenu) {
     result1.topBarItems?.unshift({
       icon: (
-        <UsecaseInstanceDropdown
+        <UsecaseInstanceDropdownButton
           workspaceManager={PortfolioManager.GetWorkspaceManager()}
-        ></UsecaseInstanceDropdown>
+        ></UsecaseInstanceDropdownButton>
+      ),
+      dropdown: (
+        <UsecaseInstanceDropdownContent
+          workspaceManager={PortfolioManager.GetWorkspaceManager()}
+        ></UsecaseInstanceDropdownContent>
       ),
       id: "UsecaseInstanceDropdown",
     });
@@ -74,7 +85,7 @@ export class PortfolioBasedMenuService {
                     onClick={() =>
                       PortfolioManager.GetWorkspaceManager().executeCommandByKey(
                         entry.switchScopeCommand || "",
-                        null
+                        null,
                       )
                     }
                   >
@@ -82,7 +93,7 @@ export class PortfolioBasedMenuService {
                       <p>{entry.label}:</p>
                       <p>
                         {PortfolioBasedMenuService.pickAppScopeValueLabel(
-                          entry.initialValue || "Empty"
+                          entry.initialValue || "Empty",
                         )}
                       </p>
                       <ChevronDownIcon
@@ -110,22 +121,71 @@ export class PortfolioBasedMenuService {
       primaryUiTokenSourceUid: string | null;
       isAuthenticated: Boolean;
     } = TokenService.getUiAuthenticatedInfo();
-    if (authInfo.primaryUiTokenSourceUid && authInfo.isAuthenticated) {
+    if (authInfo.primaryUiTokenSourceUid) {
+      const tokenAndContent = TokenService.getTokenAndContentSync(
+        authInfo.primaryUiTokenSourceUid,
+      );
+
       result1.topBarItems?.unshift({
-        icon: (
-          <div>
-            <button
-              className="relative align-middle"
-              onClick={() => {
-                TokenService.deleteToken(authInfo.primaryUiTokenSourceUid!);
-                PortfolioManager.GetInstance().deleteAppScopeCache();
-                PortfolioManager.GetWorkspaceManager().navigateSafe("/");
-              }}
-            >
-              <ArrowRightStartOn></ArrowRightStartOn>
-            </button>
+        icon: <UserCircleIcon size={1.2}></UserCircleIcon>,
+        dropdown: (
+          <div
+            className=" bg-menu dark:bg-menuDark flex flex-col border
+           border-contentBorder dark:border-contentBorderDark"
+          >
+            {authInfo.isAuthenticated ? (
+              <>
+                <p className="font-semibold m-4">
+                  Signed in as {(tokenAndContent?.content as any)?.sub || ""}
+                </p>
+                <button
+                  className="flex gap-2 items-center align-middle p-3
+                  shadow border-t border-contentBorder dark:border-contentBorderDark
+                   bg-content dark:bg-contentDark hover:bg-contentHover dark:hover:bg-contentHoverDark"
+                  onClick={() => {
+                    TokenService.deleteToken(authInfo.primaryUiTokenSourceUid!);
+                    PortfolioManager.GetInstance().deleteAppScopeCache();
+                    PortfolioManager.GetWorkspaceManager().navigateSafe("/");
+                  }}
+                >
+                  <UserMinusIcon size={1.8}></UserMinusIcon>
+                  <p>Sign out</p>
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="font-semibold m-4">You are not signed in</p>
+                <button
+                  className="flex gap-2 items-center align-middle p-3
+                  shadow border-t border-contentBorder dark:border-contentBorderDark
+                   bg-content dark:bg-contentDark hover:bg-contentHover dark:hover:bg-contentHoverDark"
+                  onClick={() =>
+                    PortfolioManager.GetWorkspaceManager().navigateSafe(
+                      "/login",
+                    )
+                  }
+                >
+                  <UserPlusIcon size={1.8}></UserPlusIcon>
+                  <p>Sign in</p>
+                </button>
+              </>
+            )}
           </div>
         ),
+        // icon: (
+        //   <div>
+        //     <button
+        //       className="relative align-middle"
+        //       onClick={() => {
+        //         TokenService.deleteToken(authInfo.primaryUiTokenSourceUid!);
+        //         PortfolioManager.GetInstance().deleteAppScopeCache();
+        //         PortfolioManager.GetWorkspaceManager().navigateSafe("/");
+        //       }}
+        //     >
+        //       <ArrowRightStartOn></ArrowRightStartOn>
+        //     </button>
+        //   </div>
+        // ),
         id: "Logoff",
       });
     }
@@ -134,7 +194,7 @@ export class PortfolioBasedMenuService {
   private static pushIntoMenu(
     command: CommandDescription,
     shellMenu: ShellMenu,
-    module: ModuleDescription
+    module: ModuleDescription,
   ) {
     if (command.menuFolder == "") {
       return;
@@ -149,7 +209,7 @@ export class PortfolioBasedMenuService {
   static peekOrCreateItem(
     menuFolders: string[],
     command: CommandDescription,
-    menuItems: MenuItem[]
+    menuItems: MenuItem[],
   ) {
     if (!menuFolders || menuFolders.length == 0) {
       const menuItem: MenuItem = {
@@ -165,7 +225,7 @@ export class PortfolioBasedMenuService {
     let currentFolder: MenuItem | undefined;
     menuFolders.forEach((menuFolder: string) => {
       currentFolder = menuItems.find(
-        (i) => i.type == "Folder" && i.label == menuFolder
+        (i) => i.type == "Folder" && i.label == menuFolder,
       );
       if (!currentFolder) {
         currentFolder = {
@@ -182,7 +242,7 @@ export class PortfolioBasedMenuService {
       this.peekOrCreateItem(
         menuFolders.slice(1),
         command,
-        currentFolder.children
+        currentFolder.children,
       );
     });
   }

@@ -124,6 +124,19 @@ export class TokenService {
     });
   }
 
+  public static getTokenAndContentSync(
+    tokenSourceUid: string,
+  ): { token: string; content: object } | null {
+    const currentToken: string | null = TokenService.getToken(tokenSourceUid);
+    if (!currentToken) {
+      return null;
+    }
+    return {
+      token: currentToken,
+      content: this.tryGetJwtPayload(currentToken),
+    };
+  }
+
   public static deleteToken(tokenSourceUid: string): Boolean {
     localStorage.removeItem(
       TokenService.generateLocalStorageKey(tokenSourceUid),
