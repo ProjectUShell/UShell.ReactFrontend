@@ -413,7 +413,9 @@ export class TokenService {
         ?.runtimeTagsFromTokenScope;
     if (runtimeTagsFromTokenScope) {
       console.log("runtimeTagsFromTokenScope", runtimeTagsFromTokenScope);
+      console.log("token", token);
       const tokenPayload: any = TokenService.tryGetJwtPayload(token);
+      console.log("tokenPayload", tokenPayload);
       if (!tokenPayload) {
         return;
       }
@@ -421,6 +423,7 @@ export class TokenService {
         return;
       }
       const scopes: string[] = tokenPayload.scope.split(" ");
+      console.log("scopes from token", scopes);
       if (tokenPayload && tokenPayload.scope) {
         for (let rtKey in runtimeTagsFromTokenScope) {
           const rtValue = runtimeTagsFromTokenScope[rtKey];
