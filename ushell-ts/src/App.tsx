@@ -221,16 +221,18 @@ const App = () => {
 
   // init managers
   PortfolioManager.GetWorkspaceManager().navigateMethod = (url: string) => {
-    if (url == "//") {
-      navigate("/");
-      return;
+    const basePath = pickBasePath();
+    let targetUrl = url;
+    if (url === "//") {
+      targetUrl = "/";
+    } else if (!url.startsWith("/") && !url.startsWith("http")) {
+      // Prepend basePath for relative URLs
+      targetUrl = basePath.replace(/\/$/, "") + "/" + url.replace(/^\//, "");
     }
-    if (url.includes("?portfolio")) {
-      navigate(url);
-    } else {
-      const url1: string = portfolio ? `${url}?portfolio=${portfolio}` : url;
-      navigate(url1);
+    if (!targetUrl.includes("?portfolio") && portfolio) {
+      targetUrl = `${targetUrl}?portfolio=${portfolio}`;
     }
+    navigate(targetUrl);
   };
 
   PortfolioManager.GetWorkspaceManager().onAppScopeChangedMethod = () => {
