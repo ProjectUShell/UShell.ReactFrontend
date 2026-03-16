@@ -463,6 +463,17 @@ export class TokenService {
                     runtimeTagValue,
                   );
                 }
+                // Also set just the scope value as runtime tag, e.g. "ABL:Something" in addition to "SomethingABL"
+                // for backwards compatibility and easier usage in filters
+                if (
+                  !PortfolioManager.GetPortfolio().intialRuntimeTags?.includes(
+                    scope,
+                  )
+                ) {
+                  PortfolioManager.GetPortfolio().intialRuntimeTags?.push(
+                    scope,
+                  );
+                }
               }
             }
           }
