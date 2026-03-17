@@ -227,7 +227,8 @@ const App = () => {
       targetUrl = "/";
     } else if (!url.startsWith("/") && !url.startsWith("http")) {
       // Prepend basePath for relative URLs
-      targetUrl = basePath.replace(/\/$/, "") + "/" + url.replace(/^\//, "");
+      // targetUrl = basePath.replace(/\/$/, "") + "/" + url.replace(/^\//, "");
+      targetUrl = "/" + url.replace(/^\//, "");
     }
     if (!targetUrl.includes("?portfolio") && portfolio) {
       targetUrl = `${targetUrl}?portfolio=${portfolio}`;
