@@ -39,7 +39,7 @@ export class PortfolioBasedMenuService {
 
     PortfolioBasedMenuService.appendAuthItem(result1);
     PortfolioBasedMenuService.appendUsecaseInstanceDropdown(result1);
-    // PortfolioBasedMenuService.appendAppScopeItems(result1);
+    PortfolioBasedMenuService.appendAppScopeItems(result1);
 
     return result1;
   }
@@ -75,13 +75,13 @@ export class PortfolioBasedMenuService {
       console.log("appScopes", appScopes);
       appScopes.forEach((entry: ApplicationScopeEntry) => {
         if (entry.isVisible) {
+          console.log("adding app scope entry to menu", entry);
           result1.topBarItems?.unshift({
             icon: (
-              <div className="flex gap-2">
+              <>
                 {entry.switchScopeCommand && (
                   <button
-                    className=" hover:bg-navigationHover dark:hover:bg-bg4dark
-                     rounded-sm p-1"
+                    className=" relative align-middle"
                     onClick={() =>
                       PortfolioManager.GetWorkspaceManager().executeCommandByKey(
                         entry.switchScopeCommand || "",
@@ -89,7 +89,7 @@ export class PortfolioBasedMenuService {
                       )
                     }
                   >
-                    <div className="flex gap-1 items-center content-center">
+                    <div className="flex gap-1 items-center content-center text-sm">
                       <p>{entry.label}:</p>
                       <p>
                         {PortfolioBasedMenuService.pickAppScopeValueLabel(
@@ -107,7 +107,7 @@ export class PortfolioBasedMenuService {
                 Object.keys(entry.knownValues).length > 0 ? (
                   <AppScopeDropdown entry={entry}></AppScopeDropdown>
                 ) : null}
-              </div>
+              </>
             ),
             id: entry.name,
           });
