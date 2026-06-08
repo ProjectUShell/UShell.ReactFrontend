@@ -10,13 +10,13 @@ import { createServiceProxy } from "ushell-common-components";
 export class WidgetHost implements IWidgetHost {
   getServiceByName<TService>(
     serviceName: string,
-    tokenSourceUid?: string
+    tokenSourceUid?: string,
   ): TService {
     throw new Error("Method not implemented.");
   }
   createServiceProxy<TService extends object>(
     serviceUrl: string,
-    tokenSourceUid?: string
+    tokenSourceUid?: string,
   ): TService {
     return createServiceProxy<TService>(
       serviceUrl,
@@ -29,8 +29,15 @@ export class WidgetHost implements IWidgetHost {
         : undefined,
       () => {
         return { _: this.getApplicationScopeValues() };
-      }
+      },
     );
+  }
+  tryGetModuleBaseUrl(usecaseKey: string): string | null {
+    const usecase = PortfolioManager.GetModule()?.usecases?.find(
+      (u) => u.usecaseKey === usecaseKey,
+    );
+    if (!usecase) return null;
+    return (usecase as any).moduleFinalPathWithoutFilename;
   }
   tryGetDataSource(entityName: string, storeName?: string): IDataSource | null {
     return this.getDataSourceForEntity(entityName, storeName);
@@ -62,11 +69,11 @@ export class WidgetHost implements IWidgetHost {
 
   getDataSourceForEntity(
     entityName: string,
-    storeName?: string | undefined
+    storeName?: string | undefined,
   ): IDataSource {
     const result = DatasourceManager.Instance().tryGetDataSource(
       entityName,
-      storeName
+      storeName,
     );
     if (!result) throw `No DataSource for entityName ${entityName}`;
     return result;
@@ -88,7 +95,7 @@ export class WidgetHost implements IWidgetHost {
     PortfolioManager.GetWorkspaceManager().pushBreadcrumbItem(
       id,
       label,
-      command
+      command,
     );
   }
 
@@ -99,7 +106,7 @@ export class WidgetHost implements IWidgetHost {
   static fireEvent1(name: string, args: object): void {
     const command: CommandDescription | undefined =
       PortfolioManager.GetModule().commands.find(
-        (c) => c.uniqueCommandKey == name
+        (c) => c.uniqueCommandKey == name,
       );
     if (!command) {
       console.error("No command with given name", name);
@@ -111,7 +118,7 @@ export class WidgetHost implements IWidgetHost {
   fireEvent(name: string, args: object): void {
     const command: CommandDescription | undefined =
       PortfolioManager.GetModule().commands.find(
-        (c) => c.uniqueCommandKey == name
+        (c) => c.uniqueCommandKey == name,
       );
     if (!command) {
       console.error("No command with given name", name);
@@ -121,7 +128,7 @@ export class WidgetHost implements IWidgetHost {
   }
 
   getAccessToken(
-    tokenSourceUid: string
+    tokenSourceUid: string,
   ): Promise<{ token: string; content: object } | null> {
     return TokenService.getTokenAndContent(tokenSourceUid);
   }
